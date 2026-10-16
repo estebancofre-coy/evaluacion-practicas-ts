@@ -37,13 +37,7 @@
         .role-option button:hover, .back-button:hover { background: #e7f0ea; }
         .role-weight { display: inline-block; margin-bottom: 12px; color: #47705b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
         .method-note { color: #52635d; font-size: 14px; line-height: 1.55; }
-        .auth-gate { max-width: 560px; margin: 32px auto; padding: 24px; border: 1px solid #d5dfd9; border-radius: 6px; background: rgba(255,255,255,.92); }
-        .auth-gate h2 { margin: 0 0 10px; font-size: 22px; }
-        .auth-gate p { color: #52635d; line-height: 1.5; }
-        #google-button { min-height: 44px; margin-top: 18px; }
-        #auth-status { min-height: 22px; margin-bottom: 0; font-size: 13px; }
-        .account-bar { display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 14px 0 0; color: #52635d; font-size: 13px; }
-        .account-bar[hidden], #portal[hidden], #instrument[hidden], #auth-gate[hidden] { display: none; }
+        #portal[hidden], #instrument[hidden] { display: none; }
         #instrument[hidden] { display: none; }
         .instrument-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 20px 0 0; }
         .instrument-top p { margin: 0; color: #52635d; font-size: 14px; }
@@ -101,19 +95,7 @@
         </div>
     </header>
 
-    <div id="account-bar" class="account-bar" hidden>
-        <span id="account-email"></span>
-        <button type="button" id="sign-out" class="back-button">Cerrar sesión</button>
-    </div>
-
-    <section id="auth-gate" class="auth-gate" aria-labelledby="auth-title">
-        <h2 id="auth-title">Inicia sesión con Google</h2>
-        <p>La cuenta verificada quedará registrada junto con la evaluación. El correo se valida en Google antes de guardar las respuestas.</p>
-        <div id="google-button"></div>
-        <p id="auth-status" role="status" aria-live="polite">Cargando acceso seguro...</p>
-    </section>
-
-    <section id="portal" class="portal" aria-labelledby="metodologia-title" hidden>
+    <section id="portal" class="portal" aria-labelledby="metodologia-title">
         <h2 id="metodologia-title">Metodología de evaluación</h2>
         <p class="method-note">La evaluación tripartita representa el 25% de la calificación semestral. Cada mirada aporta una parte del componente, y las tres se integran en una nota final ponderada.</p>
         <div class="method" aria-label="Ponderación de la evaluación tripartita">
@@ -152,7 +134,6 @@
     </div>
     <form id="evaluation-form" action="https://script.google.com/macros/s/AKfycbwmo85-edyosijP904prP6u8mcIXBYsLFfYVJpRWCWVowHglCN7RxnB8UfmQP7NzES8Kg/exec" method="post">
         <input type="hidden" id="rol" name="rol">
-        <input type="hidden" id="google-id-token" name="id_token">
         <section class="panel" aria-labelledby="identificacion">
             <h2 id="identificacion">Identificación del periodo</h2>
             <div class="identity">
@@ -177,7 +158,7 @@
                 </div>
                 <div class="field">
                     <label for="correo">Dirección de correo electrónico</label>
-                    <input id="correo" type="email" name="correo" autocomplete="email" readonly required>
+                    <input id="correo" type="email" name="correo" autocomplete="email" required>
                 </div>
                 <div id="field-supervisor-terreno" class="field">
                     <label for="supervisor">Nombre del/de la supervisor(a) en terreno</label>
@@ -319,22 +300,14 @@
     </section>
 </main>
 <script>
-    const GOOGLE_CLIENT_ID = 'REEMPLAZA_CLIENT_ID.apps.googleusercontent.com';
     const evaluationMode = document.getElementById('periodo');
     const studentSelect = document.getElementById('estudiante');
     const teacherSelect = document.getElementById('supervisor_docente');
     const roleSelect = document.getElementById('rol');
     const evaluatorName = document.getElementById('nombre_completo');
     const terrainSupervisorField = document.getElementById('field-supervisor-terreno');
-    const authGate = document.getElementById('auth-gate');
     const portal = document.getElementById('portal');
     const instrument = document.getElementById('instrument');
-    const accountBar = document.getElementById('account-bar');
-    const accountEmail = document.getElementById('account-email');
-    const authStatus = document.getElementById('auth-status');
-    const googleIdToken = document.getElementById('google-id-token');
-    const evaluationForm = document.getElementById('evaluation-form');
-    let currentIdentity = null;
     const selfStatements = [
         'Analicé la coherencia del plan con el mandato institucional, las necesidades observadas y los objetivos de intervención.',
         'Fundamenté los ajustes de mi plan desde perspectivas teóricas, metodológicas y éticas.',
@@ -376,56 +349,6 @@
         supervision_docente: 'Instrumento de supervisión docente · pondera 40% del componente tripartito.',
         autoevaluacion: 'Instrumento de autoevaluación · pondera 20% del componente tripartito.'
     };
-
-    function decodeGoogleCredential(encodedToken) {
-        const payload = encodedToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-        const paddedPayload = payload.padEnd(Math.ceil(payload.length / 4) * 4, '=');
-        return JSON.parse(atob(paddedPayload));
-    }
-
-    function handleGoogleCredential(response) {
-        try {
-            const claims = decodeGoogleCredential(response.credential);
-            if (claims.aud !== GOOGLE_CLIENT_ID || claims.email_verified !== true || claims.exp * 1000 <= Date.now()) {
-                throw new Error('Google no pudo confirmar la identidad. Intenta iniciar sesión nuevamente.');
-            }
-            currentIdentity = { token: response.credential, email: claims.email, expiresAt: claims.exp * 1000 };
-            googleIdToken.value = currentIdentity.token;
-            document.getElementById('correo').value = currentIdentity.email;
-            accountEmail.textContent = 'Sesión: ' + currentIdentity.email;
-            authGate.hidden = true;
-            portal.hidden = false;
-            accountBar.hidden = false;
-            authStatus.textContent = '';
-        } catch (error) {
-            authStatus.textContent = error.message || 'No fue posible iniciar sesión.';
-        }
-    }
-
-    function initializeGoogleSignIn() {
-        if (GOOGLE_CLIENT_ID.startsWith('REEMPLAZA_')) {
-            authStatus.textContent = 'Falta configurar el ID de cliente OAuth de Google para este sitio.';
-            return;
-        }
-        google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleGoogleCredential });
-        google.accounts.id.renderButton(document.getElementById('google-button'), {
-            type: 'standard',
-            theme: 'outline',
-            size: 'large',
-            text: 'signin_with',
-            shape: 'rectangular',
-            logo_alignment: 'left'
-        });
-        authStatus.textContent = 'Usa una cuenta Google verificada para continuar.';
-    }
-
-    const googleScript = document.createElement('script');
-    googleScript.src = 'https://accounts.google.com/gsi/client';
-    googleScript.async = true;
-    googleScript.defer = true;
-    googleScript.onload = initializeGoogleSignIn;
-    googleScript.onerror = () => { authStatus.textContent = 'No se pudo cargar el acceso Google. Revisa la conexión e inténtalo nuevamente.'; };
-    document.head.appendChild(googleScript);
 
     function updateOpenPrompts() {
         const rolePrompts = openPrompts[roleSelect.value];
@@ -474,35 +397,6 @@
         instrument.hidden = true;
         portal.hidden = false;
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    document.getElementById('sign-out').addEventListener('click', () => {
-        currentIdentity = null;
-        googleIdToken.value = '';
-        document.getElementById('correo').value = '';
-        evaluationForm.reset();
-        roleSelect.value = '';
-        instrument.hidden = true;
-        portal.hidden = true;
-        accountBar.hidden = true;
-        authGate.hidden = false;
-        authStatus.textContent = 'Sesión cerrada. Inicia sesión para continuar.';
-        if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    evaluationForm.addEventListener('submit', event => {
-        if (!currentIdentity || currentIdentity.expiresAt <= Date.now()) {
-            event.preventDefault();
-            currentIdentity = null;
-            googleIdToken.value = '';
-            instrument.hidden = true;
-            portal.hidden = true;
-            accountBar.hidden = true;
-            authGate.hidden = false;
-            authStatus.textContent = 'La sesión expiró. Inicia sesión nuevamente; las respuestas no fueron enviadas.';
-            return;
-        }
-        googleIdToken.value = currentIdentity.token;
-        document.getElementById('correo').value = currentIdentity.email;
     });
     evaluationMode.addEventListener('change', updateOpenPrompts);
     document.getElementById('supervisor').addEventListener('input', () => {

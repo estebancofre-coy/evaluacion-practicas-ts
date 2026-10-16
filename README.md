@@ -21,11 +21,9 @@ La nota de cada instrumento se calcula entre 4,0 al 70% y 7,0 al 100%, redondead
 
 ## Configuración
 
-1. En Google Cloud Console, cree un **ID de cliente OAuth para aplicación web**. Añada `https://estebancofre-coy.github.io` como origen autorizado. Para probar localmente, añada también `http://localhost:8000`.
-2. Reemplace `REEMPLAZA_CLIENT_ID.apps.googleusercontent.com` por el ID recibido en `index.html` y `Code.gs`. Es un ID público, no una clave secreta; ambos valores deben coincidir.
-3. Abra la hoja de respuestas: https://docs.google.com/spreadsheets/d/1qVxGpBVacPG1R7hPEbKCjVKZKKMg2UlVYBusJ2twHlk/edit. En **Extensiones > Apps Script**, copie `Code.gs` y guarde.
-4. En Apps Script, seleccione **Implementar > Gestionar implementaciones**, edite la aplicación web y publique una versión nueva. Configure la ejecución como su cuenta y el acceso necesario para las personas participantes; autorice las solicitudes externas de validación de Google y el acceso a la hoja.
-5. En el repositorio de GitHub, vaya a **Settings > Pages** y elija **GitHub Actions** como fuente de despliegue.
-6. Envíe los cambios a la rama `main`. El workflow publicará el frontend en https://estebancofre-coy.github.io/evaluacion-practicas-ts/.
+1. Abra la hoja de respuestas: https://docs.google.com/spreadsheets/d/1qVxGpBVacPG1R7hPEbKCjVKZKKMg2UlVYBusJ2twHlk/edit. En **Extensiones > Apps Script**, copie `Code.gs` y guarde.
+2. En Apps Script, seleccione **Implementar > Gestionar implementaciones**, edite la aplicación web y publique una versión nueva. Configure la ejecución como su cuenta y el acceso necesario para participantes.
+3. En el repositorio de GitHub, vaya a **Settings > Pages** y elija **GitHub Actions** como fuente de despliegue.
+4. Envíe los cambios a la rama `main`. El workflow publicará el frontend en https://estebancofre-coy.github.io/evaluacion-practicas-ts/.
 
-El workflow solo publica `index.html` y `trabajo_social_color.png`; no expone `Code.gs`, `integrantes (2).xls` ni `programa`. La identidad se verifica en Apps Script con el ID token de Google; la hoja guarda el correo verificado, nunca el token. El script conserva respuestas históricas y añade columnas de rol, ponderación, rúbrica y nota integrada. Pruebe con una evaluación controlada después del despliegue.
+El workflow solo publica `index.html` y `trabajo_social_color.png`; no expone `Code.gs`, `integrantes (2).xls` ni `programa`. El correo se solicita en el formulario y se guarda como dato declarado, sin validación de identidad. El script conserva respuestas históricas y añade columnas de rol, ponderación, rúbrica y nota integrada. Pruebe con una evaluación controlada después del despliegue.

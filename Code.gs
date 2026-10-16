@@ -1,5 +1,4 @@
 const SPREADSHEET_ID = '1qVxGpBVacPG1R7hPEbKCjVKZKKMg2UlVYBusJ2twHlk';
-const GOOGLE_CLIENT_ID = 'REEMPLAZA_CLIENT_ID.apps.googleusercontent.com';
 
 const QUESTION_HEADERS = [
   'RAE 1. Ajuste del plan y seguimiento [Analiza la coherencia del plan con el mandato institucional, las necesidades observadas y los objetivos de intervención.]',
@@ -84,7 +83,6 @@ const EXTRA_HEADERS = [
 function doPost(event) {
   try {
     const parameters = event && event.parameter ? event.parameter : {};
-    const verifiedEmail = verifyGoogleIdentity(parameters.id_token);
     const roleKey = parameters.rol;
     const role = ROLE_CONFIG[roleKey];
     if (!role) throw new Error('Seleccione un rol válido para la evaluación.');
@@ -125,7 +123,7 @@ function doPost(event) {
       'Semestre evaluado': requiredText(parameters.semestre, 'semestre evaluado'),
       'Rol evaluador': role.label,
       'Peso tripartito (%)': role.weight,
-      'Dirección de correo electrónico': verifiedEmail,
+      'Dirección de correo electrónico': requiredText(parameters.correo, 'correo electrónico'),
       'Nombre supervisor(a) Institución': terrainSupervisor,
       'Nombre estudiante supervisado(a)': student,
       'Supervisor(a) docente': teacher,
@@ -183,26 +181,6 @@ function doPost(event) {
   } catch (error) {
     return renderResult(error.message || 'No fue posible guardar la evaluación.', false);
   }
-}
-
-function verifyGoogleIdentity(idToken) {
-  const token = requiredText(idToken, 'inicio de sesión con Google');
-  const verification = UrlFetchApp.fetch(
-    'https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(token),
-    { muteHttpExceptions: true }
-  );
-  if (verification.getResponseCode() !== 200) {
-    throw new Error('La sesión de Google no es válida. Inicie sesión nuevamente.');
-  }
-
-  const claims = JSON.parse(verification.getContentText());
-  const issuerIsGoogle = claims.iss === 'accounts.google.com' || claims.iss === 'https://accounts.google.com';
-  const emailIsVerified = String(claims.email_verified).toLowerCase() === 'true';
-  if (claims.aud !== GOOGLE_CLIENT_ID || !issuerIsGoogle || !emailIsVerified || Number(claims.exp) <= Date.now() / 1000) {
-    throw new Error('No se pudo verificar la cuenta de Google. Inicie sesión nuevamente.');
-  }
-
-  return requiredText(claims.email, 'correo de la cuenta Google').toLowerCase();
 }
 
 function findResponseSheet(spreadsheet) {
