@@ -13,7 +13,7 @@ Las formas adaptadas son la [evaluación de supervisión docente](https://forms.
 
 ## Metodología
 
-La evaluación tripartita representa el 25% de la calificación del semestre. Dentro de ese componente, la supervisión en terreno pesa 40%, la supervisión docente 40% y la autoevaluación 20%. Cada instrumento genera su nota por separado; la nota integrada se calcula al contar con las tres perspectivas para el mismo estudiante, instancia y semestre:
+La evaluación tripartita representa el 25% de la calificación del semestre. El instrumento solo acepta **Primer semestre** o **Segundo semestre**; no registra una observación anual. Dentro del componente tripartito, terreno pesa 40%, docente 40% y autoevaluación 20%. La nota integrada se calcula al contar con las tres perspectivas para el mismo estudiante, instancia y semestre:
 
 `0,4 × nota terreno + 0,4 × nota docente + 0,2 × autoevaluación`
 
@@ -22,8 +22,8 @@ La nota de cada instrumento se calcula entre 4,0 al 70% y 7,0 al 100%, redondead
 ## Configuración
 
 1. Abra la hoja de respuestas: https://docs.google.com/spreadsheets/d/1qVxGpBVacPG1R7hPEbKCjVKZKKMg2UlVYBusJ2twHlk/edit. En **Extensiones > Apps Script**, copie `Code.gs` y guarde.
-2. En Apps Script, seleccione **Implementar > Gestionar implementaciones**, edite la aplicación web y publique una versión nueva. Configure la ejecución como su cuenta y el acceso necesario para participantes.
+2. Autorice los servicios de Google Sheets y MailApp cuando Apps Script lo solicite. En **Implementar > Gestionar implementaciones**, edite la aplicación web y publique una versión nueva. Configure la ejecución como su cuenta y el acceso necesario para participantes.
 3. En el repositorio de GitHub, vaya a **Settings > Pages** y elija **GitHub Actions** como fuente de despliegue.
 4. Envíe los cambios a la rama `main`. El workflow publicará el frontend en https://estebancofre-coy.github.io/evaluacion-practicas-ts/.
 
-El workflow solo publica `index.html` y `trabajo_social_color.png`; no expone `Code.gs`, `integrantes (2).xls` ni `programa`. El correo se solicita en el formulario y se guarda como dato declarado, sin validación de identidad. El script conserva respuestas históricas y añade columnas de rol, ponderación, rúbrica y nota integrada. Pruebe con una evaluación controlada después del despliegue.
+El botón **Descargar PDF** prepara el informe completo y abre el diálogo de impresión del navegador; seleccione “Guardar como PDF”. Al enviar, Apps Script guarda la evaluación y manda al correo ingresado una copia con el PDF adjunto. El correo se guarda como dato declarado, sin validación de identidad. Si el correo falla, la evaluación permanece guardada y la página informa el problema. El workflow solo publica `index.html` y `trabajo_social_color.png`; no expone `Code.gs`, `integrantes (2).xls` ni `programa`.

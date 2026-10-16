@@ -86,6 +86,18 @@ function doPost(event) {
     const roleKey = parameters.rol;
     const role = ROLE_CONFIG[roleKey];
     if (!role) throw new Error('Seleccione un rol válido para la evaluación.');
+    const evaluationPeriod = requiredText(parameters.periodo, 'instancia de evaluación');
+    const semester = requiredText(parameters.semestre, 'semestre evaluado');
+    if (!['Seguimiento intermedio', 'Cierre semestral', 'Evaluación general'].includes(evaluationPeriod)) {
+      throw new Error('Seleccione una instancia de evaluación semestral válida.');
+    }
+    if (!['Primer semestre', 'Segundo semestre'].includes(semester)) {
+      throw new Error('La evaluación debe corresponder al primer o segundo semestre.');
+    }
+    const recipientEmail = requiredText(parameters.correo, 'correo electrónico');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
+      throw new Error('Ingrese un correo electrónico válido para recibir la copia.');
+    }
 
     const ratings = QUESTION_HEADERS.map((header, index) => {
       const rawValue = parameters['q' + (index + 1)];
@@ -115,15 +127,15 @@ function doPost(event) {
     const evaluatorName = roleKey === 'supervision_terreno'
       ? terrainSupervisor
       : roleKey === 'supervision_docente' ? teacher : student;
-    const isGeneral = parameters.periodo === 'Evaluación general';
+    const isGeneral = evaluationPeriod === 'Evaluación general';
 
     const values = {
       'Marca temporal': new Date(),
-      'Periodo de evaluación': requiredText(parameters.periodo, 'periodo de evaluación'),
-      'Semestre evaluado': requiredText(parameters.semestre, 'semestre evaluado'),
+      'Periodo de evaluación': evaluationPeriod,
+      'Semestre evaluado': semester,
       'Rol evaluador': role.label,
       'Peso tripartito (%)': role.weight,
-      'Dirección de correo electrónico': requiredText(parameters.correo, 'correo electrónico'),
+      'Dirección de correo electrónico': recipientEmail,
       'Nombre supervisor(a) Institución': terrainSupervisor,
       'Nombre estudiante supervisado(a)': student,
       'Supervisor(a) docente': teacher,
@@ -171,16 +183,133 @@ function doPost(event) {
       lock.releaseLock();
     }
 
+    values['Nota integrada tripartita'] = integration.complete ? integration.grade : '';
+    values['Estado de integración tripartita'] = integration.complete
+      ? 'Completa'
+      : 'Pendiente: ' + integration.missing.join(', ');
+
+    let copyMessage;
+    try {
+      sendEvaluationCopy(values, ratings, componentGrade, integration);
+      copyMessage = 'Se envió una copia PDF a ' + recipientEmail + '.';
+    } catch (mailError) {
+      Logger.log('No se pudo enviar copia a ' + recipientEmail + ': ' + mailError.message);
+      copyMessage = 'La evaluación quedó guardada, pero no se pudo enviar el correo. ' + (mailError.message || '');
+    }
+
     const gradeMessage = componentGrade === ''
       ? 'Nota del instrumento pendiente: se requieren al menos 16 criterios observados.'
       : 'Nota del instrumento: ' + componentGrade.toFixed(1) + '.';
     const integrationMessage = integration.complete
       ? 'Nota tripartita integrada: ' + integration.grade.toFixed(1) + '.'
       : 'Integración tripartita pendiente: ' + integration.missing.join(', ') + '.';
-    return renderResult('Evaluación registrada: ' + role.label + ' (' + role.weight + '%). Puntaje ' + score + ' de ' + maximumScore + ' (' + Math.round(achievement * 100) + '%). ' + gradeMessage + ' ' + integrationMessage, true);
+    return renderResult('Evaluación registrada: ' + role.label + ' (' + role.weight + '%). Puntaje ' + score + ' de ' + maximumScore + ' (' + Math.round(achievement * 100) + '%). ' + gradeMessage + ' ' + integrationMessage + ' ' + copyMessage, true);
   } catch (error) {
     return renderResult(error.message || 'No fue posible guardar la evaluación.', false);
   }
+}
+
+function sendEvaluationCopy(values, ratings, componentGrade, integration) {
+  if (MailApp.getRemainingDailyQuota() < 1) {
+    throw new Error('Se agotó la cuota diaria de correo del formulario.');
+  }
+
+  const evaluationKey = [
+    values['Dirección de correo electrónico'].toLowerCase(),
+    values['Nombre estudiante supervisado(a)'],
+    values['Periodo de evaluación'],
+    values['Semestre evaluado'],
+    values['Rol evaluador']
+  ].join('|');
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'evaluation-copy:' + Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, evaluationKey)
+  );
+  if (cache.get(cacheKey)) {
+    throw new Error('Ya se envió una copia de esta evaluación recientemente.');
+  }
+  cache.put(cacheKey, 'sending', 300);
+
+  try {
+    const reportHtml = buildEvaluationReportHtml(values, ratings, componentGrade, integration);
+    const pdf = HtmlService.createHtmlOutput(reportHtml)
+      .getBlob()
+      .getAs(MimeType.PDF)
+      .setName('Evaluacion-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf');
+    const plainText = [
+      'Copia de la evaluación tripartita de práctica.',
+      'Estudiante: ' + values['Nombre estudiante supervisado(a)'],
+      'Instancia: ' + values['Periodo de evaluación'],
+      'Semestre: ' + values['Semestre evaluado'],
+      'Rol: ' + values['Rol evaluador'],
+      'Puntaje: ' + values['Puntaje'] + ' de ' + values['Puntaje máximo ajustado'],
+      'Nota: ' + (componentGrade === '' ? 'Pendiente' : componentGrade.toFixed(1)),
+      'El PDF adjunto contiene la evaluación completa.'
+    ].join('\n');
+
+    MailApp.sendEmail({
+      to: values['Dirección de correo electrónico'],
+      subject: 'Copia de evaluación de práctica · ' + values['Nombre estudiante supervisado(a)'],
+      body: plainText,
+      htmlBody: reportHtml,
+      attachments: [pdf],
+      name: 'Evaluación de Prácticas Profesionales'
+    });
+  } catch (error) {
+    cache.remove(cacheKey);
+    throw error;
+  }
+}
+
+function buildEvaluationReportHtml(values, ratings, componentGrade, integration) {
+  const detailRows = QUESTION_HEADERS.map((question, index) =>
+    '<tr><th>' + escapeHtml(question) + '</th><td>' + escapeHtml(ratings[index] === null ? 'No observado' : String(ratings[index])) + '</td></tr>'
+  ).join('');
+  const summaryRows = [
+    ['Estudiante', values['Nombre estudiante supervisado(a)']],
+    ['Rol evaluador', values['Rol evaluador']],
+    ['Instancia', values['Periodo de evaluación']],
+    ['Semestre', values['Semestre evaluado']],
+    ['Correo declarado', values['Dirección de correo electrónico']],
+    ['Supervisor(a) docente', values['Supervisor(a) docente']],
+    ['Supervisor(a) en terreno', values['Nombre supervisor(a) Institución']],
+    ['Centro de práctica', values['Institución']],
+    ['Fortalezas', values['Detalle las principales fortalezas que ubique en el desempeño profesional de él/la estudiante']],
+    ['Aspectos por fortalecer', values['Detalle aspectos a mejorar de cara al próximo semestre']],
+    ['Acuerdos', values['Acuerdos de supervisión para el próximo periodo']],
+    ['Recomendaciones para futuro profesional', values['Recomendaciones para futuro profesional']],
+    ['Idea de tesis 2027', values['Idea de tesis 2027 relacionada con el fenómeno institucional']]
+  ].filter(entry => entry[1]);
+  const summaryHtml = summaryRows.map(entry =>
+    '<tr><th>' + escapeHtml(entry[0]) + '</th><td>' + escapeHtml(String(entry[1])) + '</td></tr>'
+  ).join('');
+  const integrationText = integration.complete
+    ? integration.grade.toFixed(1)
+    : 'Pendiente: ' + integration.missing.join(', ');
+
+  return '<!doctype html><html lang="es"><meta charset="utf-8"><style>' +
+    'body{font:12px Arial,sans-serif;color:#1d2b29;margin:28px}h1{font-size:20px}h2{font-size:15px;margin-top:24px}' +
+    'table{width:100%;border-collapse:collapse}th,td{padding:7px;border:1px solid #cbd7d1;text-align:left;vertical-align:top}' +
+    'th{width:34%;background:#edf3ef}tr{page-break-inside:avoid}' +
+    '</style><body><h1>Evaluación del proceso de práctica</h1><table>' + summaryHtml + '</table>' +
+    '<h2>Rúbrica de 20 criterios</h2><table>' + detailRows + '</table>' +
+    '<h2>Resultados</h2><table><tr><th>Puntaje</th><td>' + values['Puntaje'] + ' de ' + values['Puntaje máximo ajustado'] + ' (' + values['Porcentaje de logro (%)'] + '%)</td></tr>' +
+    '<tr><th>Nota del instrumento</th><td>' + (componentGrade === '' ? 'Pendiente' : componentGrade.toFixed(1)) + '</td></tr>' +
+    '<tr><th>Nota tripartita</th><td>' + escapeHtml(integrationText) + '</td></tr></table></body></html>';
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
+
+function safeFileName(value) {
+  return String(value).replace(/[^a-z0-9-]+/gi, '-').replace(/^-|-$/g, '');
 }
 
 function findResponseSheet(spreadsheet) {

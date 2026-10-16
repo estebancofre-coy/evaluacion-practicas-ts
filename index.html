@@ -68,6 +68,9 @@
         button:hover { background: #1f523b; }
         button:focus-visible { outline: 3px solid #b8d8c6; outline-offset: 3px; }
         .conditional-field[hidden] { display: none; }
+        .form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-actions .back-button { width: 100%; min-height: 50px; border: 1px solid #28664a; background: #fff; color: #24583f; }
+        #print-report { display: none; }
         @media (max-width: 620px) {
             body { padding: 22px 12px 36px; }
             .masthead { grid-template-columns: 1fr; gap: 18px; }
@@ -77,10 +80,25 @@
             .method-step { min-height: auto; }
             .role-option p { min-height: auto; }
             .instrument-top { align-items: flex-start; flex-direction: column; }
+            .form-actions { grid-template-columns: 1fr; }
             .panel { padding: 17px 14px; }
             .identity { grid-template-columns: 1fr; gap: 13px; }
             .scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .criterion legend { font-size: 13px; }
+        }
+        @media print {
+            body { padding: 0; background: #fff; }
+            body * { visibility: hidden !important; }
+            #print-report, #print-report * { visibility: visible !important; }
+            #print-report { display: block; position: absolute; inset: 0; width: 100%; padding: 12mm; color: #111; background: #fff; font: 11pt Arial, sans-serif; }
+            #print-report h1 { max-width: none; margin-bottom: 8mm; font-size: 20pt; }
+            #print-report h2 { margin: 7mm 0 3mm; font-size: 14pt; }
+            #print-report h3 { margin: 5mm 0 2mm; font-size: 11pt; }
+            #print-report p { margin: 2mm 0; line-height: 1.4; white-space: pre-wrap; }
+            #print-report .print-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 8mm; }
+            #print-report .print-criterion { padding: 2mm 0; border-bottom: 1px solid #ddd; break-inside: avoid; }
+            #print-report .print-section { break-inside: avoid; }
+            #print-report .print-logo { width: 55mm; height: auto; margin-bottom: 5mm; }
         }
     </style>
 </head>
@@ -143,7 +161,6 @@
                         <option value="">Seleccione una instancia</option>
                         <option value="Seguimiento intermedio">Seguimiento intermedio</option>
                         <option value="Cierre semestral">Cierre semestral</option>
-                        <option value="Cierre anual">Cierre anual</option>
                         <option value="Evaluación general">Evaluación general</option>
                     </select>
                 </div>
@@ -153,7 +170,6 @@
                         <option value="">Seleccione el periodo</option>
                         <option value="Primer semestre">Primer semestre</option>
                         <option value="Segundo semestre">Segundo semestre</option>
-                        <option value="Proceso anual (I y II)">Proceso anual (I y II)</option>
                     </select>
                 </div>
                 <div class="field">
@@ -295,9 +311,13 @@
                 </div>
             </div>
         </section>
-        <button type="submit">Enviar evaluación</button>
+        <div class="form-actions">
+            <button type="button" id="download-pdf" class="back-button">Descargar PDF</button>
+            <button type="submit">Enviar evaluación y recibir copia por correo</button>
+        </div>
     </form>
     </section>
+    <section id="print-report" aria-label="Reporte completo de evaluación para PDF"></section>
 </main>
 <script>
     const evaluationMode = document.getElementById('periodo');
@@ -349,6 +369,85 @@
         supervision_docente: 'Instrumento de supervisión docente · pondera 40% del componente tripartito.',
         autoevaluacion: 'Instrumento de autoevaluación · pondera 20% del componente tripartito.'
     };
+
+    function appendPrintText(parent, tag, text, className) {
+        const element = document.createElement(tag);
+        element.textContent = text;
+        if (className) element.className = className;
+        parent.appendChild(element);
+        return element;
+    }
+
+    function addPrintField(parent, label, value) {
+        const field = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = label + ': ';
+        field.append(strong, document.createTextNode(value || 'Sin respuesta'));
+        parent.appendChild(field);
+    }
+
+    function buildPrintReport() {
+        const report = document.getElementById('print-report');
+        report.replaceChildren();
+        const logo = document.createElement('img');
+        logo.src = 'trabajo_social_color.png';
+        logo.alt = 'Universidad de Aysén';
+        logo.className = 'print-logo';
+        report.appendChild(logo);
+        appendPrintText(report, 'h1', 'Evaluación del proceso de práctica');
+
+        const metadata = document.createElement('div');
+        metadata.className = 'print-meta';
+        addPrintField(metadata, 'Instrumento', roleIntros[roleSelect.value] || roleSelect.value);
+        addPrintField(metadata, 'Instancia', evaluationMode.value);
+        addPrintField(metadata, 'Semestre', document.getElementById('semestre').value);
+        addPrintField(metadata, 'Estudiante', studentSelect.value);
+        addPrintField(metadata, 'Supervisor(a) docente', teacherSelect.value);
+        addPrintField(metadata, 'Centro de práctica', document.getElementById('institucion').value);
+        addPrintField(metadata, 'Correo declarado', document.getElementById('correo').value);
+        if (roleSelect.value === 'supervision_terreno') {
+            addPrintField(metadata, 'Supervisor(a) en terreno', document.getElementById('supervisor').value);
+        }
+        report.appendChild(metadata);
+
+        let score = 0;
+        let evaluated = 0;
+        const criteria = document.createElement('section');
+        criteria.className = 'print-section';
+        appendPrintText(criteria, 'h2', 'Rúbrica');
+        document.querySelectorAll('.criterion').forEach((criterion, index) => {
+            const selected = criterion.querySelector('input[type="radio"]:checked');
+            const value = selected ? selected.value : 'Sin respuesta';
+            if (selected && value !== 'NO_OBSERVADO') {
+                score += Number(value);
+                evaluated += 1;
+            }
+            const entry = document.createElement('div');
+            entry.className = 'print-criterion';
+            appendPrintText(entry, 'h3', criterion.querySelector('legend').textContent.trim());
+            addPrintField(entry, 'Resultado', selected ? selected.closest('label').textContent.trim() : value);
+            criteria.appendChild(entry);
+        });
+        const maximum = evaluated * 4;
+        const achievement = evaluated ? score / maximum : 0;
+        const grade = evaluated >= 16 ? Math.max(1, Math.min(7, Math.round((4 + (achievement - 0.7) * 10) * 10) / 10)) : null;
+        addPrintField(criteria, 'Puntaje', score + ' de ' + maximum);
+        addPrintField(criteria, 'Logro', Math.round(achievement * 100) + '%');
+        addPrintField(criteria, 'Nota del instrumento', grade === null ? 'Pendiente: menos de 16 criterios observados' : grade.toFixed(1));
+        report.appendChild(criteria);
+
+        const synthesis = document.createElement('section');
+        synthesis.className = 'print-section';
+        appendPrintText(synthesis, 'h2', 'Síntesis y acuerdos');
+        for (const id of ['fortalezas', 'aspectos_mejorar', 'acuerdos', 'proyeccion_profesional', 'idea_tesis']) {
+            const field = document.getElementById(id);
+            if (field && !field.disabled && !field.closest('[hidden]')) {
+                addPrintField(synthesis, field.labels[0].textContent, field.value);
+            }
+        }
+        addPrintField(synthesis, 'Evaluador(a)', evaluatorName.value);
+        report.appendChild(synthesis);
+    }
 
     function updateOpenPrompts() {
         const rolePrompts = openPrompts[roleSelect.value];
@@ -411,6 +510,15 @@
     });
     teacherSelect.addEventListener('change', () => {
         if (roleSelect.value === 'supervision_docente') evaluatorName.value = teacherSelect.value;
+    });
+
+    document.getElementById('download-pdf').addEventListener('click', () => {
+        if (!document.getElementById('evaluation-form').reportValidity()) return;
+        buildPrintReport();
+        const previousTitle = document.title;
+        document.title = 'Evaluacion-Practica-' + (studentSelect.value || 'Estudiante').replace(/[^a-z0-9-]/gi, '-');
+        window.addEventListener('afterprint', () => { document.title = previousTitle; }, { once: true });
+        window.print();
     });
 </script>
 </body>
