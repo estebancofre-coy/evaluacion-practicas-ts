@@ -1,6 +1,6 @@
 # Evaluación del proceso de práctica
 
-Portal de evaluación tripartita semestral y anual, alineado con los cuatro Resultados de Aprendizaje Específicos de Práctica Profesional II.
+Portal de evaluación tripartita semestral, alineado con los cuatro Resultados de Aprendizaje Específicos de Práctica Profesional II.
 
 ## Componentes
 
@@ -10,6 +10,11 @@ Portal de evaluación tripartita semestral y anual, alineado con los cuatro Resu
 - `integrantes (2).xls`: fuente de estudiantes y asignaciones docentes. En la interfaz solo se muestran nombres, no alias/RUT.
 
 Las formas adaptadas son la [evaluación de supervisión docente](https://forms.gle/8YueS1JaGsUMTirw6) y la [autoevaluación](https://forms.gle/8uUPdmENSGJAShwT9). Sus criterios comunes se reformularon en una rúbrica de 20 indicadores que cubre los RAE 1–4 y competencias transversales. La autoevaluación usa primera persona; las supervisiones, tercera persona.
+
+## Materiales
+
+- [Correo de presentación para participantes](docs/correo-presentacion.md)
+- [Manual técnico-pedagógico](docs/manual-tecnico-pedagogico.md)
 
 ## Metodología
 

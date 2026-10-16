@@ -266,6 +266,8 @@ function buildEvaluationReportHtml(values, ratings, componentGrade, integration)
     '<tr><th>' + escapeHtml(question) + '</th><td>' + escapeHtml(ratings[index] === null ? 'No observado' : String(ratings[index])) + '</td></tr>'
   ).join('');
   const summaryRows = [
+    ['Fecha y hora', String(values['Marca temporal'])],
+    ['Evaluador(a)', values['Nombre completo']],
     ['Estudiante', values['Nombre estudiante supervisado(a)']],
     ['Rol evaluador', values['Rol evaluador']],
     ['Instancia', values['Periodo de evaluación']],
@@ -310,6 +312,13 @@ function escapeHtml(value) {
 
 function safeFileName(value) {
   return String(value).replace(/[^a-z0-9-]+/gi, '-').replace(/^-|-$/g, '');
+}
+
+function autorizarMailApp() {
+  const sheetName = SpreadsheetApp.openById(SPREADSHEET_ID).getName();
+  const cuota = MailApp.getRemainingDailyQuota();
+  Logger.log('Hoja autorizada: ' + sheetName + '. Destinatarios disponibles hoy: ' + cuota);
+  return cuota;
 }
 
 function findResponseSheet(spreadsheet) {
