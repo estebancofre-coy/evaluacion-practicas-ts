@@ -33,9 +33,6 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html trabajo_social_color.png _site/
-          mkdir -p _site/achetsu
-          cp achetsu/index.html achetsu/elecciones.html _site/achetsu/
-          cp -r achetsu/assets _site/achetsu/assets
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
