@@ -1,0 +1,1478 @@
+[
+  {
+    "id": "naturales-001",
+    "category": "naturales",
+    "surname": "FLORES RIVAS",
+    "givenName": "CLAUDIA",
+    "email": "Claudia.flores@uautonoma.cl",
+    "university": "UAUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-002",
+    "category": "naturales",
+    "surname": "SANDOVAL MANRÍQUEZ",
+    "givenName": "MARIO WALDO",
+    "email": "mario.sandoval@ulagos.cl",
+    "university": "UNIVERSIDAD DE LOS LAGOS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-003",
+    "category": "naturales",
+    "surname": "SOLIS ALVAREZ",
+    "givenName": "EDUARDO MAURICIO",
+    "email": "esolis@ubiobio.cl",
+    "university": "UBIO BIO",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-004",
+    "category": "naturales",
+    "surname": "VALDÉS SARMIENTO",
+    "givenName": "CARLA SOLEDAD",
+    "email": "carla.valdes@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-005",
+    "category": "naturales",
+    "surname": "VENEGAS MEZA",
+    "givenName": "ANGELA JOCELYN",
+    "email": "angelavngs@gmail.com",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-006",
+    "category": "naturales",
+    "surname": "ABARCA VALERA",
+    "givenName": "VIVIANA VALENTINA",
+    "email": "vabarca@academia.cl",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-007",
+    "category": "naturales",
+    "surname": "ACUÑA LEIVA",
+    "givenName": "SANDRA NATIVIDAD",
+    "email": "sandraacunal@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-008",
+    "category": "naturales",
+    "surname": "AGUAYO CUEVAS",
+    "givenName": "CECILIA",
+    "email": "caguayou@uc.cl",
+    "university": "PUC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-009",
+    "category": "naturales",
+    "surname": "AGUIRRE PASTÉN",
+    "givenName": "BEATRIZ",
+    "email": "bpasten@santotomas.cl",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-010",
+    "category": "naturales",
+    "surname": "ANDRADE GUZMAN",
+    "givenName": "CARLOS",
+    "email": "carlos.andrade@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-011",
+    "category": "naturales",
+    "surname": "ARANCIBIA",
+    "givenName": "ANA SUSANA",
+    "email": "susana.arancibia@ubo.cl",
+    "university": "UBO",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-012",
+    "category": "naturales",
+    "surname": "ARAVENA FERNÁNDEZ",
+    "givenName": "PAULA SOLEDAD",
+    "email": "paravena@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-013",
+    "category": "naturales",
+    "surname": "ARÉJULA GUAJARDO",
+    "givenName": "PATRICIA",
+    "email": "patricia.arejula@edu.udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-014",
+    "category": "naturales",
+    "surname": "AREVALO SALINAS",
+    "givenName": "ASTRID ALEJANDR",
+    "email": "astridarevalosalinas@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-015",
+    "category": "naturales",
+    "surname": "ARRIAGADA",
+    "givenName": "CRISTIAN",
+    "email": "chrisarriagada@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-016",
+    "category": "naturales",
+    "surname": "AZOCAR GONZÁLEZ",
+    "givenName": "RODRIGO",
+    "email": "rodrigo.azocar@uautonoma.cl",
+    "university": "UAUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-017",
+    "category": "naturales",
+    "surname": "BERSEZIO",
+    "givenName": "MARÌA EUGENIA",
+    "email": "mbersezio@gmail.com",
+    "university": "",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-018",
+    "category": "naturales",
+    "surname": "BIRKNER SCHYTHE",
+    "givenName": "SANDRA JACKELINE",
+    "email": "sandrabirkners@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-019",
+    "category": "naturales",
+    "surname": "BLANCO CASTRO",
+    "givenName": "VIVIANA",
+    "email": "viviana.blanco@uss.cl",
+    "university": "USS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-020",
+    "category": "naturales",
+    "surname": "BLEST ICETA",
+    "givenName": "ALBERTO RICARDO",
+    "email": "ablest@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-021",
+    "category": "naturales",
+    "surname": "BOLIVAR",
+    "givenName": "CATALINA",
+    "email": "catalina.bolivar@uach.cl",
+    "university": "U AUSTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-022",
+    "category": "naturales",
+    "surname": "BRITO RODRIGUEZ",
+    "givenName": "SONIA",
+    "email": "sbrito@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-023",
+    "category": "naturales",
+    "surname": "CAMPILLO",
+    "givenName": "CLAUDIA",
+    "email": "claudia.campillo@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-024",
+    "category": "naturales",
+    "surname": "CANTEROS GORMAZ",
+    "givenName": "EDUARDO GUILLERMO",
+    "email": "ecantero@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-025",
+    "category": "naturales",
+    "surname": "CASTILLO",
+    "givenName": "LORETO",
+    "email": "lorcasti@unap.cl",
+    "university": "UNAP",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-026",
+    "category": "naturales",
+    "surname": "CASTRO",
+    "givenName": "GABY",
+    "email": "gabycastrog@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-027",
+    "category": "naturales",
+    "surname": "CASTRO",
+    "givenName": "ALEJANDRO",
+    "email": "macastrog@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-028",
+    "category": "naturales",
+    "surname": "CASTRO SERRANO",
+    "givenName": "BORJA",
+    "email": "borjacastros@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-029",
+    "category": "naturales",
+    "surname": "CATALÁN CATALÁN",
+    "givenName": "MARIO ALBERTO",
+    "email": "mariocatalan.c@gmail.com",
+    "university": "UVM",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-030",
+    "category": "naturales",
+    "surname": "CHUECA FICA",
+    "givenName": "CARLA",
+    "email": "carla.fica.ch@gmail.com",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-031",
+    "category": "naturales",
+    "surname": "CIORINO NAVARRO",
+    "givenName": "ROSSANA",
+    "email": "rciorino@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-032",
+    "category": "naturales",
+    "surname": "CISTERNA",
+    "givenName": "IVÁN",
+    "email": "ivancisternasv@gmail.com",
+    "university": "UAUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-033",
+    "category": "naturales",
+    "surname": "COFRÉ MORALES",
+    "givenName": "ESTEBAN PATRICIO",
+    "email": "esteban.cofre@uaysen.cl",
+    "university": "UAYSEN",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-034",
+    "category": "naturales",
+    "surname": "COMELIN FORNÉS",
+    "givenName": "ANDREA",
+    "email": "ancomelin@gmail.com",
+    "university": "UTA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-035",
+    "category": "naturales",
+    "surname": "CONTRERAS",
+    "givenName": "MILTON",
+    "email": "mcontrerass@ucm.cl",
+    "university": "UCMAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-036",
+    "category": "naturales",
+    "surname": "CONTRERAS DUARTE",
+    "givenName": "ANA MARÍA",
+    "email": "acontrer1958@gmail.com",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-037",
+    "category": "naturales",
+    "surname": "CÓRDOVA CEBALLOS",
+    "givenName": "NATALI",
+    "email": "natalycordovaceballos@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-038",
+    "category": "naturales",
+    "surname": "CORREA BUHLER",
+    "givenName": "ROSARIO",
+    "email": "rosariocorreab@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-039",
+    "category": "naturales",
+    "surname": "CORTES MANCILLA",
+    "givenName": "RODRIGO",
+    "email": "rocortesm@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-040",
+    "category": "naturales",
+    "surname": "CORTEZ-MONROY MUÑOZ",
+    "givenName": "FABIOLA DE LOS ÁNGELES",
+    "email": "fcortezm@uc.cl",
+    "university": "PUC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-041",
+    "category": "naturales",
+    "surname": "COVARRUBIAS",
+    "givenName": "HUGO",
+    "email": "hcovarrubiasv@ucentral.cl",
+    "university": "U CENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-042",
+    "category": "naturales",
+    "surname": "CRIADO BESOAIN",
+    "givenName": "RODRIGO",
+    "email": "rodrigocriadob@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-043",
+    "category": "naturales",
+    "surname": "CUEVAS SOTO",
+    "givenName": "MIGUEL",
+    "email": "luis.cuevas@uss.cl",
+    "university": "USS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-044",
+    "category": "naturales",
+    "surname": "DIAZ LETELIER",
+    "givenName": "MARIA LUISA",
+    "email": "mldiaz@ucsh.cl",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-045",
+    "category": "naturales",
+    "surname": "DONOSO DONOSO",
+    "givenName": "VIVIANA MARINA",
+    "email": "vdonoso.d@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-046",
+    "category": "naturales",
+    "surname": "DONOSO ESTAY",
+    "givenName": "LUIS ALBERTO",
+    "email": "luisalbertodonoso@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-047",
+    "category": "naturales",
+    "surname": "DUARTE HIDALGO",
+    "givenName": "CORY",
+    "email": "cory.duarte@uda.cl",
+    "university": "UDA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-048",
+    "category": "naturales",
+    "surname": "DUBOY",
+    "givenName": "MITZI",
+    "email": "mitziduboy@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-049",
+    "category": "naturales",
+    "surname": "ERICES RIQUELME",
+    "givenName": "SAMUEL",
+    "email": "samuelerices@gmail.com",
+    "university": "U CENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-050",
+    "category": "naturales",
+    "surname": "ESPINOZA CASANOVA",
+    "givenName": "JENNY",
+    "email": "as.jennyespinozacasanova@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-051",
+    "category": "naturales",
+    "surname": "FARFAN SANHUEZA",
+    "givenName": "COSME",
+    "email": "cosmefarfansa@santotomas.cl",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-052",
+    "category": "naturales",
+    "surname": "FARIAS",
+    "givenName": "FRANCISCO",
+    "email": "ffarias@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-053",
+    "category": "naturales",
+    "surname": "Fierro Retamal",
+    "givenName": "CARLA",
+    "email": "Carla.fierro@uach.cl",
+    "university": "UACH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-054",
+    "category": "naturales",
+    "surname": "FLORES",
+    "givenName": "VIOLETA",
+    "email": "Violeta.flores@uv.cl",
+    "university": "UV",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-055",
+    "category": "naturales",
+    "surname": "FRANCE",
+    "givenName": "ANGÉLICA",
+    "email": "angelica.france@uacademia.cl",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-056",
+    "category": "naturales",
+    "surname": "GALAZ VALDERRAMA",
+    "givenName": "CATERINE",
+    "email": "cgalazvalderrama@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-057",
+    "category": "naturales",
+    "surname": "GARCÉS ESTRADA",
+    "givenName": "CAROLINA DESSIREE",
+    "email": "carogarcesestrada@gmail.com",
+    "university": "UTA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-058",
+    "category": "naturales",
+    "surname": "GARCIA BENITEZ",
+    "givenName": "KATIA",
+    "email": "kgarcia@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-059",
+    "category": "naturales",
+    "surname": "GARRIDO DÍAZ",
+    "givenName": "MAGALY",
+    "email": "magaly.garrido.14@gmai.com",
+    "university": "U CENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-060",
+    "category": "naturales",
+    "surname": "GATICA",
+    "givenName": "KARINA",
+    "email": "karina.gatica@uautonoma.Cl",
+    "university": "U AUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-061",
+    "category": "naturales",
+    "surname": "GODOY ORMAZABAL",
+    "givenName": "WENDY",
+    "email": "godoyormw@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-062",
+    "category": "naturales",
+    "surname": "GONZALEZ CELIS",
+    "givenName": "ALEJANDRA SOFÍA",
+    "email": "asgonzac@gmail.com",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-063",
+    "category": "naturales",
+    "surname": "GONZÁLEZ FLORES",
+    "givenName": "ANA MARÍA",
+    "email": "agonzalez@ucsh.cl",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-064",
+    "category": "naturales",
+    "surname": "GONZALEZ MOYA",
+    "givenName": "MARICELA",
+    "email": "magonzalezm@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-065",
+    "category": "naturales",
+    "surname": "GONZÁLEZ MOYA",
+    "givenName": "MARICELA",
+    "email": "mgonzamo@uc.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-066",
+    "category": "naturales",
+    "surname": "GRAU",
+    "givenName": "OLAYA",
+    "email": "mograu@uc.cl",
+    "university": "PUC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-067",
+    "category": "naturales",
+    "surname": "GUAJARDO ESCOBAR",
+    "givenName": "JUDITH",
+    "email": "Judith.guajardo@ucentral.cl",
+    "university": "UCENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-068",
+    "category": "naturales",
+    "surname": "GUERRA",
+    "givenName": "LILIANA",
+    "email": "ldguerra@uc.cl",
+    "university": "UC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-069",
+    "category": "naturales",
+    "surname": "GUTIERREZ",
+    "givenName": "LUIS",
+    "email": "elcorreodeluisgutierrez@gmail.com",
+    "university": "U.AUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-070",
+    "category": "naturales",
+    "surname": "HENRÍQUEZ CAMPOS",
+    "givenName": "KATHERINE",
+    "email": "kattyhc@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-071",
+    "category": "naturales",
+    "surname": "HERNANDEZ MARY",
+    "givenName": "NATALIA",
+    "email": "nhernand@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-072",
+    "category": "naturales",
+    "surname": "Hernández Segura",
+    "givenName": "VALENTINA ELISA",
+    "email": "vhernandez@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-073",
+    "category": "naturales",
+    "surname": "HOZVEN VALENZUELA",
+    "givenName": "RAÚL",
+    "email": "raul.hozven.v@hotmail.com",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-074",
+    "category": "naturales",
+    "surname": "INATZU",
+    "givenName": "RODRIGO",
+    "email": "rodrigo.inatzu@uautonoma.cl",
+    "university": "UAUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-075",
+    "category": "naturales",
+    "surname": "INFANTE ARAVENA",
+    "givenName": "FRANCISCO",
+    "email": "franciscoia91@gmail.com",
+    "university": "USS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-076",
+    "category": "naturales",
+    "surname": "INOSTROZA TORREBLANCA",
+    "givenName": "MARIA CECILIA",
+    "email": "mariaceciliatorreblanca@gmail.com",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-077",
+    "category": "naturales",
+    "surname": "JEREZ",
+    "givenName": "BARBARA",
+    "email": "barbarajerezh@gmail.com",
+    "university": "UV",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-078",
+    "category": "naturales",
+    "surname": "JOFRE ALFARO",
+    "givenName": "JORGE ARIEL",
+    "email": "jjofrealfaro@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-079",
+    "category": "naturales",
+    "surname": "LAMILLA",
+    "givenName": "CARMEN",
+    "email": "carmen.lamilla@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-080",
+    "category": "naturales",
+    "surname": "LARA",
+    "givenName": "KARLA",
+    "email": "Karla.lara@ucentral.cl",
+    "university": "UCENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-081",
+    "category": "naturales",
+    "surname": "LEIVA SANDOVAL",
+    "givenName": "PAULA JUDITH",
+    "email": "PLEIVA@UDLA.CL",
+    "university": "UDLA",
+    "eligible2026": true
+  },
+  {
+    "id": "naturales-082",
+    "category": "naturales",
+    "surname": "LIZANA IBACETA",
+    "givenName": "RUTH",
+    "email": "ruthlizana61@gmail.com",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-083",
+    "category": "naturales",
+    "surname": "TORRES FUENTES",
+    "givenName": "MARCELO",
+    "email": "martrabsocial@gmail.com",
+    "university": "UBO",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-084",
+    "category": "naturales",
+    "surname": "MARIN BENITO",
+    "givenName": "MACARENA FRANCISCA",
+    "email": "mmarin@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-085",
+    "category": "naturales",
+    "surname": "MARÍN OLGUÍN",
+    "givenName": "MARÍA PILAR",
+    "email": "maria.pilar23@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-086",
+    "category": "naturales",
+    "surname": "MARIN ORELLANA",
+    "givenName": "GUSTAVO",
+    "email": "GMARINORELLANA@GMAIL.COM",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-087",
+    "category": "naturales",
+    "surname": "MATUS",
+    "givenName": "TERESA",
+    "email": "teresamatus@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-088",
+    "category": "naturales",
+    "surname": "MIRANDA PÉREZ",
+    "givenName": "FABIOLA MARISOL",
+    "email": "fmirandap@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-089",
+    "category": "naturales",
+    "surname": "MOLINA",
+    "givenName": "ANA MARÌA",
+    "email": "ana.molina@uacademia.cl",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-090",
+    "category": "naturales",
+    "surname": "MORA",
+    "givenName": "ALEJANDRA",
+    "email": "alejandra.mora@uda.cl",
+    "university": "UDA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-091",
+    "category": "naturales",
+    "surname": "MORA TAPIA",
+    "givenName": "NATALIA",
+    "email": "nmorat@gmail.com",
+    "university": "U BÍO BÍO",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-092",
+    "category": "naturales",
+    "surname": "MORAGA",
+    "givenName": "CRISTINA ISABEL",
+    "email": "titi.moraga@gmail.com",
+    "university": "UTEM",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-093",
+    "category": "naturales",
+    "surname": "MUÑOZ",
+    "givenName": "LORENA PAOLA",
+    "email": "lmunoz@academia.cl",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-094",
+    "category": "naturales",
+    "surname": "MUÑOZ ARCE",
+    "givenName": "GIANINNA INÉS",
+    "email": "gianinna.munoz@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-095",
+    "category": "naturales",
+    "surname": "MUÑOZ JAIME",
+    "givenName": "MARIA ISABEL",
+    "email": "mmunozj@santotomas.cl",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-096",
+    "category": "naturales",
+    "surname": "NAVARRETE AVARIA",
+    "givenName": "OSCAR ANDRÉS",
+    "email": "onavarre@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-097",
+    "category": "naturales",
+    "surname": "OLAVE",
+    "givenName": "SANDRA",
+    "email": "pame.olave@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-098",
+    "category": "naturales",
+    "surname": "OLIVARES",
+    "givenName": "KAREN",
+    "email": "kolivares@ucm.cl",
+    "university": "UCMAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-099",
+    "category": "naturales",
+    "surname": "ONETO PIAZZE",
+    "givenName": "LEONARDO LORENZO",
+    "email": "leonardo.oneto@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-100",
+    "category": "naturales",
+    "surname": "ORELLANA BRAVO",
+    "givenName": "VICTOR",
+    "email": "victor.orellana@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-101",
+    "category": "naturales",
+    "surname": "ORREGO",
+    "givenName": "JÉSSICA",
+    "email": "jorrego@academia.cl",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-102",
+    "category": "naturales",
+    "surname": "PALMA CONTRERAS",
+    "givenName": "ANDREA",
+    "email": "apalma@ubiobio.cl",
+    "university": "UBÍO BÍO",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-103",
+    "category": "naturales",
+    "surname": "PEREZ ROA",
+    "givenName": "LORENA ANDREA",
+    "email": "loperez@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-104",
+    "category": "naturales",
+    "surname": "PIÑA",
+    "givenName": "MARCELO PIÑA",
+    "email": "mpina@ucm.cl",
+    "university": "UCMAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-105",
+    "category": "naturales",
+    "surname": "QUEZADA",
+    "givenName": "CAROLINA",
+    "email": "carolinaqf80@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-106",
+    "category": "naturales",
+    "surname": "RAMÍREZ",
+    "givenName": "NÈLIDA",
+    "email": "nramirez@ucm.cl",
+    "university": "UCMAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-107",
+    "category": "naturales",
+    "surname": "RAMIREZ VARELA",
+    "givenName": "FRANCISCO",
+    "email": "framirezv@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-108",
+    "category": "naturales",
+    "surname": "REININGER POLLAK",
+    "givenName": "TALY",
+    "email": "Tal.reininger@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-109",
+    "category": "naturales",
+    "surname": "RETAMAL MUÑOZ",
+    "givenName": "ALEX JOSÈ",
+    "email": "alex.retamal@uautonoma.cl",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-110",
+    "category": "naturales",
+    "surname": "RETAMAL SAAVEDRA",
+    "givenName": "MARIO",
+    "email": "mfretamals@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-111",
+    "category": "naturales",
+    "surname": "RIQUELME",
+    "givenName": "CLAUDIO",
+    "email": "Claudio.riquelme@uss.cl",
+    "university": "USS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-112",
+    "category": "naturales",
+    "surname": "RIVAS VALDES",
+    "givenName": "CRUZ ELENA",
+    "email": "cruz.rivas@cloud.uautonoma.cl\"",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-113",
+    "category": "naturales",
+    "surname": "RODRÍGUEZ LLONA",
+    "givenName": "MARÍA ANGÉLICA",
+    "email": "quecarodriguez@hotmail.com",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-114",
+    "category": "naturales",
+    "surname": "RODRIGUEZ VENEGAS",
+    "givenName": "VIVIANA",
+    "email": "viviana.rodriguez@uda.cl",
+    "university": "UDA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-115",
+    "category": "naturales",
+    "surname": "ROJAS",
+    "givenName": "SANDRA",
+    "email": "sandra.rojas.caceres@edu.udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-116",
+    "category": "naturales",
+    "surname": "ROJAS LASCH",
+    "givenName": "CAROLINA",
+    "email": "crojasl@ucm.cl",
+    "university": "UCMAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-117",
+    "category": "naturales",
+    "surname": "ROJAS MARÍN",
+    "givenName": "PAOLA ELIANA",
+    "email": "rojassocialpericial@gmail.com",
+    "university": "UAHC",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-118",
+    "category": "naturales",
+    "surname": "ROJAS PÉREZ",
+    "givenName": "MACARENA",
+    "email": "macarenarojas@santotomas.cl",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-119",
+    "category": "naturales",
+    "surname": "ROMAN MONTESINOS",
+    "givenName": "CARMEN",
+    "email": "cromanmontesinos@gmail.com",
+    "university": "UCSH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-120",
+    "category": "naturales",
+    "surname": "RUBILAR DONOSO",
+    "givenName": "MARIA GABRIELA",
+    "email": "grubilar@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-121",
+    "category": "naturales",
+    "surname": "RUBIO AGUILAR",
+    "givenName": "VERÓNICA FRANCISCA",
+    "email": "vrubioa@santotomas.cl",
+    "university": "UST",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-122",
+    "category": "naturales",
+    "surname": "SAAVEDRA VASQUEZ",
+    "givenName": "JUAN",
+    "email": "jsaavedr@ubiobio.cl",
+    "university": "UBB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-123",
+    "category": "naturales",
+    "surname": "SAID",
+    "givenName": "NICOLÁS",
+    "email": "nicolas.said.g@gmail.com",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-124",
+    "category": "naturales",
+    "surname": "SANCHEZ ALIAGA",
+    "givenName": "MAURICIO ANDRÉ",
+    "email": "mauricio.sanchez@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-125",
+    "category": "naturales",
+    "surname": "SANDOVAL BARRIENTOS",
+    "givenName": "RODOLFO ALEJANDRO",
+    "email": "rodolfosandovalb@gmail.com",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-126",
+    "category": "naturales",
+    "surname": "SANHUEZA",
+    "givenName": "ADRIANA",
+    "email": "adrianasanhuezacisterna@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-127",
+    "category": "naturales",
+    "surname": "SANHUEZA",
+    "givenName": "GUILLERMO ENRIQUE",
+    "email": "guillermo.sanhueza@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-128",
+    "category": "naturales",
+    "surname": "SANHUEZA CISTERNA",
+    "givenName": "ADRIANA",
+    "email": "adrianasanhuezacisterna@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-129",
+    "category": "naturales",
+    "surname": "SARAVIA CORTÉS",
+    "givenName": "FELIPE ANDRÉS",
+    "email": "fsaravia@ubiobio.cl",
+    "university": "UBB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-130",
+    "category": "naturales",
+    "surname": "SEPÙLVEDA GÀLVEZ",
+    "givenName": "BERTA ALEJANDRA",
+    "email": "sepulvedagalvezberta@gmail.com",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-131",
+    "category": "naturales",
+    "surname": "SEPÚLVEDA SARAVIA",
+    "givenName": "ROSA",
+    "email": "rosa.sepulveda@uss.cl",
+    "university": "USS",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-132",
+    "category": "naturales",
+    "surname": "SILVA ESCOBAR",
+    "givenName": "MACARENA",
+    "email": "macarena.silva@ucentral.cl",
+    "university": "U CENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-133",
+    "category": "naturales",
+    "surname": "TOLEDO",
+    "givenName": "YERKO NICOLÁS",
+    "email": "nicolastoledov77@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-134",
+    "category": "naturales",
+    "surname": "TRONCOSO DEL RIO",
+    "givenName": "MAGDALENA TRONCOSO DEL RIO",
+    "email": "mtroncoso@uahurtado.cl",
+    "university": "UAH",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-135",
+    "category": "naturales",
+    "surname": "TRONCOSO PEREZ",
+    "givenName": "LELYA",
+    "email": "lelyatroncoso@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-136",
+    "category": "naturales",
+    "surname": "URQUIETA",
+    "givenName": "MARÍA ANTONIETA",
+    "email": "antonieta.urquieta@uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-137",
+    "category": "naturales",
+    "surname": "VALENZUELA MESINA",
+    "givenName": "VERONICA",
+    "email": "vvalenzuela@corp.umc.cl",
+    "university": "U MIGUEL DE CERVANTES",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-138",
+    "category": "naturales",
+    "surname": "VARGAS NAVARRO",
+    "givenName": "ELIZABETH",
+    "email": "elizabeth.vargas@uv.cl",
+    "university": "UV",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-139",
+    "category": "naturales",
+    "surname": "VARGAS SÁNCHEZ",
+    "givenName": "BEATRIZ",
+    "email": "bvargas@udla.cl",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-140",
+    "category": "naturales",
+    "surname": "VÁSQUEZ GONZÁLEZ",
+    "givenName": "VIVIANA",
+    "email": "viviana.vasquezg@gmail.com",
+    "university": "UDLA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-141",
+    "category": "naturales",
+    "surname": "VÁSQUEZ SÁNCHEZ",
+    "givenName": "XIMENA BEATRIZ",
+    "email": "xvasquez.sanchez@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-142",
+    "category": "naturales",
+    "surname": "VELIZ BUSTAMANTE",
+    "givenName": "CAMILA",
+    "email": "camila.veliz@gmail.com",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-143",
+    "category": "naturales",
+    "surname": "VERGARA",
+    "givenName": "MÓNICA",
+    "email": "monica.vergara@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-144",
+    "category": "naturales",
+    "surname": "VIDAL",
+    "givenName": "PAULA VIDAL",
+    "email": "pvidal@u.uchile.cl",
+    "university": "UCHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-145",
+    "category": "naturales",
+    "surname": "VILLAGRÁN CAAMAÑO",
+    "givenName": "GUILLERMO IVÁN",
+    "email": "gvillagran@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-146",
+    "category": "naturales",
+    "surname": "VILLARROEL VALDES",
+    "givenName": "ROSA ESTELA",
+    "email": "rvillarroel@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-147",
+    "category": "naturales",
+    "surname": "YÁÑEZ PEREIRA",
+    "givenName": "VÌCTOR",
+    "email": "vyanezp@uautonoma.cl",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-148",
+    "category": "naturales",
+    "surname": "ZULETA",
+    "givenName": "ROXANA",
+    "email": "roxana.zuleta@unab.cl",
+    "university": "UNAB",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-149",
+    "category": "naturales",
+    "surname": "ZURITA CASTILLO",
+    "givenName": "RONALD GUILLERMO",
+    "email": "rzuritacastillo@gmail.com",
+    "university": "U AUTÓNOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "naturales-150",
+    "category": "naturales",
+    "surname": "ORTEGA OBREQUE",
+    "givenName": "DIEGO",
+    "email": "diego.ortega@uacademia.cl",
+    "university": "UNIVERSIDAD ACADEMIA HUMANISMO CRISTIANO",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-001",
+    "category": "institucionales",
+    "surname": "ORTEGA OBREQUE",
+    "givenName": "DIEGO",
+    "email": "diego.ortega@uacademia.cl",
+    "university": "UNIVERSIDAD ACADEMIA HUMANISMO CRISTIANO",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-002",
+    "category": "institucionales",
+    "surname": "BRITO RODRÍGUEZ",
+    "givenName": "SONIA",
+    "email": "sbrito@uahurtado.cl",
+    "university": "UNIVERSIDAD ALBERTO HURTADO",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-003",
+    "category": "institucionales",
+    "surname": "LEIVA SANDOVAL",
+    "givenName": "PAULA JUDITH",
+    "email": "pleiva@udla.cl",
+    "university": "UNIVERSIDAD DE LAS AMERICAS",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-004",
+    "category": "institucionales",
+    "surname": "CAMPILLO",
+    "givenName": "CLAUDIA",
+    "email": "claudia.campillo@uchile.cl",
+    "university": "UNIVERSIDAD DE CHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-005",
+    "category": "institucionales",
+    "surname": "VALENZUELA MESINA",
+    "givenName": "VERONICA",
+    "email": "vvalenzuela@corp.umc.cl",
+    "university": "UNIVERSIDAD MIGUEL DE CERVANTES",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-006",
+    "category": "institucionales",
+    "surname": "VILLARROEL VALDES",
+    "givenName": "ROSA ESTELA",
+    "email": "rvillarroel@unab.cl",
+    "university": "UNIVERSIDAD ANDRES BELLO",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-007",
+    "category": "institucionales",
+    "surname": "GUAJARDO ESCOBAR",
+    "givenName": "Judith",
+    "email": "Judith.guajardo@ucentral.cl",
+    "university": "UNIVERSIDAD CENTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-008",
+    "category": "institucionales",
+    "surname": "RUBIO AGUILAR",
+    "givenName": "Verónica Francisca",
+    "email": "vrubioa@santotomas.cl",
+    "university": "UNIVERSIDAD SANTO TOMAS",
+    "eligible2026": true
+  },
+  {
+    "id": "institucionales-009",
+    "category": "institucionales",
+    "surname": "GRAU",
+    "givenName": "OLAYA",
+    "email": "mograu@uc.cl",
+    "university": "PONTIFICIA UNIVERSIDAD CATOLICA DE CHILE",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-010",
+    "category": "institucionales",
+    "surname": "GATICA",
+    "givenName": "KARINA",
+    "email": "karina.gatica@uautonoma.Cl",
+    "university": "UNIVERSIDAD AUTONOMA",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-011",
+    "category": "institucionales",
+    "surname": "OLIVARES",
+    "givenName": "KAREN",
+    "email": "kolivares@ucm.cl",
+    "university": "UNIVERSIDAD CATOLICA DEL MAULE",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-012",
+    "category": "institucionales",
+    "surname": "BOLIVAR",
+    "givenName": "CATALINA",
+    "email": "catalina.bolivar@uach.cl",
+    "university": "UNIVERSIDAD AUSTRAL  AUSTRAL",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-013",
+    "category": "institucionales",
+    "surname": "GONZALEZ",
+    "givenName": "ANA",
+    "email": "agonzalez@ucsh",
+    "university": "UNIVERSIDAD CATOLICA SILVA HENRIQUEZ",
+    "eligible2026": false
+  },
+  {
+    "id": "institucionales-014",
+    "category": "institucionales",
+    "surname": "ARANCIBIA",
+    "givenName": "SUSANA",
+    "email": "susana.arancibia@ubo.cl",
+    "university": "UNIVERSIDAD BERNARDO O'HIGGINS",
+    "eligible2026": false
+  }
+]

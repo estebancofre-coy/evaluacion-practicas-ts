@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3e8">
+  <meta name="description" content="Información institucional, elecciones, membresía y documentos de ACHETSU, la Asociación Chilena de Enseñanza del Trabajo Social Universitario.">
+  <title>ACHETSU — Enseñanza del Trabajo Social Universitario</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3e8;
+      --paper-deep: #eee5d3;
+      --ink: #302d2b;
+      --muted: #716961;
+      --rust: #b94f2d;
+      --gold: #d7a93f;
+      --teal: #1c625e;
+      --teal-dark: #174e4b;
+      --line: #dfd4bf;
+      --white: #fffdf8;
+      --page: 1160px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 6rem;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.65 "Segoe UI", Arial, sans-serif;
+    }
+
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid var(--rust);
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: absolute;
+      z-index: 20;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.7rem 1rem;
+      transform: translateY(-160%);
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: sticky;
+      z-index: 10;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgb(247 243 232 / 96%);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-inner {
+      display: flex;
+      width: min(100% - 3rem, var(--page));
+      min-height: 84px;
+      margin: 0 auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 0.8rem;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 58px;
+      height: 48px;
+      object-fit: cover;
+      object-position: center;
+      mix-blend-mode: multiply;
+    }
+
+    .brand-name {
+      display: grid;
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      line-height: 1.15;
+    }
+
+    .brand-name small {
+      margin-top: 0.25rem;
+      color: var(--muted);
+      font-size: 0.59rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.7rem, 1.5vw, 1.35rem);
+    }
+
+    .site-nav a {
+      padding: 0.55rem 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .site-nav a:hover,
+    .site-nav a[aria-current="location"] { color: var(--rust); }
+
+    .site-nav .nav-join {
+      padding: 0.62rem 0.85rem;
+      background: var(--teal);
+      color: var(--white);
+    }
+
+    .site-nav .nav-join:hover { background: var(--teal-dark); color: var(--white); }
+
+    .site-nav .nav-directory { color: var(--teal-dark); }
+
+    main { overflow: clip; }
+
+    .wrap {
+      width: min(100% - 3rem, var(--page));
+      margin-inline: auto;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      min-height: 650px;
+      padding-block: clamp(5rem, 10vw, 8.5rem);
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+      align-items: center;
+      gap: clamp(2rem, 6vw, 6rem);
+    }
+
+    .hero::before,
+    .hero::after {
+      position: absolute;
+      z-index: -1;
+      border: 1px solid var(--gold);
+      content: "";
+      pointer-events: none;
+    }
+
+    .hero::before { inset: 1.2rem 0.4rem; }
+    .hero::after { inset: 1.8rem 1rem; border-color: rgb(185 79 45 / 24%); }
+
+    .hero-copy { max-width: 720px; padding: 2rem 0 2rem 2rem; }
+
+    .hero h1 {
+      max-width: 11ch;
+      margin: 0;
+      font: 400 clamp(3.35rem, 7.6vw, 6.7rem)/0.99 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+
+    .hero h1 span { color: var(--rust); }
+
+    .hero-lead {
+      max-width: 61ch;
+      margin: 1.8rem 0 0;
+      color: #544d47;
+      font-size: clamp(1.05rem, 1.5vw, 1.22rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      padding: 0.78rem 1.1rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      background: var(--teal);
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.055em;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .button:hover { transform: translateY(-2px); background: var(--teal-dark); }
+
+    .button-outline {
+      border-color: var(--teal);
+      background: transparent;
+      color: var(--teal-dark);
+    }
+
+    .button-outline:hover { background: var(--teal); color: var(--white); }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      width: min(100%, 350px);
+      aspect-ratio: 1;
+      margin-inline: auto;
+      place-items: center;
+    }
+
+    .orbit {
+      position: absolute;
+      inset: 8%;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+    }
+
+    .orbit:nth-child(2) { inset: 18%; border: 1px dashed #8db4ae; }
+    .orbit:nth-child(3) { inset: 29%; border-color: rgb(185 79 45 / 38%); }
+
+    .orbit::before {
+      position: absolute;
+      top: 16%;
+      right: 12%;
+      width: 11px;
+      height: 11px;
+      transform: rotate(45deg);
+      background: var(--teal);
+      content: "";
+    }
+
+    .hero-mark {
+      display: grid;
+      width: 48%;
+      height: 48%;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--paper);
+      place-items: center;
+    }
+
+    .hero-mark img {
+      width: 77%;
+      height: 68%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .orbit-label {
+      position: absolute;
+      padding: 0.25rem 0.5rem;
+      background: var(--paper);
+      color: var(--teal-dark);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+    }
+
+    .orbit-label.top { top: 2%; left: 50%; transform: translateX(-50%); }
+    .orbit-label.right { right: -9%; top: 50%; transform: translateY(-50%); }
+    .orbit-label.bottom { bottom: 1%; left: 50%; transform: translateX(-50%); }
+
+    .section {
+      padding-block: clamp(5rem, 9vw, 8rem);
+      border-top: 1px solid var(--line);
+    }
+
+    .section-inner { max-width: var(--page); margin-inline: auto; }
+
+    .section-heading {
+      display: grid;
+      margin-bottom: 3rem;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.5fr);
+      align-items: end;
+      gap: 2rem;
+    }
+
+    .section h2 {
+      max-width: 15ch;
+      margin: 0;
+      font: 400 clamp(2.55rem, 5vw, 4.7rem)/1.02 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.035em;
+      text-wrap: balance;
+    }
+
+    .section-heading p {
+      max-width: 40ch;
+      margin: 0 0 0.25rem;
+      color: var(--muted);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(250px, 0.7fr);
+      gap: clamp(2.5rem, 8vw, 8rem);
+    }
+
+    .about-copy { max-width: 70ch; }
+    .about-copy p { margin: 0 0 1.25rem; }
+
+    .fact-list {
+      margin: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .fact-list div {
+      display: grid;
+      padding-block: 0.9rem;
+      border-bottom: 1px solid var(--line);
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 1rem;
+    }
+
+    .fact-list dt { color: var(--muted); font-size: 0.85rem; }
+    .fact-list dd { margin: 0; font-size: 0.87rem; font-weight: 700; }
+
+    .pending { color: var(--rust); font-weight: 700; }
+    .elections { background: var(--paper-deep); }
+
+    .source-note {
+      display: grid;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid #dcbca5;
+      background: #f7e9dc;
+      grid-template-columns: 1.8rem minmax(0, 1fr);
+      gap: 0.85rem;
+      color: #633d2c;
+    }
+
+    .source-note strong { color: var(--rust); }
+    .source-note p { margin: 0; }
+
+    .source-note .note-symbol {
+      display: grid;
+      width: 1.55rem;
+      height: 1.55rem;
+      border: 1px solid var(--rust);
+      border-radius: 50%;
+      place-items: center;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+    }
+
+    .election-columns {
+      display: grid;
+      margin-top: 3rem;
+      grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+      gap: clamp(2rem, 6vw, 5rem);
+    }
+
+    .subheading {
+      margin: 0 0 1rem;
+      font: 400 1.85rem/1.15 Georgia, "Times New Roman", serif;
+    }
+
+    .election-aside {
+      padding-top: 0.2rem;
+    }
+
+    .election-aside p { margin: 0 0 1.4rem; color: #544d47; }
+
+    .membership-top {
+      display: grid;
+      margin-bottom: 3.2rem;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .membership-type {
+      padding-top: 1.25rem;
+      border-top: 2px solid var(--rust);
+    }
+
+    .membership-type:nth-child(2) { border-color: var(--teal); }
+    .membership-type h3 { margin: 0 0 0.55rem; font: 400 1.7rem/1.15 Georgia, "Times New Roman", serif; }
+    .membership-type p { max-width: 47ch; margin: 0; color: var(--muted); }
+
+    .membership-detail {
+      display: grid;
+      padding-block: 1.5rem;
+      border-top: 1px solid var(--line);
+      grid-template-columns: minmax(170px, 0.45fr) minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .membership-detail h3 { margin: 0; font: 400 1.4rem/1.2 Georgia, "Times New Roman", serif; }
+    .membership-detail p { max-width: 70ch; margin: 0; color: #544d47; }
+
+    .regularize {
+      display: flex;
+      min-height: 90px;
+      margin-top: 2.5rem;
+      padding: 1.2rem 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      background: var(--teal-dark);
+      color: var(--white);
+      text-decoration: none;
+      transition: background-color 180ms ease;
+    }
+
+    .regularize:hover { background: #123f3d; }
+
+    .regularize strong {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      letter-spacing: 0.065em;
+    }
+
+    .regularize span { color: #d9e8e4; font-size: 0.86rem; }
+    .regularize .arrow { flex: 0 0 auto; font-size: 1.6rem; }
+
+    .documents { background: var(--teal-dark); color: var(--white); }
+    .documents .section-heading p { color: #d1e1dc; }
+
+    .document-list { border-top: 1px solid rgb(255 255 255 / 28%); }
+
+    .document-row {
+      display: grid;
+      padding: 1.1rem 0.25rem;
+      border-bottom: 1px solid rgb(255 255 255 / 28%);
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .document-row h3 { margin: 0; font: 400 1.35rem/1.2 Georgia, "Times New Roman", serif; }
+    .document-row p { margin: 0.25rem 0 0; color: #d1e1dc; font-size: 0.83rem; }
+
+    .document-link {
+      color: #f2cf70;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+      white-space: nowrap;
+    }
+
+    .document-pending { color: #f2cf70; font-size: 0.78rem; font-weight: 700; }
+
+    .join-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1.1fr);
+      gap: clamp(2.5rem, 8vw, 7rem);
+    }
+
+    .requirements {
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+      counter-reset: requirements;
+    }
+
+    .requirements li {
+      display: grid;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--line);
+      grid-template-columns: 2rem minmax(0, 1fr);
+      gap: 0.8rem;
+      counter-increment: requirements;
+    }
+
+    .requirements li::before {
+      color: var(--rust);
+      content: counter(requirements, decimal-leading-zero);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+    }
+
+    .form-shell {
+      padding: clamp(1.35rem, 3vw, 2rem);
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .form-shell h3 { margin: 0 0 0.5rem; font: 400 1.8rem/1.15 Georgia, "Times New Roman", serif; }
+    .form-shell > p { margin: 0 0 1.5rem; color: var(--muted); font-size: 0.9rem; }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .directory-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+
+    .directory-frame {
+      display: block;
+      width: 100%;
+      height: 710px;
+      border: 0;
+      background: var(--paper);
+    }
+
+    .directory-frame[hidden] { display: none; }
+    .directory-fallback[hidden] { display: none; }
+
+    .member-viewer {
+      min-width: 0;
+      padding-top: 1.1rem;
+      border-top: 2px solid var(--rust);
+    }
+
+    .member-viewer:nth-child(2) { border-color: var(--teal); }
+    .member-viewer h3 { margin: 0; font: 400 1.7rem/1.2 Georgia, "Times New Roman", serif; }
+    .member-viewer > p { max-width: 50ch; margin: 0.65rem 0 1.2rem; color: var(--muted); font-size: 0.88rem; }
+
+    .member-search-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #544d47;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .member-search {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.7rem 0.8rem;
+      border: 1px solid #c9c0b2;
+      border-radius: 0;
+      background: var(--white);
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .member-suggestions {
+      position: relative;
+      z-index: 2;
+      max-height: 18rem;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      border-top: 0;
+      background: var(--white);
+    }
+
+    .member-suggestions[hidden] { display: none; }
+
+    .suggestion-option {
+      display: block;
+      width: 100%;
+      padding: 0.7rem 0.8rem;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .suggestion-option:hover,
+    .suggestion-option:focus-visible { background: var(--paper-deep); }
+    .suggestion-option strong { display: block; font-size: 0.88rem; }
+    .suggestion-option span { color: var(--muted); font-size: 0.78rem; }
+
+    .member-search-status {
+      min-height: 1.6em;
+      margin: 0.55rem 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .member-search-status[data-state="error"] { color: var(--rust); font-weight: 700; }
+
+    .member-result {
+      margin-top: 0.8rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .member-result[hidden] { display: none; }
+    .member-result h4 { margin: 0 0 0.25rem; font-size: 1rem; }
+    .member-result-university { margin: 0 0 0.8rem; color: var(--muted); font-size: 0.84rem; }
+
+    .member-result dl {
+      display: grid;
+      margin: 0;
+      border-top: 1px solid var(--line);
+      grid-template-columns: 6rem minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .member-result dt,
+    .member-result dd { margin: 0; padding: 0.5rem 0; border-bottom: 1px solid var(--line); font-size: 0.82rem; overflow-wrap: anywhere; }
+    .member-result dt { color: var(--muted); }
+    .member-result dd { font-weight: 700; }
+
+    .member-status {
+      display: block;
+      margin-top: 0.9rem;
+      padding: 0.65rem 0.75rem;
+      background: #f7e9dc;
+      color: #783f28;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .member-status::before { margin-right: 0.4rem; content: "!"; }
+    .member-status.is-eligible { background: #e1eee8; color: #174e4b; }
+    .member-status.is-eligible::before { content: "✓"; }
+
+    .member-result-note,
+    .directory-notice { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.77rem; }
+
+    .directory-notice {
+      margin-top: 2rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--line);
+      background: var(--paper-deep);
+    }
+
+    .template-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem 1rem;
+      margin-top: 1rem;
+    }
+
+    .template-links a {
+      color: var(--teal-dark);
+      font-size: 0.83rem;
+      font-weight: 800;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+    }
+
+    .contact-section { background: var(--paper-deep); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.8fr);
+      gap: 3rem;
+    }
+
+    .contact-copy { max-width: 52ch; color: var(--muted); }
+
+    .contact-list {
+      margin: 0;
+      border-top: 1px solid #c8b99e;
+    }
+
+    .contact-list div {
+      display: grid;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid #c8b99e;
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .contact-list dt { color: var(--muted); font-size: 0.84rem; }
+    .contact-list dd { margin: 0; font-size: 0.9rem; font-weight: 700; }
+
+    .site-footer {
+      padding: 2.5rem 0;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+    }
+
+    .footer-inner p { margin: 0; font-size: 0.8rem; }
+    .footer-inner a { color: #f2cf70; font-size: 0.8rem; }
+
+    @media (max-width: 900px) {
+      .header-inner { width: min(100% - 2rem, var(--page)); min-height: 76px; gap: 1rem; }
+      .site-nav { max-width: 65vw; overflow-x: auto; gap: 1rem; scrollbar-width: none; }
+      .site-nav::-webkit-scrollbar { display: none; }
+      .site-nav a { font-size: 0.72rem; }
+      .site-nav .nav-join { padding: 0.5rem 0.65rem; }
+      .wrap { width: min(100% - 2.5rem, var(--page)); }
+      .hero { min-height: 560px; grid-template-columns: minmax(0, 1.2fr) minmax(210px, 0.8fr); gap: 1.5rem; }
+      .hero-copy { padding-left: 1.5rem; }
+    }
+
+    @media (max-width: 680px) {
+      html { scroll-padding-top: 5rem; }
+      .header-inner { display: block; width: 100%; padding: 0.65rem 0 0; }
+      .brand { margin: 0 1rem 0.5rem; }
+      .brand img { width: 48px; height: 38px; }
+      .site-nav {
+        max-width: none;
+        padding: 0.15rem 1rem 0.65rem;
+        border-top: 1px solid var(--line);
+        gap: 1.15rem;
+      }
+      .site-nav a { padding-block: 0.45rem; }
+      .site-nav .nav-join { padding: 0.38rem 0.6rem; }
+      .wrap { width: min(100% - 2rem, var(--page)); }
+      .hero {
+        min-height: auto;
+        padding-block: 4rem 3.5rem;
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .hero::before { inset: 0.7rem 0; }
+      .hero::after { inset: 1.15rem 0.45rem; }
+      .hero-copy { padding: 1rem 0.6rem 0; }
+      .hero h1 { max-width: 10ch; font-size: clamp(2rem, 10vw, 4.8rem); }
+      .hero-lead { margin-top: 1.3rem; font-size: 1rem; }
+      .hero-actions { margin-top: 1.5rem; }
+      .hero-art { width: min(78vw, 280px); }
+      .section { padding-block: 4rem; }
+      .section-heading { margin-bottom: 2rem; grid-template-columns: 1fr; gap: 1rem; }
+      .section h2 { font-size: clamp(2.6rem, 12vw, 4rem); }
+      .about-grid,
+      .election-columns,
+      .join-grid,
+      .directory-grid,
+      .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .fact-list div { grid-template-columns: 0.7fr 1.3fr; }
+      .membership-top { grid-template-columns: 1fr; gap: 1.5rem; }
+      .membership-detail { grid-template-columns: 1fr; gap: 0.6rem; }
+      .regularize { min-height: 82px; padding: 1rem; gap: 0.7rem; }
+      .regularize span { display: none; }
+      .directory-frame { height: 930px; }
+      .document-row { grid-template-columns: 1fr; gap: 0.55rem; }
+      .document-link, .document-pending { justify-self: start; }
+      .footer-inner { align-items: flex-start; flex-direction: column; gap: 0.75rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <!--
+  THESIS: Una puerta institucional única, en lugar de información dispersa.
+  OWN-WORLD: Marco marfil, líneas doradas, terracota y verde petróleo de la convocatoria.
+  STORY: Comprender la asociación, revisar el proceso y encontrar cómo participar.
+  FIRST VIEWPORT: Titular editorial a la izquierda; órbita ACHETSU y dos acciones a la derecha.
+  FORM: Página institucional documental; extiende la identidad impresa del llamado electoral.
+  -->
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="ACHETSU, volver al inicio">
+        <img src="assets/achet-su-logo.png" alt="">
+        <span class="brand-name">ACHETSU<small>Trabajo Social universitario</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="#quienes">Quiénes somos</a>
+        <a href="#elecciones">Elecciones</a>
+        <a href="#socios">Socios</a>
+        <a href="#documentos">Documentos</a>
+        <a href="#inscripcion">Inscripción</a>
+        <a class="nav-directory" href="#padron">Padrón de socios</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="intro-section" id="inicio" aria-labelledby="hero-title">
+      <div class="hero wrap">
+      <div class="hero-copy">
+        <h1 id="hero-title">Enseñar Trabajo Social es <span>construir comunidad.</span></h1>
+        <p class="hero-lead">Somos la Asociación Chilena de Enseñanza del Trabajo Social Universitario. Un espacio de articulación y representación de las unidades académicas que forman trabajadoras y trabajadores sociales en Chile.</p>
+        <div class="hero-actions">
+          <a class="button" href="#quienes">Conoce ACHETSU <span aria-hidden="true">&nbsp;↓</span></a>
+          <a class="button button-outline" href="#elecciones">Llamado a elecciones</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <span class="orbit"></span>
+        <span class="orbit"></span>
+        <span class="orbit"></span>
+        <span class="orbit-label top">ENSEÑANZA</span>
+        <span class="orbit-label right">VÍNCULO</span>
+        <span class="orbit-label bottom">TRABAJO SOCIAL</span>
+        <span class="hero-mark"><img src="assets/achet-su-logo.png" alt=""></span>
+      </div>
+      </div>
+
+    <div class="section wrap" id="quienes" aria-labelledby="about-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 id="about-title">Quiénes somos</h2>
+          <p>Un punto de encuentro para fortalecer la formación universitaria en Trabajo Social.</p>
+        </div>
+        <div class="about-grid">
+          <div class="about-copy">
+            <p>ACHETSU reúne a instituciones, comunidades académicas y personas comprometidas con la enseñanza universitaria del Trabajo Social. Su labor busca articular y representar a las unidades académicas responsables de esa formación en el país.</p>
+            <p>ACHETSU retoma su trabajo asociativo para fortalecer este espacio de encuentro y colaboración entre Escuelas de Trabajo Social y quienes desarrollan labores de docencia e investigación en las universidades del país. La Asociación busca fortalecer la formación universitaria, la investigación, el desarrollo disciplinar y la colaboración entre instituciones académicas.</p>
+          </div>
+          <dl class="fact-list">
+            <div><dt>Nombre oficial</dt><dd>Asociación Chilena de Enseñanza del Trabajo Social Universitario</dd></div>
+            <div><dt>Sigla</dt><dd>ACHETSU</dd></div>
+            <div><dt>RUT</dt><dd class="pending">Dato pendiente de confirmación</dd></div>
+            <div><dt>Personalidad jurídica</dt><dd class="pending">Antecedente pendiente</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="section elections" id="elecciones" aria-labelledby="election-title">
+      <div class="section-inner wrap">
+        <div class="section-heading">
+          <h2 id="election-title">Directiva y elecciones</h2>
+          <p>ACHETSU retoma su trabajo asociativo y prepara la elección de una nueva Directiva, conforme a sus Estatutos.</p>
+        </div>
+        <div class="source-note" role="note">
+          <span class="note-symbol" aria-hidden="true">!</span>
+          <p>Antes de convocar la Asamblea General Ordinaria, ACHETSU actualizará el registro de socios y socias y avanzará en la regularización de las membresías para conformar el claustro elector. La fecha y los detalles de la elección se informarán oportunamente.</p>
+        </div>
+        <div class="election-columns">
+          <div>
+            <h3 class="subheading">¿Qué viene antes?</h3>
+            <p>Revisa y actualiza tus antecedentes, confirma tu situación de membresía y regulariza las cuotas pendientes cuando corresponda. Estos pasos permitirán avanzar en la conformación del claustro elector.</p>
+            <p>La convocatoria a Asamblea General Ordinaria, las fechas y las instrucciones para participar se comunicarán una vez avanzado este proceso.</p>
+          </div>
+          <div class="election-aside">
+            <h3 class="subheading">Participa en la reactivación</h3>
+            <p>Actualiza tu registro y revisa cómo regularizar tu membresía antes de la convocatoria.</p>
+            <a class="button button-outline" href="elecciones.html">Ver etapas y detalles del proceso</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="socios" aria-labelledby="members-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 id="members-title">Socios y regularización</h2>
+          <p>Revisa las cuotas ordinarias anuales y actualiza tus antecedentes de contacto y vinculación institucional.</p>
+        </div>
+        <div class="membership-top">
+          <article class="membership-type">
+            <h3>Socio/a natural</h3>
+            <p>Académicas, académicos e investigadores vinculados a unidades académicas universitarias de Trabajo Social que cumplan los requisitos estatutarios.</p>
+          </article>
+          <article class="membership-type">
+            <h3>Socio institucional</h3>
+            <p>Unidades académicas de universidades que imparten la carrera de Trabajo Social y cumplen los requisitos estatutarios.</p>
+          </article>
+        </div>
+        <div class="membership-detail">
+          <h3>Cuotas ordinarias anuales</h3>
+          <p>Según el artículo 44 de los Estatutos, la cuota anual es de <strong>3 UF para socios institucionales</strong> y <strong>1 UF para socios naturales</strong>. Revisa tu situación y regulariza los pagos pendientes para avanzar en la actualización de membresías.</p>
+        </div>
+        <div class="membership-detail">
+          <h3>Actualiza tus antecedentes</h3>
+          <p>Revisa tus datos de contacto, vinculación institucional, representación de tu unidad académica y situación de membresía. Las rectificaciones y antecedentes enviados en línea quedarán pendientes hasta la revisión y aprobación administrativa.</p>
+        </div>
+        <a class="regularize" href="elecciones.html#regularizacion">
+          <span><strong>REGULARIZAR MEMBRESÍA</strong><br><span>Consulta los pasos para revisar tus cuotas y actualizar tus datos.</span></span>
+          <span class="arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section wrap" id="padron" aria-labelledby="directory-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 id="directory-title">Consulta el padrón de socios</h2>
+          <p>Busca por nombre o apellidos. El visor separa socios naturales de representantes de socios institucionales.</p>
+        </div>
+        <iframe class="directory-frame" id="directory-frame" title="Buscador actualizado del padrón de socios de ACHETSU" loading="lazy" hidden></iframe>
+        <div class="directory-fallback" id="directory-fallback">
+        <div class="directory-grid">
+          <article class="member-viewer" data-member-category="naturales">
+            <h3>Socios y socias naturales</h3>
+            <p>Académicas, académicos e investigadores asociados a una unidad académica universitaria de Trabajo Social.</p>
+            <label class="member-search-label" for="search-naturales">Nombre o apellidos</label>
+            <input class="member-search" id="search-naturales" type="search" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="suggestions-naturales" aria-expanded="false" placeholder="Empieza a escribir un nombre">
+            <div class="member-suggestions" id="suggestions-naturales" role="listbox" aria-label="Coincidencias de socios naturales" hidden></div>
+            <p class="member-search-status" id="status-naturales" role="status" aria-live="polite">Escribe al menos dos letras para buscar.</p>
+            <article class="member-result" id="result-naturales" aria-live="polite" hidden></article>
+          </article>
+          <article class="member-viewer" data-member-category="institucionales">
+            <h3>Representantes institucionales</h3>
+            <p>Personas registradas como representantes de unidades académicas socias; cada resultado identifica su universidad.</p>
+            <label class="member-search-label" for="search-institucionales">Nombre o apellidos</label>
+            <input class="member-search" id="search-institucionales" type="search" autocomplete="off" spellcheck="false" aria-autocomplete="list" aria-controls="suggestions-institucionales" aria-expanded="false" placeholder="Empieza a escribir un nombre">
+            <div class="member-suggestions" id="suggestions-institucionales" role="listbox" aria-label="Coincidencias de representantes institucionales" hidden></div>
+            <p class="member-search-status" id="status-institucionales" role="status" aria-live="polite">Escribe al menos dos letras para buscar.</p>
+            <article class="member-result" id="result-institucionales" aria-live="polite" hidden></article>
+          </article>
+        </div>
+        <p class="directory-notice"><strong>Cómo leer el estado:</strong> “Habilitado/a” corresponde a una X en la columna 2026 del registro recibido. Sin esa marca, el registro aparece como no habilitado y requiere regularización para votar o postular. El padrón público se actualiza únicamente después de la aprobación administrativa. Los cambios enviados quedan pendientes de revisión.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section documents" id="documentos" aria-labelledby="documents-title">
+      <div class="section-inner wrap">
+        <div class="section-heading">
+          <h2 id="documents-title">Documentos</h2>
+          <p>Documentación institucional para consulta. Los enlaces de Drive en modo solo lectura se añadirán cuando sean entregados.</p>
+        </div>
+        <div class="document-list">
+          <article class="document-row">
+            <div><h3>Estatutos</h3><p>Texto vigente y aprobado de la Asociación.</p></div>
+            <span class="document-pending">Enlace de solo lectura pendiente</span>
+          </article>
+          <article class="document-row">
+            <div><h3>Acta fundacional</h3><p>Antecedente constitutivo de ACHETSU.</p></div>
+            <span class="document-pending">Enlace de solo lectura pendiente</span>
+          </article>
+          <article class="document-row">
+            <div><h3>Certificados institucionales</h3><p>Documentación de personalidad jurídica y vigencia.</p></div>
+            <span class="document-pending">Enlace de solo lectura pendiente</span>
+          </article>
+          <article class="document-row">
+            <div><h3>Reglamentos de elección</h3><p>Normas y antecedentes para los procesos electorales.</p></div>
+            <span class="document-pending">Enlace de solo lectura pendiente</span>
+          </article>
+          <article class="document-row">
+            <div><h3>Comunicado de reactivación y proceso electoral</h3><p>Información sobre actualización de membresías y preparación de la próxima elección.</p></div>
+            <a class="document-link" href="elecciones.html">Leer detalles ↗</a>
+          </article>
+          <article class="document-row">
+            <div><h3>Convocatoria adjunta como antecedente</h3><p>El documento indica el período 2026–2029; confirmar su vigencia frente a la nueva convocatoria.</p></div>
+            <a class="document-link" href="assets/convocatoria-elecciones-2026.pdf" target="_blank" rel="noopener">Abrir PDF ↗</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section wrap" id="inscripcion" aria-labelledby="join-title">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 id="join-title">Inscripción de nuevos socios</h2>
+          <p>Invitamos a las unidades académicas universitarias, académicas, académicos e investigadores a incorporarse a ACHETSU.</p>
+        </div>
+        <div class="join-grid">
+          <div>
+            <h3 class="subheading">Requisitos</h3>
+            <ul class="requirements">
+              <li>Las unidades académicas de universidades que imparten Trabajo Social pueden postular como socias institucionales, sujetas a los requisitos estatutarios.</li>
+              <li>Académicas, académicos e investigadores vinculados a esas unidades pueden postular como socios naturales, conforme a los Estatutos.</li>
+              <li>Para la inscripción individual, adjunta una constancia de la Dirección de tu unidad académica que acredite tu vinculación académica y/o investigativa.</li>
+            </ul>
+            <div class="template-links" aria-label="Formatos de constancia">
+              <a href="https://docs.google.com/document/d/1My86G708OjkKw39QU17iicEzUsPVb8ub/edit?usp=drive_link&amp;ouid=111476085131633763376&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Formato de constancia institucional ↗</a>
+              <a href="https://docs.google.com/spreadsheets/d/1mOCSw-D90ekZnFeMfOCcNc-kBje49ZEW/edit?usp=sharing&amp;ouid=111476085131633763376&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Formato de constancia personal ↗</a>
+            </div>
+          </div>
+          <div class="form-shell">
+            <h3>Inscripción por categoría</h3>
+            <p>Las solicitudes enviadas por ACHETSU permiten adjuntar antecedentes y quedan pendientes de revisión antes de incorporarse al padrón. La inscripción individual requiere la constancia de la Dirección de la unidad académica.</p>
+            <p class="pending" id="backend-application-note">El canal para adjuntar antecedentes se habilitará al desplegar el formulario de ACHETSU.</p>
+            <div class="form-actions" id="backend-application-links" hidden>
+              <a class="button" id="institutional-intake-link" href="#">Solicitud institucional ↗</a>
+              <a class="button button-outline" id="natural-intake-link" href="#">Solicitud natural ↗</a>
+            </div>
+            <p>También puedes consultar los formularios de inscripción previamente disponibles:</p>
+            <div class="form-actions">
+              <a class="button" href="https://goo.gl/forms/jxwuM2HJWoGAmV332" target="_blank" rel="noopener">Inscripción institucional ↗</a>
+              <a class="button button-outline" href="https://goo.gl/forms/Co3HlLmV6kSUEzwY2" target="_blank" rel="noopener">Inscripción natural ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contacto" aria-labelledby="contact-title">
+      <div class="section-inner wrap">
+        <div class="contact-grid">
+          <div>
+            <h2 id="contact-title">Contacto</h2>
+            <p class="contact-copy">Para consultas sobre membresía, elecciones o documentación, utiliza los canales oficiales de ACHETSU. Los datos se incorporarán una vez confirmados.</p>
+          </div>
+          <dl class="contact-list">
+            <div><dt>Correo</dt><dd class="pending">Correo oficial pendiente de confirmación</dd></div>
+            <div><dt>Dirección</dt><dd class="pending">Dirección institucional pendiente</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner wrap">
+      <p>ACHETSU · Asociación Chilena de Enseñanza del Trabajo Social Universitario</p>
+      <a href="#inicio">Volver al inicio ↑</a>
+    </div>
+  </footer>
+  <script src="assets/apps-script-config.js"></script>
+  <script>
+    (() => {
+      const searchConfigs = [
+        { category: "naturales", inputId: "search-naturales", suggestionsId: "suggestions-naturales", statusId: "status-naturales", resultId: "result-naturales" },
+        { category: "institucionales", inputId: "search-institucionales", suggestionsId: "suggestions-institucionales", statusId: "status-institucionales", resultId: "result-institucionales" }
+      ];
+      const backendUrl = String(window.ACHETSU_APPS_SCRIPT_URL || "").trim();
+      const directoryFrame = document.getElementById("directory-frame");
+      const directoryFallback = document.getElementById("directory-fallback");
+      let publicBackend = null;
+      try {
+        const parsedBackendUrl = new URL(backendUrl);
+        if (parsedBackendUrl.protocol === "https:" &&
+            parsedBackendUrl.hostname === "script.google.com" &&
+            /^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(parsedBackendUrl.pathname)) {
+          publicBackend = parsedBackendUrl;
+        }
+      } catch (error) {
+        if (backendUrl) console.error("La URL del backend ACHETSU no es válida.", error);
+      }
+      if (publicBackend) {
+        const directoryUrl = new URL(publicBackend);
+        directoryUrl.searchParams.set("view", "directory");
+        directoryFrame.src = directoryUrl.toString();
+        directoryFrame.hidden = false;
+        directoryFallback.hidden = true;
+        const applicationLinks = document.getElementById("backend-application-links");
+        const applicationNote = document.getElementById("backend-application-note");
+        [
+          ["institutional-intake-link", "institucionales"],
+          ["natural-intake-link", "naturales"]
+        ].forEach(([linkId, category]) => {
+          const intakeUrl = new URL(publicBackend);
+          intakeUrl.searchParams.set("view", "intake");
+          intakeUrl.searchParams.set("requestType", "incorporacion");
+          intakeUrl.searchParams.set("category", category);
+          document.getElementById(linkId).href = intakeUrl.toString();
+        });
+        applicationLinks.hidden = false;
+        applicationNote.hidden = true;
+      }
+
+      const normalize = (value) => value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("es")
+        .trim();
+
+      const setStatus = (element, message, state = "") => {
+        element.textContent = message;
+        if (state) element.dataset.state = state;
+        else delete element.dataset.state;
+      };
+
+      const renderRecord = (record, result) => {
+        result.replaceChildren();
+        result.hidden = false;
+
+        const heading = document.createElement("h4");
+        heading.textContent = `${record.surname}, ${record.givenName}`;
+        result.append(heading);
+
+        const university = document.createElement("p");
+        university.className = "member-result-university";
+        university.textContent = record.university || "Universidad no informada";
+        result.append(university);
+
+        const details = document.createElement("dl");
+        const fields = [
+          ["Correo", record.email || "No informado"],
+          ["Universidad", record.university || "No informada"]
+        ];
+        fields.forEach(([label, value]) => {
+          const term = document.createElement("dt");
+          term.textContent = label;
+          const description = document.createElement("dd");
+          description.textContent = value;
+          details.append(term, description);
+        });
+        result.append(details);
+
+        const status = document.createElement("strong");
+        status.className = `member-status${record.eligible2026 ? " is-eligible" : ""}`;
+        status.textContent = record.eligible2026
+          ? "Socio/a activo/a · Habilitado/a para votar y postular"
+          : "No habilitado/a para votar ni postular · Regularización pendiente";
+        result.append(status);
+
+        const explanation = document.createElement("p");
+        explanation.className = "member-result-note";
+        explanation.textContent = record.eligible2026
+          ? "El registro tiene una X en la columna 2026."
+          : "El registro no tiene una X en la columna 2026; confirma tu situación y regulariza la membresía.";
+        result.append(explanation);
+      };
+
+      const setupViewer = (config, records) => {
+        const input = document.getElementById(config.inputId);
+        const suggestions = document.getElementById(config.suggestionsId);
+        const status = document.getElementById(config.statusId);
+        const result = document.getElementById(config.resultId);
+        const members = records.filter((record) => record.category === config.category);
+
+        const closeSuggestions = () => {
+          suggestions.hidden = true;
+          input.setAttribute("aria-expanded", "false");
+          suggestions.replaceChildren();
+        };
+
+        const selectRecord = (record) => {
+          closeSuggestions();
+          setStatus(status, "Registro encontrado.");
+          renderRecord(record, result);
+        };
+
+        input.addEventListener("input", () => {
+          const query = normalize(input.value);
+          result.hidden = true;
+          result.replaceChildren();
+          closeSuggestions();
+
+          if (query.length < 2) {
+            setStatus(status, "Escribe al menos dos letras para buscar.");
+            return;
+          }
+
+          const matches = members.filter((member) => normalize(`${member.surname} ${member.givenName}`).includes(query));
+          if (!matches.length) {
+            setStatus(status, "No encontramos coincidencias. Revisa la escritura o prueba con otro apellido.");
+            return;
+          }
+
+          const visibleMatches = matches.slice(0, 8);
+          visibleMatches.forEach((member) => {
+            const option = document.createElement("button");
+            option.type = "button";
+            option.className = "suggestion-option";
+            option.setAttribute("role", "option");
+
+            const name = document.createElement("strong");
+            name.textContent = `${member.surname}, ${member.givenName}`;
+            const school = document.createElement("span");
+            school.textContent = member.university || "Universidad no informada";
+            option.append(name, school);
+            option.addEventListener("click", () => selectRecord(member));
+            suggestions.append(option);
+          });
+
+          suggestions.hidden = false;
+          input.setAttribute("aria-expanded", "true");
+          setStatus(status, matches.length > 8
+            ? `Hay ${matches.length} coincidencias; se muestran las primeras 8. Sigue escribiendo para afinar la búsqueda.`
+            : `${matches.length} ${matches.length === 1 ? "coincidencia" : "coincidencias"}. Selecciona un nombre para ver el registro.`);
+        });
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            closeSuggestions();
+            return;
+          }
+          if (event.key === "ArrowDown" && !suggestions.hidden) {
+            event.preventDefault();
+            suggestions.querySelector("button")?.focus();
+          }
+        });
+      };
+
+      if (!publicBackend) fetch("assets/padron-socios.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((records) => searchConfigs.forEach((config) => setupViewer(config, records)))
+        .catch((error) => {
+          console.error("No se pudo cargar el padrón público.", error);
+          searchConfigs.forEach((config) => {
+            const input = document.getElementById(config.inputId);
+            const status = document.getElementById(config.statusId);
+            input.disabled = true;
+            setStatus(status, "No se pudo cargar el padrón. Recarga la página para volver a intentarlo.", "error");
+          });
+        });
+    })();
+  </script>
+</body>
+</html>

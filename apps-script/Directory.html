@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3e8;
+      --ink: #302d2b;
+      --muted: #716961;
+      --rust: #b94f2d;
+      --teal: #1c625e;
+      --line: #dfd4bf;
+      --white: #fffdf8;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; padding:1.1rem; background:var(--paper); color:var(--ink); font:16px/1.5 "Segoe UI",Arial,sans-serif; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.5rem; }
+    .viewer { min-width:0; padding-top:1.1rem; border-top:2px solid var(--rust); }
+    .viewer:nth-child(2) { border-color:var(--teal); }
+    h2 { margin:0 0 0.4rem; font:400 1.8rem/1.12 Georgia,"Times New Roman",serif; }
+    p { margin:0.55rem 0 1.2rem; color:var(--muted); font-size:0.8rem; }
+    label { display:block; margin-bottom:0.45rem; font-size:0.8rem; font-weight:700; }
+    input[type=search] { width:100%; min-height:44px; padding:0.6rem 0.7rem; border:1px solid #c9c0b2; border-radius:0; background:var(--white); color:var(--ink); font:inherit; }
+    button:focus-visible, input:focus-visible, a:focus-visible { outline:3px solid var(--rust); outline-offset:3px; }
+    .status { min-height:1.5em; margin:0.35rem 0 0.6rem; font-size:0.8rem; }
+    .suggestions { max-height:15rem; overflow:auto; border:1px solid var(--line); border-top:0; background:var(--white); }
+    .suggestions[hidden], .result[hidden] { display:none; }
+    .suggestion { display:block; width:100%; padding:0.72rem 0.85rem; border:0; border-bottom:1px solid var(--line); background:transparent; color:var(--ink); font:inherit; text-align:left; cursor:pointer; }
+    .suggestion:hover, .suggestion:focus-visible { background:#eee5d3; }
+    .suggestion strong, .suggestion span { display:block; }
+    .suggestion span { margin-top:0.18rem; color:var(--muted); font-size:0.8rem; }
+    .result { margin-top:1rem; padding:1.1rem; border:1px solid var(--line); background:var(--white); }
+    .result h3 { margin:0 0 0.85rem; font:400 1.3rem/1.2 Georgia,"Times New Roman",serif; }
+    .result dl { display:grid; grid-template-columns:5.5rem minmax(0,1fr); margin:0.75rem 0 1rem; border-top:1px solid var(--line); }
+    .result dt,.result dd { margin:0; padding:0.45rem 0; border-bottom:1px solid var(--line); font-size:0.8rem; overflow-wrap:anywhere; }
+    .result dt { color:var(--muted); }
+    .result dd { font-weight:700; }
+    .eligibility { display:block; padding:0.68rem 0.75rem; background:#f7e9dc; color:#783f28; font-size:0.8rem; font-weight:800; }
+    .eligibility.yes { background:#e1eee8; color:#174e4b; }
+    .request-link { display:inline-block; margin-top:0.9rem; color:var(--teal); font-size:0.8rem; font-weight:800; }
+    .request-unavailable { margin:0.7rem 0 0; color:var(--muted); font-size:0.8rem; }
+    @media(max-width:650px) { .grid { grid-template-columns:1fr; gap:1.25rem; } }
+  </style>
+</head>
+<body data-app-url="<?= appUrl ?>">
+  <div class="grid">
+    <section class="viewer" data-category="naturales">
+      <h2>Socios/as naturales</h2>
+      <p>Busca por nombre o apellidos; los resultados aparecen al escribir.</p>
+      <label for="natural-search">Nombre o apellidos</label>
+      <input id="natural-search" type="search" autocomplete="off" placeholder="Escribe al menos dos letras">
+      <div class="status" id="natural-status" role="status" aria-live="polite">Escribe para iniciar la búsqueda.</div>
+      <div class="suggestions" id="natural-suggestions" role="listbox" hidden></div>
+      <article class="result" id="natural-result" hidden></article>
+    </section>
+    <section class="viewer" data-category="institucionales">
+      <h2>Representantes institucionales</h2>
+      <p>Busca por nombre o apellidos para consultar el estado del representante.</p>
+      <label for="institutional-search">Nombre o apellidos</label>
+      <input id="institutional-search" type="search" autocomplete="off" placeholder="Escribe al menos dos letras">
+      <div class="status" id="institutional-status" role="status" aria-live="polite">Escribe para iniciar la búsqueda.</div>
+      <div class="suggestions" id="institutional-suggestions" role="listbox" hidden></div>
+      <article class="result" id="institutional-result" hidden></article>
+    </section>
+  </div>
+
+  <script>
+    const appUrl = document.body.dataset.appUrl;
+    const configs = [
+      { category:"naturales", input:"natural-search", status:"natural-status", suggestions:"natural-suggestions", result:"natural-result" },
+      { category:"institucionales", input:"institutional-search", status:"institutional-status", suggestions:"institutional-suggestions", result:"institutional-result" }
+    ];
+
+    function node(tag, text, className) {
+      const item = document.createElement(tag);
+      if (text) item.textContent = text;
+      if (className) item.className = className;
+      return item;
+    }
+
+    function render(config, member) {
+      const result = document.getElementById(config.result);
+      result.replaceChildren();
+      result.hidden = false;
+      result.append(node("h3", `${member.surname}, ${member.givenName}`));
+
+      const details = document.createElement("dl");
+      [["Correo", member.email || "No informado"], ["Universidad", member.university || "No informada"]]
+        .forEach(([label, value]) => details.append(node("dt", label), node("dd", value)));
+      result.append(details);
+
+      const eligibility = node(
+        "strong",
+        member.eligible2026
+          ? "Habilitado/a para votar y postular (marca 2026)"
+          : "No habilitado/a para votar ni postular; requiere regularización",
+        `eligibility${member.eligible2026 ? " yes" : ""}`
+      );
+      result.append(eligibility);
+
+      if (appUrl) {
+        const link = node("a", "Solicitar rectificación de este registro ↗", "request-link");
+        const url = new URL(appUrl);
+        url.searchParams.set("view", "intake");
+        url.searchParams.set("requestType", "rectificacion");
+        url.searchParams.set("category", member.category);
+        url.searchParams.set("memberId", member.id);
+        link.href = url.toString();
+        result.append(link);
+      } else {
+        result.append(node("p", "El canal de rectificación todavía no está conectado.", "request-unavailable"));
+      }
+    }
+
+    configs.forEach((config) => {
+      const input = document.getElementById(config.input);
+      const status = document.getElementById(config.status);
+      const suggestions = document.getElementById(config.suggestions);
+      const result = document.getElementById(config.result);
+      let sequence = 0;
+      let debounce;
+
+      input.addEventListener("input", () => {
+        const query = input.value.trim();
+        const current = ++sequence;
+        clearTimeout(debounce);
+        result.hidden = true;
+        suggestions.replaceChildren();
+        suggestions.hidden = true;
+        if (query.length < 2) {
+          status.textContent = "Escribe al menos dos letras para buscar.";
+          return;
+        }
+        status.textContent = "Buscando…";
+        debounce = setTimeout(() => {
+          google.script.run
+            .withSuccessHandler((matches) => {
+              if (current !== sequence) return;
+              if (!matches.length) {
+                status.textContent = "No se encontraron coincidencias.";
+                return;
+              }
+              matches.forEach((member) => {
+                const option = node("button", null, "suggestion");
+                option.type = "button";
+                option.setAttribute("role", "option");
+                option.append(node("strong", `${member.surname}, ${member.givenName}`));
+                option.append(node("span", member.university || "Universidad no informada"));
+                option.addEventListener("click", () => {
+                  suggestions.hidden = true;
+                  status.textContent = "Registro seleccionado.";
+                  render(config, member);
+                });
+                suggestions.append(option);
+              });
+              suggestions.hidden = false;
+              status.textContent = `Se muestran hasta ${matches.length} coincidencias. Selecciona un nombre para ver el estado.`;
+            })
+            .withFailureHandler((error) => {
+              if (current !== sequence) return;
+              status.textContent = error.message || "No se pudo consultar el padrón.";
+            })
+            .searchMembers(config.category, query);
+        }, 220);
+      });
+    });
+  </script>
+</body>
+</html>

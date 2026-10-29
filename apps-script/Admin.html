@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3e8;
+      --ink: #302d2b;
+      --muted: #716961;
+      --rust: #b94f2d;
+      --teal: #1c625e;
+      --line: #dfd4bf;
+      --white: #fffdf8;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 1.5rem; background: var(--paper); color: var(--ink); font: 16px/1.55 "Segoe UI", Arial, sans-serif; }
+    main { max-width: 1000px; margin: auto; }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    h1 { margin: 0; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.05; }
+    h2 { margin: 0 0 0.6rem; font-size: 1.8rem; }
+    h3 { margin: 0 0 0.7rem; font-size: 1.55rem; }
+    p { color: #544d47; }
+    .section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+    .notice { padding: 1rem; border: 1px solid var(--line); background: #eee5d3; }
+    .toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:0.75rem; margin-block:1.2rem; }
+    input[type=file], textarea {
+      width: 100%;
+      max-width: 600px;
+      padding: 0.65rem;
+      border: 1px solid #c9c0b2;
+      background: var(--white);
+      color: var(--ink);
+      font: inherit;
+    }
+    textarea { min-height: 72px; }
+    .button {
+      min-height: 42px;
+      padding: 0.6rem 0.9rem;
+      border: 0;
+      background: var(--teal);
+      color: white;
+      font: 800 0.8rem "Segoe UI", Arial, sans-serif;
+      cursor: pointer;
+    }
+    .button.reject { background: var(--rust); }
+    .button[disabled] { opacity: 0.6; cursor: wait; }
+    .status { min-height: 1.5em; color: var(--muted); font-size: 0.85rem; }
+    .request { margin-top:1rem; padding:1.2rem; border:1px solid var(--line); background:var(--white); }
+    .meta { color:var(--muted); font-size:0.83rem; }
+    .request dl { display:grid; grid-template-columns:9rem minmax(0,1fr); margin:1rem 0; border-top:1px solid var(--line); }
+    .request dt, .request dd { margin:0; padding:0.55rem 0; border-bottom:1px solid var(--line); overflow-wrap:anywhere; }
+    .request dt { color:var(--muted); }
+    .request dd { font-weight:600; }
+    .review { margin-top:1rem; }
+    .review label { display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem; color:#544d47; font-size:0.88rem; font-weight:700; }
+    .file-link { color:var(--teal); font-weight:800; }
+    .settings-grid { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:0.75rem; align-items:end; max-width:760px; }
+    .settings-grid label { display:grid; gap:0.35rem; color:#544d47; font-size:0.84rem; font-weight:700; }
+    .settings-grid input { min-height:42px; padding:0.55rem 0.65rem; border:1px solid #c9c0b2; background:var(--white); color:var(--ink); font:inherit; }
+    .settings-grid input:focus-visible { outline:3px solid var(--rust); outline-offset:3px; }
+    @media(max-width:600px) { .settings-grid { grid-template-columns:1fr; } }
+    @media(max-width:600px) {
+      body { padding:1rem; }
+      .request dl { grid-template-columns:1fr; }
+      .request dt { padding-bottom:0; border-bottom:0; }
+      .request dd { padding-top:0.1rem; }
+    }
+    .login { max-width:420px; margin-top:2rem; padding:1.5rem; border:1px solid var(--line); background:var(--white); }
+    .login label { display:grid; gap:0.35rem; margin-bottom:1rem; color:#544d47; font-size:0.84rem; font-weight:700; }
+    .login input { min-height:42px; padding:0.55rem 0.65rem; border:1px solid #c9c0b2; background:var(--paper); color:var(--ink); font:inherit; }
+    .login input:focus-visible, .button:focus-visible { outline:3px solid var(--rust); outline-offset:3px; }
+    .session-bar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.75rem; margin-top:1rem; color:var(--muted); font-size:0.88rem; }
+    .button.quiet { background:transparent; color:var(--teal); border:1px solid var(--teal); }
+    .file-button { margin-top:0.5rem; }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Revisión de solicitudes</h1>
+
+    <form class="login" id="login-form" autocomplete="on">
+      <h2>Ingreso administrativo</h2>
+      <label for="admin-user">Usuario
+        <input id="admin-user" name="username" autocomplete="username" required maxlength="80">
+      </label>
+      <label for="admin-password">Contraseña
+        <input id="admin-password" name="password" type="password" autocomplete="current-password" required maxlength="200">
+      </label>
+      <button class="button" type="submit" id="login-button">Ingresar</button>
+      <p class="status" id="login-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <div id="panel" hidden>
+    <div class="session-bar">
+      <span id="session-label"></span>
+      <button class="button quiet" type="button" id="logout-button">Cerrar sesión</button>
+    </div>
+    <p class="notice"><strong>Panel restringido.</strong> Solo la cuenta administrativa puede listar solicitudes, consultar antecedentes y aprobar o rechazar cambios. La aprobación modifica el padrón que consulta el público.</p>
+
+    <section class="section" aria-labelledby="public-url-title">
+      <h2 id="public-url-title">Conexión con el sitio público</h2>
+      <p>Guarda la URL del despliegue público para activar el buscador y los formularios de rectificación e incorporación en achetsu.cl. Debe ser la URL terminada en <code>/exec</code>.</p>
+      <div class="settings-grid">
+        <label for="public-url">URL del despliegue público
+          <input id="public-url" type="url" maxlength="300" value="<?= publicUrl ?>" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="url">
+        </label>
+        <button class="button" type="button" id="save-url-button">Guardar URL</button>
+      </div>
+      <p class="status" id="url-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="section" aria-labelledby="import-title">
+      <h2 id="import-title">Importar padrón inicial</h2>
+      <p>Selecciona el archivo <code>padron-socios.json</code> preparado a partir del Excel 2026. La importación reemplaza el padrón actual; úsala solo para la carga inicial o cuando corresponda actualizar la base desde una fuente validada.</p>
+      <div class="toolbar">
+        <input id="directory-file" type="file" accept=".json,application/json" aria-label="Seleccionar archivo JSON del padrón">
+        <button class="button" type="button" id="import-button">Importar padrón</button>
+      </div>
+      <p class="status" id="import-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="section" aria-labelledby="pending-title">
+      <h2 id="pending-title">Solicitudes pendientes</h2>
+      <div class="toolbar">
+        <button class="button" type="button" id="reload-button">Actualizar bandeja</button>
+        <span class="status" id="queue-status" role="status" aria-live="polite"></span>
+      </div>
+      <div id="requests"></div>
+    </section>
+    </div>
+  </main>
+
+  <script>
+    const TOKEN_KEY = "achetsu-admin-token";
+    let token = sessionStorage.getItem(TOKEN_KEY) || "";
+    const loginForm = document.getElementById("login-form");
+    const loginStatus = document.getElementById("login-status");
+    const loginButton = document.getElementById("login-button");
+    const panel = document.getElementById("panel");
+    const requestList = document.getElementById("requests");
+    const queueStatus = document.getElementById("queue-status");
+    const importStatus = document.getElementById("import-status");
+    const importButton = document.getElementById("import-button");
+    const reloadButton = document.getElementById("reload-button");
+    const saveUrlButton = document.getElementById("save-url-button");
+    const urlStatus = document.getElementById("url-status");
+
+    function element(tag, text, className) {
+      const node = document.createElement(tag);
+      if (text) node.textContent = text;
+      if (className) node.className = className;
+      return node;
+    }
+
+    function showLogin(message) {
+      token = "";
+      sessionStorage.removeItem(TOKEN_KEY);
+      panel.hidden = true;
+      loginForm.hidden = false;
+      loginStatus.textContent = message || "";
+      requestList.replaceChildren();
+    }
+
+    function showPanel(user) {
+      loginForm.hidden = true;
+      panel.hidden = false;
+      document.getElementById("session-label").textContent = user ? `Sesión activa: ${user}` : "Sesión activa";
+      loadRequests();
+    }
+
+    function handleError(error, statusNode, fallback) {
+      const message = (error && error.message) || fallback;
+      if (/Sesión administrativa/.test(message)) {
+        showLogin(message);
+        return;
+      }
+      statusNode.textContent = message;
+    }
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      loginButton.disabled = true;
+      loginStatus.textContent = "Verificando…";
+      google.script.run
+        .withSuccessHandler((result) => {
+          token = result.token;
+          sessionStorage.setItem(TOKEN_KEY, token);
+          sessionStorage.setItem(TOKEN_KEY + "-user", result.user);
+          document.getElementById("admin-password").value = "";
+          loginButton.disabled = false;
+          loginStatus.textContent = "";
+          showPanel(result.user);
+        })
+        .withFailureHandler((error) => {
+          loginButton.disabled = false;
+          loginStatus.textContent = error.message || "No se pudo iniciar sesión.";
+        })
+        .adminLogin(document.getElementById("admin-user").value, document.getElementById("admin-password").value);
+    });
+
+    document.getElementById("logout-button").addEventListener("click", () => {
+      google.script.run.adminLogout(token);
+      showLogin("Sesión cerrada.");
+    });
+
+    function downloadAttachment(requestId, button) {
+      button.disabled = true;
+      const original = button.textContent;
+      button.textContent = "Descargando…";
+      google.script.run
+        .withSuccessHandler((file) => {
+          const bytes = Uint8Array.from(atob(file.data), (c) => c.charCodeAt(0));
+          const url = URL.createObjectURL(new Blob([bytes], { type: file.mimeType }));
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = file.name;
+          document.body.append(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 10000);
+          button.disabled = false;
+          button.textContent = original;
+        })
+        .withFailureHandler((error) => {
+          button.disabled = false;
+          button.textContent = original;
+          handleError(error, queueStatus, "No se pudo descargar el antecedente.");
+        })
+        .getAttachment(token, requestId);
+    }
+
+    function loadRequests() {
+      reloadButton.disabled = true;
+      queueStatus.textContent = "Cargando bandeja…";
+      google.script.run
+        .withSuccessHandler((requests) => {
+          requestList.replaceChildren();
+          queueStatus.textContent = requests.length
+            ? `${requests.length} solicitud${requests.length === 1 ? "" : "es"} pendiente${requests.length === 1 ? "" : "s"}.`
+            : "No hay solicitudes pendientes.";
+          requests.forEach(renderRequest);
+          reloadButton.disabled = false;
+        })
+        .withFailureHandler((error) => {
+          handleError(error, queueStatus, "No se pudo cargar la bandeja.");
+          reloadButton.disabled = false;
+        })
+        .listPendingRequests(token);
+    }
+
+    function renderRequest(request) {
+      const card = element("article", null, "request");
+      const title = element("h3", request.fullName);
+      card.append(title);
+      card.append(element("p", `${request.requestType === "rectificacion" ? "Rectificación" : "Incorporación"} · ${request.category === "naturales" ? "Socio/a natural" : "Representante institucional"} · ${new Date(request.date).toLocaleString("es-CL")}`, "meta"));
+
+      const details = document.createElement("dl");
+      const requestFields = [
+        ["ID de solicitud", request.id],
+        ["ID socio", request.memberId || "Nueva incorporación"],
+        ["Correo de contacto", request.email],
+        ["Teléfono de contacto", request.phone]
+      ];
+      if (request.currentMember) {
+        requestFields.push(
+          ["Datos actuales", `${request.currentMember.surname}, ${request.currentMember.givenName} · ${request.currentMember.email} · ${request.currentMember.university}`]
+        );
+      }
+      requestFields.push(
+        ["Apellidos propuestos", request.proposed.surname],
+        ["Nombre propuesto", request.proposed.givenName],
+        ["Correo propuesto", request.proposed.email],
+        ["Universidad propuesta", request.proposed.university],
+        ["Cambios / antecedentes", request.details]
+      );
+      requestFields.forEach(([label, value]) => {
+        details.append(element("dt", label), element("dd", value));
+      });
+      card.append(details);
+
+      if (request.hasAttachment) {
+        const fileButton = element("button", `Descargar antecedente: ${request.attachmentName}`, "button quiet file-button");
+        fileButton.type = "button";
+        fileButton.addEventListener("click", () => downloadAttachment(request.id, fileButton));
+        card.append(fileButton);
+      }
+
+      const review = element("div", null, "review");
+      const noteLabel = element("label", "Nota administrativa");
+      const note = document.createElement("textarea");
+      note.maxLength = 2000;
+      noteLabel.append(note);
+      review.append(noteLabel);
+
+      const eligibleLabel = element("label");
+      const eligible = document.createElement("input");
+      eligible.type = "checkbox";
+      eligible.checked = request.eligible2026;
+      eligibleLabel.append(eligible, document.createTextNode(" Confirmar habilitación 2026 según respaldo de pago revisado"));
+      review.append(eligibleLabel);
+
+      const actions = element("div", null, "toolbar");
+      const approve = element("button", "Aprobar y aplicar al padrón", "button");
+      approve.type = "button";
+      approve.addEventListener("click", () => reviewRequest(request.id, "Aprobada", note.value, eligible.checked, card));
+      const reject = element("button", "Rechazar", "button reject");
+      reject.type = "button";
+      reject.addEventListener("click", () => reviewRequest(request.id, "Rechazada", note.value, false, card));
+      actions.append(approve, reject);
+      review.append(actions);
+      card.append(review);
+      requestList.append(card);
+    }
+
+    function reviewRequest(id, decision, note, eligible2026, card) {
+      card.querySelectorAll("button").forEach((button) => { button.disabled = true; });
+      google.script.run
+        .withSuccessHandler(() => {
+          card.remove();
+          const count = requestList.children.length;
+          queueStatus.textContent = count
+            ? `${count} solicitud${count === 1 ? "" : "es"} pendiente${count === 1 ? "" : "s"}.`
+            : "No hay solicitudes pendientes.";
+        })
+        .withFailureHandler((error) => {
+          card.querySelectorAll("button").forEach((button) => { button.disabled = false; });
+          handleError(error, queueStatus, "No se pudo revisar la solicitud.");
+        })
+        .reviewRequest(token, id, decision, note, eligible2026);
+    }
+
+    importButton.addEventListener("click", () => {
+      const file = document.getElementById("directory-file").files[0];
+      if (!file) {
+        importStatus.textContent = "Selecciona un archivo JSON.";
+        return;
+      }
+      importButton.disabled = true;
+      importStatus.textContent = "Leyendo padrón…";
+      const reader = new FileReader();
+      reader.onload = () => {
+        google.script.run
+          .withSuccessHandler((result) => {
+            importStatus.textContent = `Padrón importado: ${result.imported} registros.`;
+            importButton.disabled = false;
+          })
+          .withFailureHandler((error) => {
+            handleError(error, importStatus, "No se pudo importar el padrón.");
+            importButton.disabled = false;
+          })
+          .importDirectory(token, String(reader.result));
+      };
+      reader.onerror = () => {
+        importStatus.textContent = "No se pudo leer el archivo seleccionado.";
+        importButton.disabled = false;
+      };
+      reader.readAsText(file, "UTF-8");
+    });
+
+    reloadButton.addEventListener("click", loadRequests);
+    saveUrlButton.addEventListener("click", () => {
+      saveUrlButton.disabled = true;
+      urlStatus.textContent = "Guardando URL…";
+      google.script.run
+        .withSuccessHandler(() => {
+          urlStatus.textContent = "URL guardada. El sitio usará este despliegue público.";
+          saveUrlButton.disabled = false;
+        })
+        .withFailureHandler((error) => {
+          handleError(error, urlStatus, "No se pudo guardar la URL.");
+          saveUrlButton.disabled = false;
+        })
+        .savePublicWebAppUrl(token, document.getElementById("public-url").value);
+    });
+    if (token) showPanel(sessionStorage.getItem(TOKEN_KEY + "-user") || "");
+  </script>
+</body>
+</html>

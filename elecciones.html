@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3e8">
+  <meta name="description" content="Etapas de actualización de membresías y preparación del proceso de elección de la Directiva de ACHETSU.">
+  <title>Proceso electoral — ACHETSU</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3e8;
+      --paper-deep: #eee5d3;
+      --ink: #302d2b;
+      --muted: #716961;
+      --rust: #b94f2d;
+      --gold: #d7a93f;
+      --teal: #1c625e;
+      --teal-dark: #174e4b;
+      --line: #dfd4bf;
+      --white: #fffdf8;
+      --page: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.65 "Segoe UI", Arial, sans-serif;
+    }
+
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--rust); outline-offset: 4px; }
+
+    .skip-link {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      padding: 0.6rem 1rem;
+      transform: translateY(-150%);
+      background: var(--ink);
+      color: var(--white);
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgb(247 243 232 / 96%);
+    }
+
+    .header-inner {
+      display: flex;
+      width: min(100% - 3rem, var(--page));
+      min-height: 78px;
+      margin-inline: auto;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 52px;
+      height: 42px;
+      object-fit: cover;
+      mix-blend-mode: multiply;
+    }
+
+    .brand-name { font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em; }
+
+    .home-link {
+      color: var(--teal-dark);
+      font-size: 0.84rem;
+      font-weight: 800;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.25em;
+    }
+
+    main { overflow: clip; }
+
+    .wrap { width: min(100% - 3rem, var(--page)); margin-inline: auto; }
+
+    .intro {
+      position: relative;
+      padding-block: clamp(4rem, 9vw, 7rem);
+    }
+
+    .intro::before {
+      position: absolute;
+      z-index: -1;
+      inset: 1rem 0.3rem;
+      border: 1px solid var(--gold);
+      content: "";
+    }
+
+    .intro-copy { max-width: 720px; padding: 1rem 1.5rem; }
+
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+
+    h1 {
+      max-width: 14ch;
+      margin: 0;
+      font-size: clamp(3rem, 7vw, 5.7rem);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    h1 span { color: var(--rust); }
+
+    .intro-copy > p { max-width: 65ch; color: #544d47; }
+
+    .intro-note {
+      max-width: 720px;
+      padding: 1rem 1.25rem;
+      border: 1px solid #c8b99e;
+      background: var(--paper-deep);
+      color: #544d47;
+    }
+
+    .intro-note strong { color: var(--teal-dark); }
+
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      padding: 0.7rem 1rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--teal);
+      background: var(--teal);
+      color: var(--white);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .button:hover { background: var(--teal-dark); }
+
+    .section {
+      padding-block: clamp(3.75rem, 7vw, 6rem);
+      border-top: 1px solid var(--line);
+    }
+
+    .section h2 {
+      max-width: 16ch;
+      margin: 0 0 1rem;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+
+    .section-intro { max-width: 68ch; margin: 0 0 2.25rem; color: var(--muted); }
+
+    .steps { border-top: 1px solid var(--line); }
+
+    .step {
+      display: grid;
+      padding-block: 1.6rem;
+      border-bottom: 1px solid var(--line);
+      grid-template-columns: minmax(160px, 0.45fr) minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .step h3 { margin: 0; font-size: 1.65rem; line-height: 1.2; }
+    .step p { max-width: 66ch; margin: 0 0 0.8rem; color: #544d47; }
+    .step p:last-child { margin-bottom: 0; }
+
+    .rate-list {
+      display: grid;
+      max-width: 620px;
+      margin: 1.25rem 0;
+      border-top: 1px solid var(--line);
+      grid-template-columns: 1fr auto;
+    }
+
+    .rate-list dt, .rate-list dd { margin: 0; padding: 0.75rem 0; border-bottom: 1px solid var(--line); }
+    .rate-list dd { color: var(--teal-dark); font-weight: 800; }
+
+    .missing {
+      display: inline-block;
+      margin-top: 0.25rem;
+      color: var(--rust);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .forms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .button-secondary { background: transparent; color: var(--teal-dark); }
+    .button-secondary:hover { color: var(--white); }
+
+    .election-callout {
+      display: grid;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--gold);
+      background: #f2e7cd;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 1rem;
+    }
+
+    .election-callout > span { color: var(--rust); font-size: 1.3rem; }
+    .election-callout p { margin: 0; }
+
+    .site-footer { padding-block: 2rem; background: var(--ink); color: var(--paper); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .footer-inner p { margin: 0; font-size: 0.8rem; }
+    .footer-inner a { color: #f2cf70; font-size: 0.82rem; }
+
+    @media (max-width: 640px) {
+      html { scroll-padding-top: 5rem; }
+      .header-inner { width: min(100% - 2rem, var(--page)); min-height: 68px; }
+      .brand img { width: 46px; height: 38px; }
+      .home-link { font-size: 0.76rem; }
+      .wrap { width: min(100% - 2rem, var(--page)); }
+      .intro { padding-block: 3.5rem 2.5rem; }
+      .intro-copy { padding-inline: 0.9rem; }
+      h1 { font-size: clamp(2.65rem, 12vw, 4.2rem); }
+      .section { padding-block: 3.5rem; }
+      .step { grid-template-columns: 1fr; gap: 0.5rem; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html#inicio">
+        <img src="assets/achet-su-logo.png" alt="">
+        <span class="brand-name">ACHETSU</span>
+      </a>
+      <a class="home-link" href="index.html#elecciones">← Volver a elecciones</a>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="intro wrap" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <h1 id="page-title">Preparar la elección es <span>participar.</span></h1>
+        <p>ACHETSU retoma su trabajo asociativo. Antes de elegir una nueva Directiva, es necesario actualizar los registros de socios y socias, revisar las membresías y avanzar en la conformación del claustro elector.</p>
+        <p><a class="button" href="#etapas">Revisar las etapas ↓</a></p>
+        <div class="intro-note"><strong>La convocatoria a Asamblea General Ordinaria y la fecha de elección se informarán oportunamente</strong>, una vez avanzado el proceso de actualización y regularización.</div>
+      </div>
+    </section>
+
+    <section class="section" id="etapas" aria-labelledby="stages-title">
+      <div class="wrap">
+        <h2 id="stages-title">Etapas para preparar el proceso</h2>
+        <p class="section-intro">La nueva Directiva se elegirá en Asamblea General Ordinaria, de acuerdo con los procedimientos establecidos en los Estatutos. Estas son las acciones previas comunicadas por ACHETSU.</p>
+        <div class="steps">
+          <article class="step" id="regularizacion">
+            <h3>Revisar y regularizar membresías</h3>
+            <div>
+              <p>Revisa si existen cuotas pendientes. La regularización permite avanzar en el ejercicio de los derechos de participación establecidos en los Estatutos y en la conformación del claustro elector.</p>
+              <dl class="rate-list">
+                <dt>Socios y socias institucionales · cuota anual</dt><dd>3 UF</dd>
+                <dt>Socios y socias naturales · cuota anual</dt><dd>1 UF</dd>
+              </dl>
+              <p>Los montos corresponden a las cuotas ordinarias anuales indicadas en el artículo 44 de los Estatutos.</p>
+              <p><a href="index.html#socios">Revisar cuotas y socios en la página principal</a></p>
+              <span class="missing">Instrucciones y canal de pago: pendientes de publicación.</span>
+            </div>
+          </article>
+
+          <article class="step" id="actualizar-registro">
+            <h3>Actualizar el registro de socios y socias</h3>
+            <div>
+              <p>Consulta tu nombre, correo, universidad y estado de habilitación en el visor separado para socios naturales y representantes institucionales.</p>
+              <p><a href="index.html#padron">Consultar padrón de socios</a></p>
+              <span class="missing">Las rectificaciones y antecedentes quedan pendientes de revisión administrativa; el padrón solo cambia después de la aprobación. El canal estará activo cuando se despliegue y conecte el backend.</span>
+            </div>
+          </article>
+
+          <article class="step" id="nuevas-membresias">
+            <h3>Incorporar nuevas personas e instituciones</h3>
+            <div>
+              <p>Las Escuelas, Departamentos y Carreras universitarias de Trabajo Social pueden solicitar su incorporación como socias institucionales si cumplen los requisitos estatutarios.</p>
+              <p><a href="https://docs.google.com/document/d/1My86G708OjkKw39QU17iicEzUsPVb8ub/edit?usp=drive_link&amp;ouid=111476085131633763376&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Formato de constancia para socios/as institucionales ↗</a></p>
+              <p>Académicas, académicos e investigadores vinculados a unidades académicas universitarias de Trabajo Social pueden inscribirse como socios naturales. Para la inscripción individual se debe adjuntar una constancia de la Dirección de la unidad académica que acredite la vinculación académica y/o investigativa.</p>
+              <p><a href="https://docs.google.com/spreadsheets/d/1mOCSw-D90ekZnFeMfOCcNc-kBje49ZEW/edit?usp=sharing&amp;ouid=111476085131633763376&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Formato de constancia para socios/as personales ↗</a></p>
+              <div class="forms">
+                <a class="button" href="https://goo.gl/forms/jxwuM2HJWoGAmV332" target="_blank" rel="noopener">Formulario de socio institucional ↗</a>
+                <a class="button button-secondary" href="https://goo.gl/forms/Co3HlLmV6kSUEzwY2" target="_blank" rel="noopener">Formulario de socio natural ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="step" id="convocatoria">
+            <h3>Convocar a la elección de Directiva</h3>
+            <div>
+              <p>Una vez avanzado el proceso de actualización y regularización de las membresías, se informará la convocatoria a la Asamblea General Ordinaria, donde se realizará la elección conforme a los Estatutos.</p>
+              <p>La asamblea también será una oportunidad para reencontrarse, revisar los desafíos de la formación universitaria en Trabajo Social y proyectar las líneas de trabajo de la Asociación.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="updates-title">
+      <div class="wrap">
+        <div class="election-callout">
+          <span aria-hidden="true">◆</span>
+          <p id="updates-title"><strong>Fechas, padrón electoral y requisitos específicos se comunicarán junto con la convocatoria oficial.</strong> Este sitio no publica todavía un calendario de votación ni un enlace de actualización del registro.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner wrap">
+      <p>ACHETSU · Asociación Chilena de Enseñanza del Trabajo Social Universitario</p>
+      <a href="index.html#inicio">Volver a la página principal ↑</a>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f7f3e8;
+      --ink: #302d2b;
+      --muted: #716961;
+      --rust: #b94f2d;
+      --teal: #1c625e;
+      --line: #dfd4bf;
+      --white: #fffdf8;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 1.25rem; background: var(--paper); color: var(--ink); font: 16px/1.55 "Segoe UI", Arial, sans-serif; }
+    main { max-width: 720px; margin-inline: auto; }
+    h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; line-height: 1.1; }
+    h1 { margin: 0 0 0.6rem; font-size: clamp(2rem, 7vw, 3.2rem); }
+    h2 { margin: 0 0 0.8rem; font-size: 1.6rem; }
+    p { color: #544d47; }
+    .notice { padding: 0.9rem 1rem; border: 1px solid var(--line); background: #eee5d3; }
+    .notice strong { color: var(--teal); }
+    form, fieldset { margin: 0; padding: 0; border: 0; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    label { display: grid; gap: 0.35rem; color: #544d47; font-size: 0.83rem; font-weight: 700; }
+    .wide { grid-column: 1 / -1; }
+    input, select, textarea {
+      width: 100%;
+      min-height: 46px;
+      padding: 0.65rem 0.7rem;
+      border: 1px solid #c9c0b2;
+      border-radius: 0;
+      background: var(--white);
+      color: var(--ink);
+      font: inherit;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--rust); outline-offset: 3px; }
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      margin-top: 1rem;
+      padding: 0.65rem 1rem;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: var(--teal);
+      color: white;
+      font: 800 0.82rem "Segoe UI", Arial, sans-serif;
+      cursor: pointer;
+    }
+    .button[disabled] { opacity: 0.65; cursor: wait; }
+    .challenge { margin-top: 1.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+    .challenge[hidden], .success[hidden] { display: none; }
+    .secret { display: block; overflow-wrap: anywhere; padding: 0.8rem; border: 1px dashed var(--teal); background: var(--white); color: var(--teal); font: 700 1rem/1.5 Consolas, monospace; letter-spacing: 0.12em; }
+    .small { color: var(--muted); font-size: 0.82rem; }
+    .error { min-height: 1.5em; color: #8d321b; font-weight: 700; }
+    .success { padding: 1rem; border: 1px solid var(--teal); background: #e1eee8; }
+    .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    @media (max-width: 580px) { body { padding: 1rem; } .grid { grid-template-columns: 1fr; } .wide { grid-column: auto; } }
+  </style>
+</head>
+<body>
+  <main data-member-id="<?= memberId ?>" data-category="<?= category ?>" data-request-type="<?= requestType ?>">
+    <h1>Enviar una solicitud</h1>
+    <p>Solicita una rectificación del padrón o presenta antecedentes para una nueva incorporación. La administración revisará y aprobará cada solicitud antes de aplicar cambios.</p>
+    <p class="notice"><strong>Verificación con Authenticator:</strong> se genera una clave temporal para confirmar este envío. No se envían SMS; el teléfono es un dato de contacto y esta verificación no confirma la identidad ni la titularidad del número. La aprobación administrativa y la revisión de antecedentes son obligatorias.</p>
+
+    <form id="request-form">
+      <div class="grid">
+        <label>Tipo de solicitud
+          <select name="requestType" id="request-type" required>
+            <option value="">Selecciona el tipo de solicitud</option>
+            <option value="rectificacion">Rectificar datos de un registro</option>
+            <option value="incorporacion">Solicitar nueva incorporación</option>
+          </select>
+        </label>
+        <label>Categoría
+          <select name="category" id="category" required>
+            <option value="">Selecciona la categoría</option>
+            <option value="naturales">Socio/a natural</option>
+            <option value="institucionales">Representante institucional</option>
+          </select>
+        </label>
+        <label class="wide">Apellidos<input name="surname" id="surname" maxlength="160" autocomplete="family-name" required></label>
+        <label class="wide">Nombre completo<input name="givenName" id="given-name" maxlength="160" autocomplete="given-name" required></label>
+        <label>Correo electrónico<input name="email" type="email" maxlength="254" autocomplete="email" required></label>
+        <label>Teléfono de contacto<input name="phone" type="tel" maxlength="40" autocomplete="tel" placeholder="+56 9 1234 5678" required></label>
+        <label class="wide">Universidad o unidad académica<input name="university" id="university" maxlength="180" autocomplete="organization" required></label>
+        <label class="wide">Cambios solicitados o antecedentes de incorporación
+          <textarea name="description" maxlength="2500" required></textarea>
+        </label>
+        <label class="wide">Adjunta un antecedente (PDF, JPG o PNG; máximo 5 MB)
+          <input name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required>
+        </label>
+      </div>
+      <label class="trap" aria-hidden="true">No completar<input name="website" tabindex="-1" autocomplete="off"></label>
+      <label style="display:flex; grid-template-columns:auto 1fr; align-items:start; gap:.6rem; margin-top:1rem">
+        <input name="consent" type="checkbox" required style="width:1rem;min-height:1rem;margin-top:.25rem">
+        <span>Autorizo que ACHETSU revise los datos y documentos enviados para evaluar esta solicitud. Entiendo que solo se publicarán los cambios aprobados.</span>
+      </label>
+      <button class="button" type="button" id="prepare-button">Continuar a la verificación</button>
+
+      <section class="challenge" id="challenge" hidden aria-labelledby="challenge-title">
+        <h2 id="challenge-title">Confirma el envío con tu app Authenticator</h2>
+        <p class="small">Agrega una cuenta de tipo TOTP en tu app e introduce manualmente esta clave. La clave dura 10 minutos y se elimina al enviar la solicitud.</p>
+        <code class="secret" id="secret"></code>
+        <input type="hidden" name="challengeId" id="challenge-id">
+        <label style="margin-top:1rem">Código de 6 dígitos
+          <input name="totpCode" id="totp-code" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code" required disabled>
+        </label>
+        <p class="error" id="form-error" role="alert"></p>
+        <button class="button" type="submit" id="submit-button">Enviar para revisión administrativa</button>
+        <button class="button" type="button" id="renew-button" hidden>Iniciar una nueva verificación</button>
+      </section>
+    </form>
+
+    <section class="success" id="success" hidden aria-live="polite">
+      <h2>Solicitud recibida</h2>
+      <p id="success-message"></p>
+      <p>La información no cambia en el padrón hasta que una persona administradora la revise y apruebe.</p>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("request-form");
+    const challengePanel = document.getElementById("challenge");
+    const prepareButton = document.getElementById("prepare-button");
+    const submitButton = document.getElementById("submit-button");
+    const renewButton = document.getElementById("renew-button");
+    const errorBox = document.getElementById("form-error");
+
+    function showError(message) {
+      errorBox.textContent = message || "No se pudo completar la solicitud. Intenta de nuevo.";
+    }
+
+    function loadMember() {
+      const { memberId, category, requestType } = form.closest("main").dataset;
+      if (requestType === "incorporacion") {
+        document.getElementById("request-type").value = "incorporacion";
+      }
+      if (["naturales", "institucionales"].includes(category)) {
+        document.getElementById("category").value = category;
+      }
+      if (!memberId || !["naturales", "institucionales"].includes(category)) return;
+      document.getElementById("request-type").value = "rectificacion";
+      google.script.run
+        .withSuccessHandler((member) => {
+          if (!member) {
+            showError("No se encontró el registro. Vuelve al padrón y selecciónalo nuevamente.");
+            return;
+          }
+          document.getElementById("surname").value = member.surname;
+          document.getElementById("given-name").value = member.givenName;
+          document.querySelector('[name="email"]').value = member.email;
+          document.getElementById("university").value = member.university;
+          const hiddenId = document.createElement("input");
+          hiddenId.type = "hidden";
+          hiddenId.name = "memberId";
+          hiddenId.value = member.id;
+          form.append(hiddenId);
+        })
+        .withFailureHandler((error) => showError(error.message))
+        .getPublicMember(memberId, category);
+    }
+
+    document.getElementById("request-type").addEventListener("change", (event) => {
+      if (event.target.value === "incorporacion") {
+        form.querySelector('[name="memberId"]')?.remove();
+      }
+    });
+
+    prepareButton.addEventListener("click", () => {
+      if (!form.reportValidity()) return;
+      prepareButton.disabled = true;
+      prepareButton.textContent = "Preparando verificación…";
+      errorBox.textContent = "";
+      google.script.run
+        .withSuccessHandler((challenge) => {
+          document.getElementById("secret").textContent = challenge.secret;
+          document.getElementById("challenge-id").value = challenge.challengeId;
+          document.getElementById("totp-code").disabled = false;
+          challengePanel.hidden = false;
+          prepareButton.hidden = true;
+          document.getElementById("totp-code").focus();
+        })
+        .withFailureHandler((error) => {
+          prepareButton.disabled = false;
+          prepareButton.textContent = "Continuar a la verificación";
+          showError(error.message);
+        })
+        .beginTotpChallenge(form.querySelector('[name="email"]').value);
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const code = document.getElementById("totp-code");
+      code.value = code.value.replace(/\D/g, "").slice(0, 6);
+      submitButton.disabled = true;
+      submitButton.textContent = "Enviando solicitud…";
+      errorBox.textContent = "";
+      google.script.run
+        .withSuccessHandler((result) => {
+          form.hidden = true;
+          document.getElementById("success").hidden = false;
+          document.getElementById("success-message").textContent = result.message;
+        })
+        .withFailureHandler((error) => {
+          submitButton.disabled = false;
+          submitButton.textContent = "Enviar para revisión administrativa";
+          showError(error.message);
+          if (/venció|utilizado|agotaron|correo cambió/i.test(error.message || "")) {
+            renewButton.hidden = false;
+          }
+        })
+        .submitRequest(form);
+    });
+
+    renewButton.addEventListener("click", () => {
+      document.getElementById("totp-code").value = "";
+      document.getElementById("totp-code").disabled = true;
+      document.getElementById("challenge-id").value = "";
+      renewButton.hidden = true;
+      challengePanel.hidden = true;
+      prepareButton.hidden = false;
+      prepareButton.disabled = false;
+      prepareButton.textContent = "Continuar a la verificación";
+      errorBox.textContent = "";
+      prepareButton.focus();
+    });
+
+    loadMember();
+  </script>
+</body>
+</html>
