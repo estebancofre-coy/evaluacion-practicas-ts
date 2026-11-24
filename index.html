@@ -38,10 +38,21 @@
         .role-weight { display: inline-block; margin-bottom: 12px; color: #47705b; font-size: 12px; font-weight: 700; text-transform: uppercase; }
         .method-note { color: #52635d; font-size: 14px; line-height: 1.55; }
         #portal[hidden], #instrument[hidden] { display: none; }
-        #instrument[hidden] { display: none; }
         .instrument-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 20px 0 0; }
         .instrument-top p { margin: 0; color: #52635d; font-size: 14px; }
-        form { margin-top: 24px; }
+
+        /* Pestañas paralelas para estudiantes */
+        .student-tabs { display: flex; gap: 8px; margin: 20px 0 10px; padding: 6px; background: #e3ece6; border-radius: 6px; border: 1px solid #c8d6ce; }
+        .student-tab-btn { flex: 1; min-height: 46px; padding: 8px 14px; border: 0; border-radius: 4px; background: transparent; color: #315d4b; cursor: pointer; font: inherit; font-size: 14px; font-weight: 700; transition: all 0.2s ease; text-align: center; }
+        .student-tab-btn:hover { background: rgba(255, 255, 255, 0.6); }
+        .student-tab-btn.active { background: #28664a; color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+        .student-tabs[hidden] { display: none; }
+
+        /* Banner confidencial para evaluación de centro */
+        .confidential-banner { display: flex; align-items: flex-start; gap: 12px; margin: 18px 0 20px; padding: 14px 18px; background: #e8f3f5; border-left: 4px solid #287c88; border-radius: 4px; color: #174b53; font-size: 13.5px; line-height: 1.5; }
+        .confidential-banner strong { color: #0e373e; font-weight: 700; }
+
+        form { margin-top: 20px; }
         .panel { margin: 0 0 18px; padding: 22px; border: 1px solid #d5dfd9; border-radius: 6px; background: rgba(255,255,255,.9); }
         .panel h2 { margin: 0 0 16px; font-size: 20px; }
         .identity { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
@@ -62,6 +73,17 @@
         .choice input { position: absolute; width: 1px; height: 1px; opacity: 0; }
         .choice:has(input:checked) { border-color: #28664a; background: #28664a; color: white; }
         .choice:focus-within { outline: 3px solid #b8d8c6; }
+
+        /* Comentarios en cada criterio */
+        .criterion-comment-wrapper { margin-top: 9px; }
+        .criterion-comment { width: 100%; min-height: 38px; padding: 7px 11px; font-size: 13px; border: 1px solid #cbd7d1; border-radius: 4px; background: #fafcfb; }
+        .criterion-comment:focus { outline: 2px solid #b8d8c6; border-color: #28664a; background: #fff; }
+
+        /* Panel de puntaje y nota en vivo */
+        .score-summary-panel { margin: 20px 0; padding: 18px 20px; background: #edf3ef; border: 1px solid #c8d6ce; border-radius: 6px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; text-align: center; }
+        .score-item strong { display: block; font-size: 22px; color: #28664a; margin-bottom: 4px; }
+        .score-item span { font-size: 12px; color: #52635d; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+
         textarea { min-height: 112px; resize: vertical; }
         .synthesis { display: grid; gap: 16px; }
         button { width: 100%; min-height: 50px; border: 0; border-radius: 4px; background: #28664a; color: white; cursor: pointer; font: inherit; font-weight: 700; }
@@ -71,6 +93,7 @@
         .form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .form-actions .back-button { width: 100%; min-height: 50px; border: 1px solid #28664a; background: #fff; color: #24583f; }
         #print-report { display: none; }
+
         @media (max-width: 620px) {
             body { padding: 22px 12px 36px; }
             .masthead { grid-template-columns: 1fr; gap: 18px; }
@@ -80,6 +103,8 @@
             .method-step { min-height: auto; }
             .role-option p { min-height: auto; }
             .instrument-top { align-items: flex-start; flex-direction: column; }
+            .student-tabs { flex-direction: column; }
+            .score-summary-panel { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .form-actions { grid-template-columns: 1fr; }
             .panel { padding: 17px 14px; }
             .identity { grid-template-columns: 1fr; gap: 13px; }
@@ -91,14 +116,15 @@
             body * { visibility: hidden !important; }
             #print-report, #print-report * { visibility: visible !important; }
             #print-report { display: block; position: absolute; inset: 0; width: 100%; padding: 12mm; color: #111; background: #fff; font: 11pt Arial, sans-serif; }
-            #print-report h1 { max-width: none; margin-bottom: 8mm; font-size: 20pt; }
-            #print-report h2 { margin: 7mm 0 3mm; font-size: 14pt; }
-            #print-report h3 { margin: 5mm 0 2mm; font-size: 11pt; }
+            #print-report h1 { max-width: none; margin-bottom: 4mm; font-size: 18pt; color: #28664a; }
+            #print-report h2 { margin: 6mm 0 3mm; font-size: 13pt; color: #315d4b; border-bottom: 1px solid #cbd7d1; padding-bottom: 2mm; }
+            #print-report h3 { margin: 4mm 0 2mm; font-size: 10.5pt; font-weight: 600; }
             #print-report p { margin: 2mm 0; line-height: 1.4; white-space: pre-wrap; }
-            #print-report .print-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 8mm; }
+            #print-report .print-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2mm 8mm; margin-bottom: 5mm; }
             #print-report .print-criterion { padding: 2mm 0; border-bottom: 1px solid #ddd; break-inside: avoid; }
-            #print-report .print-section { break-inside: avoid; }
-            #print-report .print-logo { width: 55mm; height: auto; margin-bottom: 5mm; }
+            #print-report .print-section { break-inside: avoid; margin-top: 4mm; }
+            #print-report .print-logo { width: 50mm; height: auto; margin-bottom: 4mm; }
+            #print-report .print-meta-note { color: #52635d; font-size: 10pt; margin-bottom: 4mm; }
         }
     </style>
 </head>
@@ -109,7 +135,7 @@
         <div class="masthead-copy">
             <p class="eyebrow">Trabajo Social · Práctica Profesional II</p>
             <h1>Evaluación del proceso de práctica</h1>
-            <p class="intro">Evaluación anual y semestral desde las tres perspectivas que acompañan el proceso: supervisión en terreno, supervisión docente y estudiante.</p>
+            <p class="intro">Evaluación anual y semestral desde las perspectivas que acompañan el proceso: supervisión en terreno, supervisión docente y estudiante.</p>
         </div>
     </header>
 
@@ -137,186 +163,543 @@
                 <button type="button" data-role="supervision_docente">Continuar</button>
             </article>
             <article class="role-option">
-                <span class="role-weight">20% de la evaluación</span>
-                <h3>Autoevaluación</h3>
-                <p>Reflexión del/de la estudiante sobre su desempeño y formación profesional.</p>
-                <button type="button" data-role="autoevaluacion">Continuar</button>
+                <span class="role-weight">20% de la evaluación · Estudiantes</span>
+                <h3>Autoevaluación y Centro de Práctica</h3>
+                <p>Reflexión del desempeño formativo (20%) y formulario confidencial de evaluación del centro de práctica.</p>
+                <button type="button" data-role="autoevaluacion">Ingresar como estudiante</button>
             </article>
         </div>
     </section>
 
     <section id="instrument" hidden aria-labelledby="rubrica">
-    <div class="instrument-top">
-        <p id="role-intro"></p>
-        <button type="button" id="back-to-portal" class="back-button">Volver a metodología</button>
-    </div>
-    <form id="evaluation-form" action="https://script.google.com/macros/s/AKfycbwmo85-edyosijP904prP6u8mcIXBYsLFfYVJpRWCWVowHglCN7RxnB8UfmQP7NzES8Kg/exec" method="post">
-        <input type="hidden" id="rol" name="rol">
-        <section class="panel" aria-labelledby="identificacion">
-            <h2 id="identificacion">Identificación del periodo</h2>
-            <div class="identity">
-                <div class="field">
-                    <label for="periodo">Instancia de evaluación</label>
-                    <select id="periodo" name="periodo" required>
-                        <option value="">Seleccione una instancia</option>
-                        <option value="Seguimiento intermedio">Seguimiento intermedio</option>
-                        <option value="Cierre semestral">Cierre semestral</option>
-                        <option value="Evaluación general">Evaluación general</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="semestre">Periodo evaluado</label>
-                    <select id="semestre" name="semestre" required>
-                        <option value="">Seleccione el periodo</option>
-                        <option value="Primer semestre">Primer semestre</option>
-                        <option value="Segundo semestre">Segundo semestre</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="correo">Dirección de correo electrónico</label>
-                    <input id="correo" type="email" name="correo" autocomplete="email" required>
-                </div>
-                <div id="field-supervisor-terreno" class="field">
-                    <label for="supervisor">Nombre del/de la supervisor(a) en terreno</label>
-                    <input id="supervisor" type="text" name="supervisor" required>
-                </div>
-                <div class="field">
-                    <label for="estudiante">Estudiante</label>
-                    <select id="estudiante" name="estudiante" required>
-                        <option value="">Seleccione estudiante</option>
-                        <optgroup label="Supervisión docente: Esteban Cofré Morales">
-                            <option value="Cofré Morales, Esteban Patricio" data-docente="Esteban Cofré Morales">Cofré Morales, Esteban Patricio</option>
-                            <option value="Perez Barria, Tatiana Valeska" data-docente="Esteban Cofré Morales">Perez Barria, Tatiana Valeska</option>
-                            <option value="Ayancán Barría, Natalia Paz" data-docente="Esteban Cofré Morales">Ayancán Barría, Natalia Paz</option>
-                            <option value="Calisto Silva, Luz María Belén" data-docente="Esteban Cofré Morales">Calisto Silva, Luz María Belén</option>
-                            <option value="Cumian Jaramillo, Felipe Bastián" data-docente="Esteban Cofré Morales">Cumian Jaramillo, Felipe Bastián</option>
-                            <option value="Diaz Veliz, Yenifer Madorna" data-docente="Esteban Cofré Morales">Diaz Veliz, Yenifer Madorna</option>
-                            <option value="Mac-Kay Saavedra, Francisca Javiera" data-docente="Esteban Cofré Morales">Mac-Kay Saavedra, Francisca Javiera</option>
-                            <option value="Poblete Poblete, Cesar Antonio" data-docente="Esteban Cofré Morales">Poblete Poblete, Cesar Antonio</option>
-                            <option value="Rios Alzate, Laura" data-docente="Esteban Cofré Morales">Rios Alzate, Laura</option>
-                            <option value="Torres Rogel, Tiare Soledad" data-docente="Esteban Cofré Morales">Torres Rogel, Tiare Soledad</option>
-                            <option value="Vidal De la Cruz, Fernanda Valentina" data-docente="Esteban Cofré Morales">Vidal De la Cruz, Fernanda Valentina</option>
-                        </optgroup>
-                        <optgroup label="Supervisión docente: María Fernanda Leiva">
-                            <option value="Contreras Cerro, Nicolás Gonzalo" data-docente="María Fernanda Leiva">Contreras Cerro, Nicolás Gonzalo</option>
-                            <option value="Esparza Jara, Antonella" data-docente="María Fernanda Leiva">Esparza Jara, Antonella</option>
-                            <option value="Guevara Rodríguez, Isidora Francisca" data-docente="María Fernanda Leiva">Guevara Rodríguez, Isidora Francisca</option>
-                            <option value="Hernandez Arteaga, Constanza Beatriz" data-docente="María Fernanda Leiva">Hernandez Arteaga, Constanza Beatriz</option>
-                            <option value="Igor Bartsch, Cristina Andrea" data-docente="María Fernanda Leiva">Igor Bartsch, Cristina Andrea</option>
-                            <option value="Legue Legue, Catalina Andrea" data-docente="María Fernanda Leiva">Legue Legue, Catalina Andrea</option>
-                            <option value="Troncoso Barra, Thaiz Soledad" data-docente="María Fernanda Leiva">Troncoso Barra, Thaiz Soledad</option>
-                            <option value="Vargas Torres, Dafnne Yineck" data-docente="María Fernanda Leiva">Vargas Torres, Dafnne Yineck</option>
-                            <option value="Yévenes Azócar, Catalina Alejandra" data-docente="María Fernanda Leiva">Yévenes Azócar, Catalina Alejandra</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="supervisor_docente">Supervisor(a) docente</label>
-                    <select id="supervisor_docente" name="supervisor_docente" required>
-                        <option value="">Se asigna al elegir estudiante</option>
-                        <option value="Esteban Cofré Morales">Esteban Cofré Morales</option>
-                        <option value="María Fernanda Leiva">María Fernanda Leiva</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="institucion">Centro de práctica</label>
-                    <input id="institucion" type="text" name="institucion" required>
-                </div>
-            </div>
-            <p class="notice">No incluya nombres ni antecedentes que permitan identificar a usuarios, familias o comunidades. Fundamente la evaluación en situaciones observadas en el proceso de práctica.</p>
-        </section>
-
-        <section class="panel" aria-labelledby="rubrica">
-            <h2 id="rubrica">Rúbrica de resultados de aprendizaje</h2>
-            <div class="scale" aria-label="Anclajes de la escala de evaluación">
-                <div><strong>1 · Inicial</strong>Requiere guía permanente; el desempeño aún no alcanza lo esperado.</div>
-                <div><strong>2 · En desarrollo</strong>Avance parcial o irregular; necesita orientación frecuente.</div>
-                <div><strong>3 · Logro esperado</strong>Desempeño consistente para esta etapa, con apoyos puntuales.</div>
-                <div><strong>4 · Destacado</strong>Desempeño autónomo, consistente y fundamentado.</div>
-            </div>
-            <p class="dimension-summary">Use “No observado” solo cuando el proceso aún no haya ofrecido una oportunidad suficiente para evaluar el criterio. Se requiere observar al menos 16 criterios para calcular una nota.</p>
-
-            <div class="dimension">
-                <h3>RAE 1 · Ajuste del plan y seguimiento</h3>
-                <p class="dimension-summary">Revisión del plan heredado, coherencia de la intervención y sistema de seguimiento.</p>
-                <fieldset class="criterion"><legend>1. Analiza la coherencia del plan con el mandato institucional, las necesidades observadas y los objetivos de intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q1" value="1" required>1</label><label class="choice"><input type="radio" name="q1" value="2">2</label><label class="choice"><input type="radio" name="q1" value="3">3</label><label class="choice"><input type="radio" name="q1" value="4">4</label><label class="choice"><input type="radio" name="q1" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>2. Fundamenta los ajustes del plan desde perspectivas teóricas, metodológicas y éticas.</legend><div class="choices"><label class="choice"><input type="radio" name="q2" value="1" required>1</label><label class="choice"><input type="radio" name="q2" value="2">2</label><label class="choice"><input type="radio" name="q2" value="3">3</label><label class="choice"><input type="radio" name="q2" value="4">4</label><label class="choice"><input type="radio" name="q2" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>3. Propone indicadores, medios de verificación y protocolos de seguimiento pertinentes y factibles.</legend><div class="choices"><label class="choice"><input type="radio" name="q3" value="1" required>1</label><label class="choice"><input type="radio" name="q3" value="2">2</label><label class="choice"><input type="radio" name="q3" value="3">3</label><label class="choice"><input type="radio" name="q3" value="4">4</label><label class="choice"><input type="radio" name="q3" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>4. Utiliza registros de seguimiento para reconocer avances y proponer ajustes.</legend><div class="choices"><label class="choice"><input type="radio" name="q4" value="1" required>1</label><label class="choice"><input type="radio" name="q4" value="2">2</label><label class="choice"><input type="radio" name="q4" value="3">3</label><label class="choice"><input type="radio" name="q4" value="4">4</label><label class="choice"><input type="radio" name="q4" value="NO_OBSERVADO">No observado</label></div></fieldset>
-            </div>
-
-            <div class="dimension">
-                <h3>RAE 2 · Implementación de la intervención</h3>
-                <p class="dimension-summary">Ejecución en terreno, registro de actividades y análisis de nudos críticos.</p>
-                <fieldset class="criterion"><legend>5. Ejecuta actividades coherentes con la propuesta de intervención ajustada.</legend><div class="choices"><label class="choice"><input type="radio" name="q5" value="1" required>1</label><label class="choice"><input type="radio" name="q5" value="2">2</label><label class="choice"><input type="radio" name="q5" value="3">3</label><label class="choice"><input type="radio" name="q5" value="4">4</label><label class="choice"><input type="radio" name="q5" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>6. Registra actividades, recursos, coordinaciones y ajustes con evidencia de terreno.</legend><div class="choices"><label class="choice"><input type="radio" name="q6" value="1" required>1</label><label class="choice"><input type="radio" name="q6" value="2">2</label><label class="choice"><input type="radio" name="q6" value="3">3</label><label class="choice"><input type="radio" name="q6" value="4">4</label><label class="choice"><input type="radio" name="q6" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>7. Desarrolla el trabajo con sujetos y comunidades de manera respetuosa y acorde al contexto.</legend><div class="choices"><label class="choice"><input type="radio" name="q7" value="1" required>1</label><label class="choice"><input type="radio" name="q7" value="2">2</label><label class="choice"><input type="radio" name="q7" value="3">3</label><label class="choice"><input type="radio" name="q7" value="4">4</label><label class="choice"><input type="radio" name="q7" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>8. Identifica nudos críticos y elementos innovadores, y propone respuestas fundamentadas.</legend><div class="choices"><label class="choice"><input type="radio" name="q8" value="1" required>1</label><label class="choice"><input type="radio" name="q8" value="2">2</label><label class="choice"><input type="radio" name="q8" value="3">3</label><label class="choice"><input type="radio" name="q8" value="4">4</label><label class="choice"><input type="radio" name="q8" value="NO_OBSERVADO">No observado</label></div></fieldset>
-            </div>
-
-            <div class="dimension">
-                <h3>RAE 3 · Evaluación y sistematización</h3>
-                <p class="dimension-summary">Diseño de evaluación contextual, análisis de resultados y proyección de mejoras.</p>
-                <fieldset class="criterion"><legend>9. Diseña una evaluación pertinente al contexto institucional, al fenómeno y a los objetivos de intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q9" value="1" required>1</label><label class="choice"><input type="radio" name="q9" value="2">2</label><label class="choice"><input type="radio" name="q9" value="3">3</label><label class="choice"><input type="radio" name="q9" value="4">4</label><label class="choice"><input type="radio" name="q9" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>10. Selecciona y aplica herramientas evaluativas con criterios metodológicos adecuados.</legend><div class="choices"><label class="choice"><input type="radio" name="q10" value="1" required>1</label><label class="choice"><input type="radio" name="q10" value="2">2</label><label class="choice"><input type="radio" name="q10" value="3">3</label><label class="choice"><input type="radio" name="q10" value="4">4</label><label class="choice"><input type="radio" name="q10" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>11. Sistematiza resultados e identifica brechas y limitaciones de la intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q11" value="1" required>1</label><label class="choice"><input type="radio" name="q11" value="2">2</label><label class="choice"><input type="radio" name="q11" value="3">3</label><label class="choice"><input type="radio" name="q11" value="4">4</label><label class="choice"><input type="radio" name="q11" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>12. Propone mejoras futuras basadas en evidencia, teoría, factibilidad y ética.</legend><div class="choices"><label class="choice"><input type="radio" name="q12" value="1" required>1</label><label class="choice"><input type="radio" name="q12" value="2">2</label><label class="choice"><input type="radio" name="q12" value="3">3</label><label class="choice"><input type="radio" name="q12" value="4">4</label><label class="choice"><input type="radio" name="q12" value="NO_OBSERVADO">No observado</label></div></fieldset>
-            </div>
-
-            <div class="dimension">
-                <h3>RAE 4 · Reflexión ética</h3>
-                <p class="dimension-summary">Reconocimiento de dilemas, fundamentación de decisiones y resguardo de información.</p>
-                <fieldset class="criterion"><legend>13. Reconoce dilemas éticos concretos relacionados con consentimiento, confidencialidad, uso de información o trato digno.</legend><div class="choices"><label class="choice"><input type="radio" name="q13" value="1" required>1</label><label class="choice"><input type="radio" name="q13" value="2">2</label><label class="choice"><input type="radio" name="q13" value="3">3</label><label class="choice"><input type="radio" name="q13" value="4">4</label><label class="choice"><input type="radio" name="q13" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>14. Fundamenta sus decisiones en principios profesionales, normativa y marcos éticos pertinentes.</legend><div class="choices"><label class="choice"><input type="radio" name="q14" value="1" required>1</label><label class="choice"><input type="radio" name="q14" value="2">2</label><label class="choice"><input type="radio" name="q14" value="3">3</label><label class="choice"><input type="radio" name="q14" value="4">4</label><label class="choice"><input type="radio" name="q14" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>15. Resguarda información sensible y aplica criterios de anonimización.</legend><div class="choices"><label class="choice"><input type="radio" name="q15" value="1" required>1</label><label class="choice"><input type="radio" name="q15" value="2">2</label><label class="choice"><input type="radio" name="q15" value="3">3</label><label class="choice"><input type="radio" name="q15" value="4">4</label><label class="choice"><input type="radio" name="q15" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>16. Reflexiona sobre las consecuencias de sus decisiones en el contexto institucional y social.</legend><div class="choices"><label class="choice"><input type="radio" name="q16" value="1" required>1</label><label class="choice"><input type="radio" name="q16" value="2">2</label><label class="choice"><input type="radio" name="q16" value="3">3</label><label class="choice"><input type="radio" name="q16" value="4">4</label><label class="choice"><input type="radio" name="q16" value="NO_OBSERVADO">No observado</label></div></fieldset>
-            </div>
-
-            <div class="dimension">
-                <h3>Competencias transversales</h3>
-                <p class="dimension-summary">Responsabilidad, aprendizaje, colaboración y comunicación profesional durante todo el proceso.</p>
-                <fieldset class="criterion"><legend>17. Cumple acuerdos, horarios y responsabilidades de manera consistente.</legend><div class="choices"><label class="choice"><input type="radio" name="q17" value="1" required>1</label><label class="choice"><input type="radio" name="q17" value="2">2</label><label class="choice"><input type="radio" name="q17" value="3">3</label><label class="choice"><input type="radio" name="q17" value="4">4</label><label class="choice"><input type="radio" name="q17" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>18. Demuestra autonomía e iniciativa, y utiliza la retroalimentación para mejorar.</legend><div class="choices"><label class="choice"><input type="radio" name="q18" value="1" required>1</label><label class="choice"><input type="radio" name="q18" value="2">2</label><label class="choice"><input type="radio" name="q18" value="3">3</label><label class="choice"><input type="radio" name="q18" value="4">4</label><label class="choice"><input type="radio" name="q18" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>19. Colabora con el equipo respetando roles, funciones y acuerdos de trabajo.</legend><div class="choices"><label class="choice"><input type="radio" name="q19" value="1" required>1</label><label class="choice"><input type="radio" name="q19" value="2">2</label><label class="choice"><input type="radio" name="q19" value="3">3</label><label class="choice"><input type="radio" name="q19" value="4">4</label><label class="choice"><input type="radio" name="q19" value="NO_OBSERVADO">No observado</label></div></fieldset>
-                <fieldset class="criterion"><legend>20. Se comunica profesionalmente y comprende el contexto territorial e institucional.</legend><div class="choices"><label class="choice"><input type="radio" name="q20" value="1" required>1</label><label class="choice"><input type="radio" name="q20" value="2">2</label><label class="choice"><input type="radio" name="q20" value="3">3</label><label class="choice"><input type="radio" name="q20" value="4">4</label><label class="choice"><input type="radio" name="q20" value="NO_OBSERVADO">No observado</label></div></fieldset>
-            </div>
-        </section>
-
-        <section class="panel" aria-labelledby="sintesis">
-            <h2 id="sintesis">Síntesis y acuerdos de supervisión</h2>
-            <div class="synthesis">
-                <div class="field">
-                    <label id="fortalezas-label" for="fortalezas">Fortalezas observadas, con ejemplos del proceso</label>
-                    <textarea id="fortalezas" name="fortalezas" required></textarea>
-                </div>
-                <div class="field">
-                    <label id="aspectos-label" for="aspectos_mejorar">Desafíos o aspectos por fortalecer</label>
-                    <textarea id="aspectos_mejorar" name="aspectos_mejorar" required></textarea>
-                </div>
-                <div class="field">
-                    <label id="acuerdos-label" for="acuerdos">Acuerdos de supervisión para el próximo periodo</label>
-                    <textarea id="acuerdos" name="acuerdos" required></textarea>
-                </div>
-                <div id="proyeccion-field" class="field conditional-field" hidden>
-                    <label for="proyeccion_profesional">Recomendaciones para su futuro profesional</label>
-                    <textarea id="proyeccion_profesional" name="proyeccion_profesional" disabled></textarea>
-                </div>
-                <div id="tesis-field" class="field conditional-field" hidden>
-                    <label for="idea_tesis">Idea inicial de tesis para el proceso 2027, vinculada al fenómeno general de la institución de práctica</label>
-                    <textarea id="idea_tesis" name="idea_tesis" disabled></textarea>
-                </div>
-                <div class="field">
-                    <label id="nombre-completo-label" for="nombre_completo">Nombre completo de quien evalúa</label>
-                    <input id="nombre_completo" type="text" name="nombre_completo" required>
-                </div>
-            </div>
-        </section>
-        <div class="form-actions">
-            <button type="button" id="download-pdf" class="back-button">Descargar PDF</button>
-            <button type="submit">Enviar evaluación y recibir copia por correo</button>
+        <div class="instrument-top">
+            <p id="role-intro"></p>
+            <button type="button" id="back-to-portal" class="back-button">Volver a metodología</button>
         </div>
-    </form>
+
+        <!-- Pestañas paralelas exclusivas para estudiantes (ocultas para supervisores) -->
+        <nav id="student-nav-tabs" class="student-tabs" aria-label="Formularios de evaluación para estudiantes" hidden>
+            <button type="button" class="student-tab-btn active" id="btn-tab-autoevaluacion">
+                1. Autoevaluación de competencias (RAE · 20%)
+            </button>
+            <button type="button" class="student-tab-btn" id="btn-tab-centro-practica">
+                2. Evaluación del Centro de Práctica (Confidencial)
+            </button>
+        </nav>
+
+        <!-- FORMULARIO 1: Instrumento Tripartito (Supervisión Terreno, Supervisión Docente, Autoevaluación) -->
+        <form id="evaluation-form" action="https://script.google.com/macros/s/AKfycbwmo85-edyosijP904prP6u8mcIXBYsLFfYVJpRWCWVowHglCN7RxnB8UfmQP7NzES8Kg/exec" method="post">
+            <input type="hidden" id="rol" name="rol">
+            <section class="panel" aria-labelledby="identificacion">
+                <h2 id="identificacion">Identificación del periodo</h2>
+                <div class="identity">
+                    <div class="field">
+                        <label for="periodo">Instancia de evaluación</label>
+                        <select id="periodo" name="periodo" required>
+                            <option value="">Seleccione una instancia</option>
+                            <option value="Seguimiento intermedio">Seguimiento intermedio</option>
+                            <option value="Cierre semestral">Cierre semestral</option>
+                            <option value="Evaluación general">Evaluación general</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="semestre">Periodo evaluado</label>
+                        <select id="semestre" name="semestre" required>
+                            <option value="">Seleccione el periodo</option>
+                            <option value="Primer semestre">Primer semestre</option>
+                            <option value="Segundo semestre">Segundo semestre</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="correo">Dirección de correo electrónico</label>
+                        <input id="correo" type="email" name="correo" autocomplete="email" required>
+                    </div>
+                    <div id="field-supervisor-terreno" class="field">
+                        <label for="supervisor">Nombre del/de la supervisor(a) en terreno</label>
+                        <input id="supervisor" type="text" name="supervisor" required>
+                    </div>
+                    <div class="field">
+                        <label for="estudiante">Estudiante</label>
+                        <select id="estudiante" name="estudiante" required>
+                            <option value="">Seleccione estudiante</option>
+                            <optgroup label="Supervisión docente: Esteban Cofré Morales">
+                                <option value="Cofré Morales, Esteban Patricio" data-docente="Esteban Cofré Morales">Cofré Morales, Esteban Patricio</option>
+                                <option value="Perez Barria, Tatiana Valeska" data-docente="Esteban Cofré Morales">Perez Barria, Tatiana Valeska</option>
+                                <option value="Ayancán Barría, Natalia Paz" data-docente="Esteban Cofré Morales">Ayancán Barría, Natalia Paz</option>
+                                <option value="Calisto Silva, Luz María Belén" data-docente="Esteban Cofré Morales">Calisto Silva, Luz María Belén</option>
+                                <option value="Cumian Jaramillo, Felipe Bastián" data-docente="Esteban Cofré Morales">Cumian Jaramillo, Felipe Bastián</option>
+                                <option value="Diaz Veliz, Yenifer Madorna" data-docente="Esteban Cofré Morales">Diaz Veliz, Yenifer Madorna</option>
+                                <option value="Mac-Kay Saavedra, Francisca Javiera" data-docente="Esteban Cofré Morales">Mac-Kay Saavedra, Francisca Javiera</option>
+                                <option value="Poblete Poblete, Cesar Antonio" data-docente="Esteban Cofré Morales">Poblete Poblete, Cesar Antonio</option>
+                                <option value="Rios Alzate, Laura" data-docente="Esteban Cofré Morales">Rios Alzate, Laura</option>
+                                <option value="Torres Rogel, Tiare Soledad" data-docente="Esteban Cofré Morales">Torres Rogel, Tiare Soledad</option>
+                                <option value="Vidal De la Cruz, Fernanda Valentina" data-docente="Esteban Cofré Morales">Vidal De la Cruz, Fernanda Valentina</option>
+                            </optgroup>
+                            <optgroup label="Supervisión docente: María Fernanda Leiva">
+                                <option value="Contreras Cerro, Nicolás Gonzalo" data-docente="María Fernanda Leiva">Contreras Cerro, Nicolás Gonzalo</option>
+                                <option value="Esparza Jara, Antonella" data-docente="María Fernanda Leiva">Esparza Jara, Antonella</option>
+                                <option value="Guevara Rodríguez, Isidora Francisca" data-docente="María Fernanda Leiva">Guevara Rodríguez, Isidora Francisca</option>
+                                <option value="Hernandez Arteaga, Constanza Beatriz" data-docente="María Fernanda Leiva">Hernandez Arteaga, Constanza Beatriz</option>
+                                <option value="Igor Bartsch, Cristina Andrea" data-docente="María Fernanda Leiva">Igor Bartsch, Cristina Andrea</option>
+                                <option value="Legue Legue, Catalina Andrea" data-docente="María Fernanda Leiva">Legue Legue, Catalina Andrea</option>
+                                <option value="Troncoso Barra, Thaiz Soledad" data-docente="María Fernanda Leiva">Troncoso Barra, Thaiz Soledad</option>
+                                <option value="Vargas Torres, Dafnne Yineck" data-docente="María Fernanda Leiva">Vargas Torres, Dafnne Yineck</option>
+                                <option value="Yévenes Azócar, Catalina Alejandra" data-docente="María Fernanda Leiva">Yévenes Azócar, Catalina Alejandra</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="supervisor_docente">Supervisor(a) docente</label>
+                        <select id="supervisor_docente" name="supervisor_docente" required>
+                            <option value="">Se asigna al elegir estudiante</option>
+                            <option value="Esteban Cofré Morales">Esteban Cofré Morales</option>
+                            <option value="María Fernanda Leiva">María Fernanda Leiva</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="institucion">Centro de práctica</label>
+                        <input id="institucion" type="text" name="institucion" required>
+                    </div>
+                </div>
+                <p class="notice">No incluya nombres ni antecedentes que permitan identificar a usuarios, familias o comunidades. Fundamente la evaluación en situaciones observadas en el proceso de práctica.</p>
+            </section>
+
+            <section class="panel" aria-labelledby="rubrica">
+                <h2 id="rubrica">Rúbrica de resultados de aprendizaje</h2>
+                <div class="scale" aria-label="Anclajes de la escala de evaluación">
+                    <div><strong>1 · Inicial</strong>Requiere guía permanente; el desempeño aún no alcanza lo esperado.</div>
+                    <div><strong>2 · En desarrollo</strong>Avance parcial o irregular; necesita orientación frecuente.</div>
+                    <div><strong>3 · Logro esperado</strong>Desempeño consistente para esta etapa, con apoyos puntuales.</div>
+                    <div><strong>4 · Destacado</strong>Desempeño autónomo, consistente y fundamentado.</div>
+                </div>
+                <p class="dimension-summary">Use “No observado” solo cuando el proceso aún no haya ofrecido una oportunidad suficiente para evaluar el criterio. Se requiere observar al menos 16 criterios para calcular una nota.</p>
+
+                <div class="dimension">
+                    <h3>RAE 1 · Ajuste del plan y seguimiento</h3>
+                    <p class="dimension-summary">Revisión del plan heredado, coherencia de la intervención y sistema de seguimiento.</p>
+                    <fieldset class="criterion"><legend>1. Analiza la coherencia del plan con el mandato institucional, las necesidades observadas y los objetivos de intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q1" value="1" required>1</label><label class="choice"><input type="radio" name="q1" value="2">2</label><label class="choice"><input type="radio" name="q1" value="3">3</label><label class="choice"><input type="radio" name="q1" value="4">4</label><label class="choice"><input type="radio" name="q1" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>2. Fundamenta los ajustes del plan desde perspectivas teóricas, metodológicas y éticas.</legend><div class="choices"><label class="choice"><input type="radio" name="q2" value="1" required>1</label><label class="choice"><input type="radio" name="q2" value="2">2</label><label class="choice"><input type="radio" name="q2" value="3">3</label><label class="choice"><input type="radio" name="q2" value="4">4</label><label class="choice"><input type="radio" name="q2" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>3. Propone indicadores, medios de verificación y protocolos de seguimiento pertinentes y factibles.</legend><div class="choices"><label class="choice"><input type="radio" name="q3" value="1" required>1</label><label class="choice"><input type="radio" name="q3" value="2">2</label><label class="choice"><input type="radio" name="q3" value="3">3</label><label class="choice"><input type="radio" name="q3" value="4">4</label><label class="choice"><input type="radio" name="q3" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>4. Utiliza registros de seguimiento para reconocer avances y proponer ajustes.</legend><div class="choices"><label class="choice"><input type="radio" name="q4" value="1" required>1</label><label class="choice"><input type="radio" name="q4" value="2">2</label><label class="choice"><input type="radio" name="q4" value="3">3</label><label class="choice"><input type="radio" name="q4" value="4">4</label><label class="choice"><input type="radio" name="q4" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                </div>
+
+                <div class="dimension">
+                    <h3>RAE 2 · Implementación de la intervención</h3>
+                    <p class="dimension-summary">Ejecución en terreno, registro de actividades y análisis de nudos críticos.</p>
+                    <fieldset class="criterion"><legend>5. Ejecuta actividades coherentes con la propuesta de intervención ajustada.</legend><div class="choices"><label class="choice"><input type="radio" name="q5" value="1" required>1</label><label class="choice"><input type="radio" name="q5" value="2">2</label><label class="choice"><input type="radio" name="q5" value="3">3</label><label class="choice"><input type="radio" name="q5" value="4">4</label><label class="choice"><input type="radio" name="q5" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>6. Registra actividades, recursos, coordinaciones y ajustes con evidencia de terreno.</legend><div class="choices"><label class="choice"><input type="radio" name="q6" value="1" required>1</label><label class="choice"><input type="radio" name="q6" value="2">2</label><label class="choice"><input type="radio" name="q6" value="3">3</label><label class="choice"><input type="radio" name="q6" value="4">4</label><label class="choice"><input type="radio" name="q6" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>7. Desarrolla el trabajo con sujetos y comunidades de manera respetuosa y acorde al contexto.</legend><div class="choices"><label class="choice"><input type="radio" name="q7" value="1" required>1</label><label class="choice"><input type="radio" name="q7" value="2">2</label><label class="choice"><input type="radio" name="q7" value="3">3</label><label class="choice"><input type="radio" name="q7" value="4">4</label><label class="choice"><input type="radio" name="q7" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>8. Identifica nudos críticos y elementos innovadores, y propone respuestas fundamentadas.</legend><div class="choices"><label class="choice"><input type="radio" name="q8" value="1" required>1</label><label class="choice"><input type="radio" name="q8" value="2">2</label><label class="choice"><input type="radio" name="q8" value="3">3</label><label class="choice"><input type="radio" name="q8" value="4">4</label><label class="choice"><input type="radio" name="q8" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                </div>
+
+                <div class="dimension">
+                    <h3>RAE 3 · Evaluación y sistematización</h3>
+                    <p class="dimension-summary">Diseño de evaluación contextual, análisis de resultados y proyección de mejoras.</p>
+                    <fieldset class="criterion"><legend>9. Diseña una evaluación pertinente al contexto institucional, al fenómeno y a los objetivos de intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q9" value="1" required>1</label><label class="choice"><input type="radio" name="q9" value="2">2</label><label class="choice"><input type="radio" name="q9" value="3">3</label><label class="choice"><input type="radio" name="q9" value="4">4</label><label class="choice"><input type="radio" name="q9" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>10. Selecciona y aplica herramientas evaluativas con criterios metodológicos adecuados.</legend><div class="choices"><label class="choice"><input type="radio" name="q10" value="1" required>1</label><label class="choice"><input type="radio" name="q10" value="2">2</label><label class="choice"><input type="radio" name="q10" value="3">3</label><label class="choice"><input type="radio" name="q10" value="4">4</label><label class="choice"><input type="radio" name="q10" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>11. Sistematiza resultados e identifica brechas y limitaciones de la intervención.</legend><div class="choices"><label class="choice"><input type="radio" name="q11" value="1" required>1</label><label class="choice"><input type="radio" name="q11" value="2">2</label><label class="choice"><input type="radio" name="q11" value="3">3</label><label class="choice"><input type="radio" name="q11" value="4">4</label><label class="choice"><input type="radio" name="q11" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>12. Propone mejoras futuras basadas en evidencia, teoría, factibilidad y ética.</legend><div class="choices"><label class="choice"><input type="radio" name="q12" value="1" required>1</label><label class="choice"><input type="radio" name="q12" value="2">2</label><label class="choice"><input type="radio" name="q12" value="3">3</label><label class="choice"><input type="radio" name="q12" value="4">4</label><label class="choice"><input type="radio" name="q12" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                </div>
+
+                <div class="dimension">
+                    <h3>RAE 4 · Reflexión ética</h3>
+                    <p class="dimension-summary">Reconocimiento de dilemas, fundamentación de decisiones y resguardo de información.</p>
+                    <fieldset class="criterion"><legend>13. Reconoce dilemas éticos concretos relacionados con consentimiento, confidencialidad, uso de información o trato digno.</legend><div class="choices"><label class="choice"><input type="radio" name="q13" value="1" required>1</label><label class="choice"><input type="radio" name="q13" value="2">2</label><label class="choice"><input type="radio" name="q13" value="3">3</label><label class="choice"><input type="radio" name="q13" value="4">4</label><label class="choice"><input type="radio" name="q13" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>14. Fundamenta sus decisiones en principios profesionales, normativa y marcos éticos pertinentes.</legend><div class="choices"><label class="choice"><input type="radio" name="q14" value="1" required>1</label><label class="choice"><input type="radio" name="q14" value="2">2</label><label class="choice"><input type="radio" name="q14" value="3">3</label><label class="choice"><input type="radio" name="q14" value="4">4</label><label class="choice"><input type="radio" name="q14" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>15. Resguarda información sensible y aplica criterios de anonimización.</legend><div class="choices"><label class="choice"><input type="radio" name="q15" value="1" required>1</label><label class="choice"><input type="radio" name="q15" value="2">2</label><label class="choice"><input type="radio" name="q15" value="3">3</label><label class="choice"><input type="radio" name="q15" value="4">4</label><label class="choice"><input type="radio" name="q15" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>16. Reflexiona sobre las consecuencias de sus decisiones en el contexto institucional y social.</legend><div class="choices"><label class="choice"><input type="radio" name="q16" value="1" required>1</label><label class="choice"><input type="radio" name="q16" value="2">2</label><label class="choice"><input type="radio" name="q16" value="3">3</label><label class="choice"><input type="radio" name="q16" value="4">4</label><label class="choice"><input type="radio" name="q16" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                </div>
+
+                <div class="dimension">
+                    <h3>Competencias transversales</h3>
+                    <p class="dimension-summary">Responsabilidad, aprendizaje, colaboración y comunicación profesional durante todo el proceso.</p>
+                    <fieldset class="criterion"><legend>17. Cumple acuerdos, horarios y responsabilidades de manera consistente.</legend><div class="choices"><label class="choice"><input type="radio" name="q17" value="1" required>1</label><label class="choice"><input type="radio" name="q17" value="2">2</label><label class="choice"><input type="radio" name="q17" value="3">3</label><label class="choice"><input type="radio" name="q17" value="4">4</label><label class="choice"><input type="radio" name="q17" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>18. Demuestra autonomía e iniciativa, y utiliza la retroalimentación para mejorar.</legend><div class="choices"><label class="choice"><input type="radio" name="q18" value="1" required>1</label><label class="choice"><input type="radio" name="q18" value="2">2</label><label class="choice"><input type="radio" name="q18" value="3">3</label><label class="choice"><input type="radio" name="q18" value="4">4</label><label class="choice"><input type="radio" name="q18" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>19. Colabora con el equipo respetando roles, funciones y acuerdos de trabajo.</legend><div class="choices"><label class="choice"><input type="radio" name="q19" value="1" required>1</label><label class="choice"><input type="radio" name="q19" value="2">2</label><label class="choice"><input type="radio" name="q19" value="3">3</label><label class="choice"><input type="radio" name="q19" value="4">4</label><label class="choice"><input type="radio" name="q19" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                    <fieldset class="criterion"><legend>20. Se comunica profesionalmente y comprende el contexto territorial e institucional.</legend><div class="choices"><label class="choice"><input type="radio" name="q20" value="1" required>1</label><label class="choice"><input type="radio" name="q20" value="2">2</label><label class="choice"><input type="radio" name="q20" value="3">3</label><label class="choice"><input type="radio" name="q20" value="4">4</label><label class="choice"><input type="radio" name="q20" value="NO_OBSERVADO">No observado</label></div></fieldset>
+                </div>
+            </section>
+
+            <section class="panel" aria-labelledby="sintesis">
+                <h2 id="sintesis">Síntesis y acuerdos de supervisión</h2>
+                <div class="synthesis">
+                    <div class="field">
+                        <label id="fortalezas-label" for="fortalezas">Fortalezas observadas, con ejemplos del proceso</label>
+                        <textarea id="fortalezas" name="fortalezas" required></textarea>
+                    </div>
+                    <div class="field">
+                        <label id="aspectos-label" for="aspectos_mejorar">Desafíos o aspectos por fortalecer</label>
+                        <textarea id="aspectos_mejorar" name="aspectos_mejorar" required></textarea>
+                    </div>
+                    <div class="field">
+                        <label id="acuerdos-label" for="acuerdos">Acuerdos de supervisión para el próximo periodo</label>
+                        <textarea id="acuerdos" name="acuerdos" required></textarea>
+                    </div>
+                    <div id="proyeccion-field" class="field conditional-field" hidden>
+                        <label for="proyeccion_profesional">Recomendaciones para su futuro profesional</label>
+                        <textarea id="proyeccion_profesional" name="proyeccion_profesional" disabled></textarea>
+                    </div>
+                    <div id="tesis-field" class="field conditional-field" hidden>
+                        <label for="idea_tesis">Idea inicial de tesis para el proceso 2027, vinculada al fenómeno general de la institución de práctica</label>
+                        <textarea id="idea_tesis" name="idea_tesis" disabled></textarea>
+                    </div>
+                    <div class="field">
+                        <label id="nombre-completo-label" for="nombre_completo">Nombre completo de quien evalúa</label>
+                        <input id="nombre_completo" type="text" name="nombre_completo" required>
+                    </div>
+                </div>
+            </section>
+            <div class="form-actions">
+                <button type="button" id="download-pdf" class="back-button">Descargar PDF</button>
+                <button type="submit">Enviar evaluación y recibir copia por correo</button>
+            </div>
+        </form>
+
+        <!-- FORMULARIO 2: Evaluación de Centros de Práctica (Paralelo y exclusivo para estudiantes) -->
+        <form id="form-centro-practica" action="https://script.google.com/macros/s/AKfycbwmo85-edyosijP904prP6u8mcIXBYsLFfYVJpRWCWVowHglCN7RxnB8UfmQP7NzES8Kg/exec" method="post" hidden>
+            <input type="hidden" name="rol" value="centro_practica">
+
+            <div class="confidential-banner">
+                <div>
+                    <strong>Instrumento confidencial para estudiantes:</strong>
+                    Esta pauta permite evaluar de forma autónoma las condiciones del centro de práctica y el acompañamiento del/de la supervisor(a) en terreno. <em>Los supervisores docentes y en terreno no tienen acceso a tus respuestas.</em> Al enviar el formulario, el registro quedará guardado en el sistema y recibirás automáticamente una copia con el informe PDF en tu correo declarado.
+                </div>
+            </div>
+
+            <section class="panel" aria-labelledby="cp-identificacion-title">
+                <h2 id="cp-identificacion-title">Identificación del Centro y Supervisión</h2>
+                <div class="identity">
+                    <div class="field">
+                        <label for="cp_estudiante">Estudiante</label>
+                        <select id="cp_estudiante" name="estudiante" required>
+                            <option value="">Seleccione su nombre</option>
+                            <optgroup label="Supervisión docente: Esteban Cofré Morales">
+                                <option value="Cofré Morales, Esteban Patricio" data-docente="Esteban Cofré Morales">Cofré Morales, Esteban Patricio</option>
+                                <option value="Perez Barria, Tatiana Valeska" data-docente="Esteban Cofré Morales">Perez Barria, Tatiana Valeska</option>
+                                <option value="Ayancán Barría, Natalia Paz" data-docente="Esteban Cofré Morales">Ayancán Barría, Natalia Paz</option>
+                                <option value="Calisto Silva, Luz María Belén" data-docente="Esteban Cofré Morales">Calisto Silva, Luz María Belén</option>
+                                <option value="Cumian Jaramillo, Felipe Bastián" data-docente="Esteban Cofré Morales">Cumian Jaramillo, Felipe Bastián</option>
+                                <option value="Diaz Veliz, Yenifer Madorna" data-docente="Esteban Cofré Morales">Diaz Veliz, Yenifer Madorna</option>
+                                <option value="Mac-Kay Saavedra, Francisca Javiera" data-docente="Esteban Cofré Morales">Mac-Kay Saavedra, Francisca Javiera</option>
+                                <option value="Poblete Poblete, Cesar Antonio" data-docente="Esteban Cofré Morales">Poblete Poblete, Cesar Antonio</option>
+                                <option value="Rios Alzate, Laura" data-docente="Esteban Cofré Morales">Rios Alzate, Laura</option>
+                                <option value="Torres Rogel, Tiare Soledad" data-docente="Esteban Cofré Morales">Torres Rogel, Tiare Soledad</option>
+                                <option value="Vidal De la Cruz, Fernanda Valentina" data-docente="Esteban Cofré Morales">Vidal De la Cruz, Fernanda Valentina</option>
+                            </optgroup>
+                            <optgroup label="Supervisión docente: María Fernanda Leiva">
+                                <option value="Contreras Cerro, Nicolás Gonzalo" data-docente="María Fernanda Leiva">Contreras Cerro, Nicolás Gonzalo</option>
+                                <option value="Esparza Jara, Antonella" data-docente="María Fernanda Leiva">Esparza Jara, Antonella</option>
+                                <option value="Guevara Rodríguez, Isidora Francisca" data-docente="María Fernanda Leiva">Guevara Rodríguez, Isidora Francisca</option>
+                                <option value="Hernandez Arteaga, Constanza Beatriz" data-docente="María Fernanda Leiva">Hernandez Arteaga, Constanza Beatriz</option>
+                                <option value="Igor Bartsch, Cristina Andrea" data-docente="María Fernanda Leiva">Igor Bartsch, Cristina Andrea</option>
+                                <option value="Legue Legue, Catalina Andrea" data-docente="María Fernanda Leiva">Legue Legue, Catalina Andrea</option>
+                                <option value="Troncoso Barra, Thaiz Soledad" data-docente="María Fernanda Leiva">Troncoso Barra, Thaiz Soledad</option>
+                                <option value="Vargas Torres, Dafnne Yineck" data-docente="María Fernanda Leiva">Vargas Torres, Dafnne Yineck</option>
+                                <option value="Yévenes Azócar, Catalina Alejandra" data-docente="María Fernanda Leiva">Yévenes Azócar, Catalina Alejandra</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="cp_supervisor_docente">Supervisor(a) docente asignado(a)</label>
+                        <input id="cp_supervisor_docente" type="text" name="supervisor_docente" readonly required placeholder="Se completa al elegir estudiante">
+                    </div>
+                    <div class="field">
+                        <label for="cp_institucion">Nombre Institución (Centro de práctica)</label>
+                        <input id="cp_institucion" type="text" name="institucion" placeholder="Ej: Municipalidad, Hospital, Fundación..." required>
+                    </div>
+                    <div class="field">
+                        <label for="cp_programa">Programa institucional o área</label>
+                        <input id="cp_programa" type="text" name="programa" placeholder="Ej: Programa Familias, DIDECO, Salud Mental...">
+                    </div>
+                    <div class="field">
+                        <label for="cp_supervisor_terreno">Supervisor(a) en terreno</label>
+                        <input id="cp_supervisor_terreno" type="text" name="supervisor_terreno" placeholder="Nombre completo del supervisor en la institución" required>
+                    </div>
+                    <div class="field">
+                        <label for="cp_semestre">Período de supervisión (Semestre)</label>
+                        <select id="cp_semestre" name="semestre" required>
+                            <option value="">Seleccione el periodo</option>
+                            <option value="Primer semestre">Primer semestre</option>
+                            <option value="Segundo semestre">Segundo semestre</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="cp_anio">Año</label>
+                        <input id="cp_anio" type="text" name="anio" value="2025" required>
+                    </div>
+                    <div class="field">
+                        <label for="cp_correo">Dirección de correo electrónico</label>
+                        <input id="cp_correo" type="email" name="correo" autocomplete="email" placeholder="Para recibir tu copia y reporte PDF" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dimensión 1: Centro de Práctica (CP) -->
+            <section class="panel" aria-labelledby="cp-dim-title">
+                <h2 id="cp-dim-title">Dimensión 1 · Centro de Práctica (CP)</h2>
+                <div class="scale" aria-label="Escala de evaluación 0 a 5">
+                    <div><strong>0 · No cumplimiento</strong>No se cumple el criterio o condición.</div>
+                    <div><strong>1 - 2 · Bajo / Mínimo</strong>Cumplimiento inicial o deficitario con limitaciones.</div>
+                    <div><strong>3 - 4 · Medio / Alto</strong>Cumplimiento consistente con buenas condiciones.</div>
+                    <div><strong>5 · Cumplimiento absoluto</strong>Cumplimiento total, excelente y facilitador.</div>
+                </div>
+                <p class="dimension-summary">Evalúe los cinco ítems del centro de práctica de acuerdo con la escala de 0 a 5. Puede añadir comentarios específicos por descriptor si lo considera necesario.</p>
+
+                <fieldset class="criterion" id="cp-crit-1">
+                    <legend>1. Cuenta con un espacio de trabajo para el estudiante en práctica apropiado para realizar el proceso.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="cp1" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="cp1" value="1">1</label>
+                        <label class="choice"><input type="radio" name="cp1" value="2">2</label>
+                        <label class="choice"><input type="radio" name="cp1" value="3">3</label>
+                        <label class="choice"><input type="radio" name="cp1" value="4">4</label>
+                        <label class="choice"><input type="radio" name="cp1" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="cp_comentario_1" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="cp-crit-2">
+                    <legend>2. Cuenta con instalaciones que facilitan el proceso de práctica.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="cp2" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="cp2" value="1">1</label>
+                        <label class="choice"><input type="radio" name="cp2" value="2">2</label>
+                        <label class="choice"><input type="radio" name="cp2" value="3">3</label>
+                        <label class="choice"><input type="radio" name="cp2" value="4">4</label>
+                        <label class="choice"><input type="radio" name="cp2" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="cp_comentario_2" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="cp-crit-3">
+                    <legend>3. Mantiene buen clima laboral.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="cp3" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="cp3" value="1">1</label>
+                        <label class="choice"><input type="radio" name="cp3" value="2">2</label>
+                        <label class="choice"><input type="radio" name="cp3" value="3">3</label>
+                        <label class="choice"><input type="radio" name="cp3" value="4">4</label>
+                        <label class="choice"><input type="radio" name="cp3" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="cp_comentario_3" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="cp-crit-4">
+                    <legend>4. Permite al estudiante en práctica trabajar de manera autónoma, realizando tareas/actividades acorde al trabajo social.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="cp4" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="cp4" value="1">1</label>
+                        <label class="choice"><input type="radio" name="cp4" value="2">2</label>
+                        <label class="choice"><input type="radio" name="cp4" value="3">3</label>
+                        <label class="choice"><input type="radio" name="cp4" value="4">4</label>
+                        <label class="choice"><input type="radio" name="cp4" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="cp_comentario_4" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="cp-crit-5">
+                    <legend>5. Es un espacio donde se considera la participación y opinión del estudiante en práctica.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="cp5" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="cp5" value="1">1</label>
+                        <label class="choice"><input type="radio" name="cp5" value="2">2</label>
+                        <label class="choice"><input type="radio" name="cp5" value="3">3</label>
+                        <label class="choice"><input type="radio" name="cp5" value="4">4</label>
+                        <label class="choice"><input type="radio" name="cp5" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="cp_comentario_5" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+            </section>
+
+            <!-- Dimensión 2: Supervisor(a) en Terreno (ST) -->
+            <section class="panel" aria-labelledby="st-dim-title">
+                <h2 id="st-dim-title">Dimensión 2 · Supervisor(a) en Terreno (ST)</h2>
+                <p class="dimension-summary">Evalúe el acompañamiento y labor del/de la supervisor(a) en terreno en cada uno de los nueve ítems (0 al 5).</p>
+
+                <fieldset class="criterion" id="st-crit-1">
+                    <legend>1. Existe buena comunicación con el ST.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st1" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st1" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st1" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st1" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st1" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st1" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_1" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-2">
+                    <legend>2. Existe un acompañamiento constante por parte del ST.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st2" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st2" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st2" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st2" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st2" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st2" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_2" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-3">
+                    <legend>3. El ST cuenta con tiempo y buena disposición para favorecer el proceso de aprendizaje.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st3" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st3" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st3" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st3" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st3" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st3" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_3" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-4">
+                    <legend>4. Mantiene un trato profesional, considerando roles y funciones con el estudiante en práctica.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st4" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st4" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st4" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st4" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st4" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st4" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_4" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-5">
+                    <legend>5. Mantiene un resguardo de una actitud ética en coherencia con el Código de Ética Profesional en su actuar profesional.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st5" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st5" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st5" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st5" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st5" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st5" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_5" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-6">
+                    <legend>6. Demuestra respeto por la autodeterminación de las y los sujetos.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st6" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st6" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st6" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st6" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st6" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st6" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_6" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-7">
+                    <legend>7. Se comunica adecuada, respetuosa y asertivamente, con una actitud receptiva.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st7" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st7" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st7" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st7" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st7" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st7" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_7" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-8">
+                    <legend>8. Existe una real opción de proponer una intervención social.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st8" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st8" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st8" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st8" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st8" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st8" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_8" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+
+                <fieldset class="criterion" id="st-crit-9">
+                    <legend>9. Considera la opinión del/de la estudiante en las decisiones y desarrollo del proceso de práctica.</legend>
+                    <div class="choices">
+                        <label class="choice"><input type="radio" name="st9" value="0" required>0</label>
+                        <label class="choice"><input type="radio" name="st9" value="1">1</label>
+                        <label class="choice"><input type="radio" name="st9" value="2">2</label>
+                        <label class="choice"><input type="radio" name="st9" value="3">3</label>
+                        <label class="choice"><input type="radio" name="st9" value="4">4</label>
+                        <label class="choice"><input type="radio" name="st9" value="5">5</label>
+                    </div>
+                    <div class="criterion-comment-wrapper">
+                        <input type="text" name="st_comentario_9" class="criterion-comment" placeholder="Comentarios u observaciones específicas (opcional)">
+                    </div>
+                </fieldset>
+            </section>
+
+            <!-- Observaciones y comentarios generales -->
+            <section class="panel" aria-labelledby="cp-obs-title">
+                <h2 id="cp-obs-title">Observaciones y comentarios generales</h2>
+                <div class="synthesis">
+                    <div class="field">
+                        <label for="cp_observaciones">Detalle observaciones, fortalezas, dificultades o comentarios generales sobre el centro de práctica y la experiencia de supervisión</label>
+                        <textarea id="cp_observaciones" name="observaciones" placeholder="Ingrese comentarios globales sobre el centro de práctica y el desarrollo de la supervisión en terreno..."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resumen en vivo de puntaje y nota calculada -->
+            <div class="score-summary-panel" aria-label="Resumen de resultados en vivo">
+                <div class="score-item">
+                    <strong id="cp-score-subtotal">0 / 25</strong>
+                    <span>Centro de Práctica</span>
+                </div>
+                <div class="score-item">
+                    <strong id="st-score-subtotal">0 / 45</strong>
+                    <span>Supervisor(a) Terreno</span>
+                </div>
+                <div class="score-item">
+                    <strong id="total-score-display">0 / 70 (0%)</strong>
+                    <span>Puntaje Total</span>
+                </div>
+                <div class="score-item">
+                    <strong id="final-grade-display">1.0</strong>
+                    <span>Nota (Exigencia 70%)</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="download-pdf-centro-practica" class="back-button">Descargar PDF</button>
+                <button type="submit">Enviar evaluación del centro y recibir copia por correo</button>
+            </div>
+        </form>
     </section>
+
     <section id="print-report" aria-label="Reporte completo de evaluación para PDF"></section>
 </main>
 <script>
@@ -328,6 +711,16 @@
     const terrainSupervisorField = document.getElementById('field-supervisor-terreno');
     const portal = document.getElementById('portal');
     const instrument = document.getElementById('instrument');
+
+    // Elementos para pestañas de estudiantes
+    const studentNavTabs = document.getElementById('student-nav-tabs');
+    const btnTabAutoevaluacion = document.getElementById('btn-tab-autoevaluacion');
+    const btnTabCentroPractica = document.getElementById('btn-tab-centro-practica');
+    const formTripartito = document.getElementById('evaluation-form');
+    const formCentroPractica = document.getElementById('form-centro-practica');
+    const cpStudentSelect = document.getElementById('cp_estudiante');
+    const cpTeacherInput = document.getElementById('cp_supervisor_docente');
+
     const selfStatements = [
         'Analicé la coherencia del plan con el mandato institucional, las necesidades observadas y los objetivos de intervención.',
         'Fundamenté los ajustes de mi plan desde perspectivas teóricas, metodológicas y éticas.',
@@ -350,6 +743,7 @@
         'Colaboré con el equipo respetando roles, funciones y acuerdos de trabajo.',
         'Me comuniqué profesionalmente y comprendí el contexto territorial e institucional.'
     ];
+
     const openPrompts = {
         supervision_terreno: {
             default: ['Fortalezas observadas en el trabajo cotidiano, con ejemplos concretos', 'Desafíos o aspectos que requieren acompañamiento en el centro de práctica', 'Acuerdos de supervisión en terreno para el siguiente periodo'],
@@ -364,6 +758,7 @@
             general: ['¿Qué fortalezas y aprendizajes reconozco en mi proceso global de práctica?', '¿Qué competencia quiero seguir fortaleciendo para mi futuro profesional?', '¿Qué acción concreta me comprometo a realizar al cerrar la práctica?']
         }
     };
+
     const roleIntros = {
         supervision_terreno: 'Instrumento de supervisión en terreno · pondera 40% del componente tripartito.',
         supervision_docente: 'Instrumento de supervisión docente · pondera 40% del componente tripartito.',
@@ -386,6 +781,7 @@
         parent.appendChild(field);
     }
 
+    // Reporte de impresión de evaluación tripartita
     function buildPrintReport() {
         const report = document.getElementById('print-report');
         report.replaceChildren();
@@ -415,7 +811,7 @@
         const criteria = document.createElement('section');
         criteria.className = 'print-section';
         appendPrintText(criteria, 'h2', 'Rúbrica');
-        document.querySelectorAll('.criterion').forEach((criterion, index) => {
+        formTripartito.querySelectorAll('.criterion').forEach((criterion) => {
             const selected = criterion.querySelector('input[type="radio"]:checked');
             const value = selected ? selected.value : 'Sin respuesta';
             if (selected && value !== 'NO_OBSERVADO') {
@@ -449,6 +845,103 @@
         report.appendChild(synthesis);
     }
 
+    // Reporte de impresión de evaluación de centro de práctica
+    function buildPrintReportCentroPractica() {
+        const report = document.getElementById('print-report');
+        report.replaceChildren();
+
+        const logo = document.createElement('img');
+        logo.src = 'trabajo_social_color.png';
+        logo.alt = 'Universidad de Aysén';
+        logo.className = 'print-logo';
+        report.appendChild(logo);
+
+        appendPrintText(report, 'h1', 'Evaluación de Centro de Práctica y Supervisión en Terreno');
+        appendPrintText(report, 'p', 'Trabajo Social · Práctica Profesional II · Universidad de Aysén (Instrumento confidencial de estudiantes)', 'print-meta-note');
+
+        const metadata = document.createElement('div');
+        metadata.className = 'print-meta';
+        addPrintField(metadata, 'Estudiante', cpStudentSelect.value);
+        addPrintField(metadata, 'Supervisor(a) docente', cpTeacherInput.value);
+        addPrintField(metadata, 'Institución (Centro de práctica)', document.getElementById('cp_institucion').value);
+        addPrintField(metadata, 'Programa institucional', document.getElementById('cp_programa').value || 'No especificado');
+        addPrintField(metadata, 'Supervisor(a) en terreno', document.getElementById('cp_supervisor_terreno').value);
+        addPrintField(metadata, 'Semestre / Año', document.getElementById('cp_semestre').value + ' ' + document.getElementById('cp_anio').value);
+        addPrintField(metadata, 'Correo declarado', document.getElementById('cp_correo').value);
+        report.appendChild(metadata);
+
+        // Dimensión 1: CP
+        const cpSection = document.createElement('section');
+        cpSection.className = 'print-section';
+        appendPrintText(cpSection, 'h2', 'Dimensión 1 · Centro de Práctica (CP)');
+        let cpSum = 0;
+        for (let i = 1; i <= 5; i++) {
+            const entry = document.createElement('div');
+            entry.className = 'print-criterion';
+            const legendText = document.querySelector('#cp-crit-' + i + ' legend').textContent.trim();
+            appendPrintText(entry, 'h3', legendText);
+            const selected = document.querySelector('input[name="cp' + i + '"]:checked');
+            const val = selected ? selected.value : '0';
+            cpSum += Number(val);
+            addPrintField(entry, 'Puntaje', val + ' de 5');
+            const comm = document.querySelector('input[name="cp_comentario_' + i + '"]').value.trim();
+            if (comm) addPrintField(entry, 'Comentarios', comm);
+            cpSection.appendChild(entry);
+        }
+        addPrintField(cpSection, 'Subtotal Centro de Práctica', cpSum + ' de 25');
+        report.appendChild(cpSection);
+
+        // Dimensión 2: ST
+        const stSection = document.createElement('section');
+        stSection.className = 'print-section';
+        appendPrintText(stSection, 'h2', 'Dimensión 2 · Supervisor(a) en Terreno (ST)');
+        let stSum = 0;
+        for (let i = 1; i <= 9; i++) {
+            const entry = document.createElement('div');
+            entry.className = 'print-criterion';
+            const legendText = document.querySelector('#st-crit-' + i + ' legend').textContent.trim();
+            appendPrintText(entry, 'h3', legendText);
+            const selected = document.querySelector('input[name="st' + i + '"]:checked');
+            const val = selected ? selected.value : '0';
+            stSum += Number(val);
+            addPrintField(entry, 'Puntaje', val + ' de 5');
+            const comm = document.querySelector('input[name="st_comentario_' + i + '"]').value.trim();
+            if (comm) addPrintField(entry, 'Comentarios', comm);
+            stSection.appendChild(entry);
+        }
+        addPrintField(stSection, 'Subtotal Supervisor(a) en Terreno', stSum + ' de 45');
+        report.appendChild(stSection);
+
+        // Observaciones generales
+        const obsVal = document.getElementById('cp_observaciones').value.trim();
+        if (obsVal) {
+            const obsSection = document.createElement('section');
+            obsSection.className = 'print-section';
+            appendPrintText(obsSection, 'h2', 'Observaciones y comentarios generales');
+            appendPrintText(obsSection, 'p', obsVal);
+            report.appendChild(obsSection);
+        }
+
+        // Resultados
+        const resSection = document.createElement('section');
+        resSection.className = 'print-section';
+        appendPrintText(resSection, 'h2', 'Resultados finales');
+        const totalScore = cpSum + stSum;
+        const achievement = Math.round((totalScore / 70) * 100);
+        let grade;
+        if (totalScore >= 49) {
+            grade = 4.0 + 3.0 * (totalScore - 49) / 21;
+        } else {
+            grade = 1.0 + 3.0 * totalScore / 49;
+        }
+        grade = Math.max(1.0, Math.min(7.0, Math.round(grade * 10) / 10));
+
+        addPrintField(resSection, 'Puntaje total', totalScore + ' de 70 puntos');
+        addPrintField(resSection, 'Porcentaje de logro', achievement + '%');
+        addPrintField(resSection, 'Nota calculada (Exigencia 70%)', grade.toFixed(1));
+        report.appendChild(resSection);
+    }
+
     function updateOpenPrompts() {
         const rolePrompts = openPrompts[roleSelect.value];
         if (!rolePrompts) return;
@@ -465,11 +958,92 @@
         }
     }
 
+    // Cálculo dinámico de puntaje y nota para evaluación de centro de práctica
+    function updateCentroPracticaScore() {
+        let cpSum = 0;
+        let stSum = 0;
+
+        for (let i = 1; i <= 5; i++) {
+            const checked = formCentroPractica.querySelector('input[name="cp' + i + '"]:checked');
+            if (checked) cpSum += Number(checked.value);
+        }
+        for (let i = 1; i <= 9; i++) {
+            const checked = formCentroPractica.querySelector('input[name="st' + i + '"]:checked');
+            if (checked) stSum += Number(checked.value);
+        }
+
+        const totalScore = cpSum + stSum;
+        const maxScore = 70;
+        const achievement = Math.round((totalScore / maxScore) * 100);
+
+        let grade;
+        if (totalScore >= 49) {
+            grade = 4.0 + 3.0 * (totalScore - 49) / 21;
+        } else {
+            grade = 1.0 + 3.0 * totalScore / 49;
+        }
+        grade = Math.max(1.0, Math.min(7.0, Math.round(grade * 10) / 10));
+
+        document.getElementById('cp-score-subtotal').textContent = cpSum + ' / 25';
+        document.getElementById('st-score-subtotal').textContent = stSum + ' / 45';
+        document.getElementById('total-score-display').textContent = totalScore + ' / ' + maxScore + ' (' + achievement + '%)';
+        document.getElementById('final-grade-display').textContent = grade.toFixed(1);
+    }
+
+    // Cambio de pestañas en el entorno de estudiantes
+    function switchStudentTab(tab) {
+        if (tab === 'autoevaluacion') {
+            btnTabAutoevaluacion.classList.add('active');
+            btnTabCentroPractica.classList.remove('active');
+            formTripartito.hidden = false;
+            formCentroPractica.hidden = true;
+            document.getElementById('role-intro').textContent = roleIntros['autoevaluacion'];
+        } else {
+            btnTabAutoevaluacion.classList.remove('active');
+            btnTabCentroPractica.classList.add('active');
+            formTripartito.hidden = true;
+            formCentroPractica.hidden = false;
+            document.getElementById('role-intro').textContent = 'Evaluación confidencial del Centro de Práctica y Supervisión en Terreno · Exclusivo estudiantes.';
+
+            // Sincronizar datos ya ingresados en el formulario de autoevaluación
+            if (studentSelect.value) {
+                cpStudentSelect.value = studentSelect.value;
+                const docente = studentSelect.selectedOptions[0]?.dataset.docente || '';
+                cpTeacherInput.value = docente;
+            }
+            if (document.getElementById('correo').value && !document.getElementById('cp_correo').value) {
+                document.getElementById('cp_correo').value = document.getElementById('correo').value;
+            }
+            if (document.getElementById('institucion').value && !document.getElementById('cp_institucion').value) {
+                document.getElementById('cp_institucion').value = document.getElementById('institucion').value;
+            }
+            if (document.getElementById('supervisor').value && !document.getElementById('cp_supervisor_terreno').value) {
+                document.getElementById('cp_supervisor_terreno').value = document.getElementById('supervisor').value;
+            }
+            if (document.getElementById('semestre').value && !document.getElementById('cp_semestre').value) {
+                document.getElementById('cp_semestre').value = document.getElementById('semestre').value;
+            }
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function openInstrument(role) {
         roleSelect.value = role;
         document.getElementById('portal').hidden = true;
         document.getElementById('instrument').hidden = false;
-        document.getElementById('role-intro').textContent = roleIntros[role];
+
+        if (role === 'autoevaluacion') {
+            // Mostrar pestañas paralelas solo para estudiantes
+            studentNavTabs.hidden = false;
+            switchStudentTab('autoevaluacion');
+        } else {
+            // Supervisores (terreno o docente): NUNCA tienen acceso ni visibilidad de las pestañas ni de la evaluación de centros
+            studentNavTabs.hidden = true;
+            formTripartito.hidden = false;
+            formCentroPractica.hidden = true;
+            document.getElementById('role-intro').textContent = roleIntros[role];
+        }
+
         terrainSupervisorField.hidden = role !== 'supervision_terreno';
         document.getElementById('supervisor').required = role === 'supervision_terreno';
         document.getElementById('nombre-completo-label').textContent = role === 'autoevaluacion' ? 'Nombre del/de la estudiante' : 'Nombre de quien evalúa';
@@ -481,13 +1055,17 @@
         } else {
             evaluatorName.value = studentSelect.value;
         }
-        document.querySelectorAll('.criterion legend').forEach((legend, index) => {
+        formTripartito.querySelectorAll('.criterion legend').forEach((legend, index) => {
             legend.dataset.baseText = legend.dataset.baseText || legend.textContent;
             legend.textContent = role === 'autoevaluacion' ? (index + 1) + '. ' + selfStatements[index] : legend.dataset.baseText;
         });
         updateOpenPrompts();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // Event Listeners
+    btnTabAutoevaluacion.addEventListener('click', () => switchStudentTab('autoevaluacion'));
+    btnTabCentroPractica.addEventListener('click', () => switchStudentTab('centro_practica'));
 
     document.querySelectorAll('[data-role]').forEach(button => {
         button.addEventListener('click', () => openInstrument(button.dataset.role));
@@ -503,20 +1081,48 @@
     });
 
     studentSelect.addEventListener('change', () => {
-        const docente = studentSelect.selectedOptions[0].dataset.docente || '';
+        const docente = studentSelect.selectedOptions[0]?.dataset.docente || '';
         teacherSelect.value = docente;
         if (roleSelect.value === 'autoevaluacion') evaluatorName.value = studentSelect.value;
         if (roleSelect.value === 'supervision_docente') evaluatorName.value = docente;
+
+        // Mantener sincronizado cp_estudiante si está disponible
+        cpStudentSelect.value = studentSelect.value;
+        cpTeacherInput.value = docente;
     });
     teacherSelect.addEventListener('change', () => {
         if (roleSelect.value === 'supervision_docente') evaluatorName.value = teacherSelect.value;
     });
 
+    // Eventos formulario centro de práctica
+    cpStudentSelect.addEventListener('change', () => {
+        const docente = cpStudentSelect.selectedOptions[0]?.dataset.docente || '';
+        cpTeacherInput.value = docente;
+        studentSelect.value = cpStudentSelect.value;
+        teacherSelect.value = docente;
+    });
+
+    formCentroPractica.addEventListener('change', (e) => {
+        if (e.target.matches('input[type="radio"]')) {
+            updateCentroPracticaScore();
+        }
+    });
+
     document.getElementById('download-pdf').addEventListener('click', () => {
-        if (!document.getElementById('evaluation-form').reportValidity()) return;
+        if (!formTripartito.reportValidity()) return;
         buildPrintReport();
         const previousTitle = document.title;
         document.title = 'Evaluacion-Practica-' + (studentSelect.value || 'Estudiante').replace(/[^a-z0-9-]/gi, '-');
+        window.addEventListener('afterprint', () => { document.title = previousTitle; }, { once: true });
+        window.print();
+    });
+
+    document.getElementById('download-pdf-centro-practica').addEventListener('click', () => {
+        if (!formCentroPractica.reportValidity()) return;
+        buildPrintReportCentroPractica();
+        const studentName = cpStudentSelect.value || 'Estudiante';
+        const previousTitle = document.title;
+        document.title = 'Evaluacion-Centro-Practica-' + studentName.replace(/[^a-z0-9-]/gi, '-');
         window.addEventListener('afterprint', () => { document.title = previousTitle; }, { once: true });
         window.print();
     });

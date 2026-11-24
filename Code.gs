@@ -80,10 +80,96 @@ const EXTRA_HEADERS = [
   'Estado de integración tripartita'
 ];
 
+// Constantes para Evaluación de Centro de Práctica (Formulario confidencial de estudiantes)
+const CP_CRITERIA = [
+  'Cuenta con un espacio de trabajo para el estudiante en práctica apropiado para realizar el proceso.',
+  'Cuenta con instalaciones que facilitan el proceso de práctica.',
+  'Mantiene buen clima laboral.',
+  'Permite al estudiante en práctica trabajar de manera autónoma, realizando tareas/actividades acorde al trabajo social.',
+  'Es un espacio donde se considera la participación y opinión del estudiante en práctica.'
+];
+
+const ST_CRITERIA = [
+  'Existe buena comunicación con el ST.',
+  'Existe un acompañamiento constante por parte del ST.',
+  'El ST cuenta con tiempo y buena disposición para favorecer el proceso de aprendizaje.',
+  'Mantiene un trato profesional, considerando roles y funciones con el estudiante en práctica.',
+  'Mantiene un resguardo de una actitud ética en coherencia con el Código de Ética Profesional en su actuar profesional.',
+  'Demuestra respeto por la autodeterminación de las y los sujetos.',
+  'Se comunica adecuada, respetuosa y asertivamente, con una actitud receptiva.',
+  'Existe una real opción de proponer una intervención social.',
+  'Considera la opinión del/de la estudiante en las decisiones y desarrollo del proceso de práctica.'
+];
+
+const CENTRO_PRACTICA_SHEET_NAME = 'Evaluación Centro de Práctica';
+
+const CENTRO_PRACTICA_HEADERS = [
+  'Marca temporal',
+  'Dirección de correo electrónico',
+  'Nombre estudiante',
+  'Supervisor(a) docente',
+  'Nombre Institución',
+  'Programa',
+  'Supervisor(a) en terreno',
+  'Semestre evaluado',
+  'Año',
+  'CP 1. Espacio de trabajo (0-5)',
+  'CP 1. Comentarios',
+  'CP 2. Instalaciones (0-5)',
+  'CP 2. Comentarios',
+  'CP 3. Clima laboral (0-5)',
+  'CP 3. Comentarios',
+  'CP 4. Trabajo autónomo (0-5)',
+  'CP 4. Comentarios',
+  'CP 5. Participación y opinión (0-5)',
+  'CP 5. Comentarios',
+  'ST 1. Comunicación (0-5)',
+  'ST 1. Comentarios',
+  'ST 2. Acompañamiento constante (0-5)',
+  'ST 2. Comentarios',
+  'ST 3. Tiempo y disposición (0-5)',
+  'ST 3. Comentarios',
+  'ST 4. Trato profesional y roles (0-5)',
+  'ST 4. Comentarios',
+  'ST 5. Actitud ética y código (0-5)',
+  'ST 5. Comentarios',
+  'ST 6. Respeto por autodeterminación (0-5)',
+  'ST 6. Comentarios',
+  'ST 7. Comunicación asertiva (0-5)',
+  'ST 7. Comentarios',
+  'ST 8. Opción de intervención (0-5)',
+  'ST 8. Comentarios',
+  'ST 9. Considera la opinión (0-5)',
+  'ST 9. Comentarios',
+  'Observaciones y comentarios generales',
+  'Puntaje Centro de Práctica (máx 25)',
+  'Puntaje Supervisor(a) en Terreno (máx 45)',
+  'Puntaje Total (máx 70)',
+  'Porcentaje de logro (%)',
+  'Nota calculada (Escala 70%)'
+];
+
+function doGet(event) {
+  return HtmlService.createHtmlOutput(
+    '<!doctype html><html lang="es"><meta charset="utf-8">' +
+    '<body style="font:16px Arial,sans-serif;padding:32px;background:#f4f6f2;color:#20312a">' +
+    '<h2>Portal de Evaluación de Prácticas Profesionales</h2>' +
+    '<p>El backend de Google Apps Script está activo y procesando evaluaciones.</p>' +
+    '<p><a href="https://estebancofre-coy.github.io/evaluacion-practicas-ts/" style="color:#28664a;font-weight:bold">Ir al portal de evaluación</a></p>' +
+    '</body></html>'
+  );
+}
+
 function doPost(event) {
   try {
     const parameters = event && event.parameter ? event.parameter : {};
     const roleKey = parameters.rol;
+
+    // Manejar formulario paralelo de evaluación del centro de práctica (exclusivo para estudiantes)
+    if (roleKey === 'centro_practica') {
+      return handleCentroPractica(parameters);
+    }
+
     const role = ROLE_CONFIG[roleKey];
     if (!role) throw new Error('Seleccione un rol válido para la evaluación.');
     const evaluationPeriod = requiredText(parameters.periodo, 'instancia de evaluación');
@@ -207,6 +293,270 @@ function doPost(event) {
   } catch (error) {
     return renderResult(error.message || 'No fue posible guardar la evaluación.', false);
   }
+}
+
+// Procesamiento de la evaluación del centro de práctica
+function handleCentroPractica(parameters) {
+  const student = requiredText(parameters.estudiante, 'estudiante');
+  const teacher = requiredText(parameters.supervisor_docente || STUDENT_SUPERVISORS[student], 'supervisor(a) docente');
+  if (STUDENT_SUPERVISORS[student] && STUDENT_SUPERVISORS[student] !== teacher) {
+    throw new Error('El/la estudiante seleccionado(a) no corresponde al/a la supervisor(a) docente indicado(a).');
+  }
+  const institution = requiredText(parameters.institucion, 'nombre de la institución / centro de práctica');
+  const program = String(parameters.programa || '').trim();
+  const terrainSupervisor = requiredText(parameters.supervisor_terreno, 'supervisor(a) en terreno');
+  const semester = requiredText(parameters.semestre, 'semestre evaluado');
+  if (!['Primer semestre', 'Segundo semestre'].includes(semester)) {
+    throw new Error('El semestre evaluado debe ser Primer semestre o Segundo semestre.');
+  }
+  const year = requiredText(parameters.anio, 'año');
+  const recipientEmail = requiredText(parameters.correo, 'correo electrónico');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
+    throw new Error('Ingrese un correo electrónico válido para recibir la copia.');
+  }
+
+  // Parsear los 5 criterios de Centro de Práctica (0 a 5)
+  const cpRatings = [];
+  const cpComments = [];
+  for (let i = 1; i <= 5; i++) {
+    const rawVal = parameters['cp' + i];
+    const val = Number(rawVal);
+    if (!Number.isInteger(val) || val < 0 || val > 5) {
+      throw new Error('Cada criterio de Centro de Práctica debe tener una calificación entre 0 y 5.');
+    }
+    cpRatings.push(val);
+    cpComments.push(String(parameters['cp_comentario_' + i] || '').trim());
+  }
+
+  // Parsear los 9 criterios de Supervisor en Terreno (0 a 5)
+  const stRatings = [];
+  const stComments = [];
+  for (let i = 1; i <= 9; i++) {
+    const rawVal = parameters['st' + i];
+    const val = Number(rawVal);
+    if (!Number.isInteger(val) || val < 0 || val > 5) {
+      throw new Error('Cada criterio de Supervisor en Terreno debe tener una calificación entre 0 y 5.');
+    }
+    stRatings.push(val);
+    stComments.push(String(parameters['st_comentario_' + i] || '').trim());
+  }
+
+  const observaciones = String(parameters.observaciones || '').trim();
+
+  const scoreCP = cpRatings.reduce((sum, v) => sum + v, 0);
+  const scoreST = stRatings.reduce((sum, v) => sum + v, 0);
+  const totalScore = scoreCP + scoreST;
+  const maxScore = 70; // 14 criterios * 5
+  const achievement = Math.round((totalScore / maxScore) * 1000) / 10;
+
+  // Escala de notas chilena 1.0 a 7.0 al 70% de exigencia (49 pts = nota 4.0)
+  let grade;
+  if (totalScore >= 49) {
+    grade = 4.0 + 3.0 * (totalScore - 49) / (70 - 49);
+  } else {
+    grade = 1.0 + 3.0 * totalScore / 49;
+  }
+  grade = Math.max(1.0, Math.min(7.0, Math.round(grade * 10) / 10));
+
+  const values = {
+    'Marca temporal': new Date(),
+    'Dirección de correo electrónico': recipientEmail,
+    'Nombre estudiante': student,
+    'Supervisor(a) docente': teacher,
+    'Nombre Institución': institution,
+    'Programa': program,
+    'Supervisor(a) en terreno': terrainSupervisor,
+    'Semestre evaluado': semester,
+    'Año': year,
+    'Observaciones y comentarios generales': observaciones,
+    'Puntaje Centro de Práctica (máx 25)': scoreCP,
+    'Puntaje Supervisor(a) en Terreno (máx 45)': scoreST,
+    'Puntaje Total (máx 70)': totalScore,
+    'Porcentaje de logro (%)': achievement,
+    'Nota calculada (Escala 70%)': grade
+  };
+
+  const cpLabels = ['Espacio de trabajo', 'Instalaciones', 'Clima laboral', 'Trabajo autónomo', 'Participación y opinión'];
+  for (let i = 0; i < 5; i++) {
+    values['CP ' + (i + 1) + '. ' + cpLabels[i] + ' (0-5)'] = cpRatings[i];
+    values['CP ' + (i + 1) + '. Comentarios'] = cpComments[i];
+  }
+
+  const stLabels = [
+    'Comunicación',
+    'Acompañamiento constante',
+    'Tiempo y disposición',
+    'Trato profesional y roles',
+    'Actitud ética y código',
+    'Respeto por autodeterminación',
+    'Comunicación asertiva',
+    'Opción de intervención',
+    'Considera la opinión'
+  ];
+  for (let i = 0; i < 9; i++) {
+    values['ST ' + (i + 1) + '. ' + stLabels[i] + ' (0-5)'] = stRatings[i];
+    values['ST ' + (i + 1) + '. Comentarios'] = stComments[i];
+  }
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = getOrCreateCentroPracticaSheet(spreadsheet);
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    const headers = ensureSheetHeaders(sheet, CENTRO_PRACTICA_HEADERS);
+    const row = headers.map(header => {
+      const matchKey = Object.keys(values).find(expected => normalizeHeader(expected) === normalizeHeader(header));
+      return matchKey ? values[matchKey] : '';
+    });
+    sheet.appendRow(row);
+  } finally {
+    lock.releaseLock();
+  }
+
+  let copyMessage;
+  try {
+    sendCentroPracticaCopy(values, cpRatings, cpComments, stRatings, stComments, scoreCP, scoreST, totalScore, maxScore, achievement, grade);
+    copyMessage = 'Se envió una copia PDF a ' + recipientEmail + '.';
+  } catch (mailError) {
+    Logger.log('No se pudo enviar copia a ' + recipientEmail + ': ' + mailError.message);
+    copyMessage = 'La evaluación del centro quedó guardada en el sistema, pero no se pudo enviar el correo de confirmación: ' + (mailError.message || '');
+  }
+
+  return renderResult('Evaluación del Centro de Práctica registrada exitosamente. Puntaje obtenido: ' + totalScore + ' de ' + maxScore + ' (' + achievement + '% de logro). Nota: ' + grade.toFixed(1) + '. ' + copyMessage, true);
+}
+
+function sendCentroPracticaCopy(values, cpRatings, cpComments, stRatings, stComments, scoreCP, scoreST, totalScore, maxScore, achievement, grade) {
+  if (MailApp.getRemainingDailyQuota() < 1) {
+    throw new Error('Se agotó la cuota diaria de correo del formulario.');
+  }
+
+  const evaluationKey = [
+    values['Dirección de correo electrónico'].toLowerCase(),
+    values['Nombre estudiante'],
+    values['Semestre evaluado'],
+    values['Año'],
+    'centro_practica'
+  ].join('|');
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'centro-practica-copy:' + Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, evaluationKey)
+  );
+  if (cache.get(cacheKey)) {
+    throw new Error('Ya se envió una copia de esta evaluación recientemente.');
+  }
+  cache.put(cacheKey, 'sending', 300);
+
+  try {
+    const reportHtml = buildCentroPracticaReportHtml(values, cpRatings, cpComments, stRatings, stComments, scoreCP, scoreST, totalScore, maxScore, achievement, grade);
+    const pdf = HtmlService.createHtmlOutput(reportHtml)
+      .getBlob()
+      .getAs(MimeType.PDF)
+      .setName('Evaluacion-Centro-Practica-' + safeFileName(values['Nombre estudiante']) + '.pdf');
+    const plainText = [
+      'Copia de evaluación del Centro de Práctica y Supervisión en Terreno.',
+      'Estudiante: ' + values['Nombre estudiante'],
+      'Institución: ' + values['Nombre Institución'],
+      'Programa: ' + (values['Programa'] || 'No especificado'),
+      'Supervisor(a) en terreno: ' + values['Supervisor(a) en terreno'],
+      'Supervisor(a) docente: ' + values['Supervisor(a) docente'],
+      'Semestre/Año: ' + values['Semestre evaluado'] + ' ' + values['Año'],
+      'Puntaje CP: ' + scoreCP + ' de 25',
+      'Puntaje ST: ' + scoreST + ' de 45',
+      'Puntaje Total: ' + totalScore + ' de ' + maxScore + ' (' + achievement + '%)',
+      'Nota calculada (70% exigencia): ' + grade.toFixed(1),
+      'El PDF adjunto contiene la evaluación completa y los comentarios registrados.'
+    ].join('\n');
+
+    MailApp.sendEmail({
+      to: values['Dirección de correo electrónico'],
+      subject: 'Copia de evaluación de Centro de Práctica · ' + values['Nombre estudiante'],
+      body: plainText,
+      htmlBody: reportHtml,
+      attachments: [pdf],
+      name: 'Evaluación de Prácticas Profesionales'
+    });
+  } catch (error) {
+    cache.remove(cacheKey);
+    throw error;
+  }
+}
+
+function buildCentroPracticaReportHtml(values, cpRatings, cpComments, stRatings, stComments, scoreCP, scoreST, totalScore, maxScore, achievement, grade) {
+  const summaryRows = [
+    ['Fecha y hora', String(values['Marca temporal'])],
+    ['Estudiante', values['Nombre estudiante']],
+    ['Correo declarado', values['Dirección de correo electrónico']],
+    ['Institución / Centro de práctica', values['Nombre Institución']],
+    ['Programa institucional', values['Programa'] || 'No especificado'],
+    ['Supervisor(a) en terreno', values['Supervisor(a) en terreno']],
+    ['Supervisor(a) docente', values['Supervisor(a) docente']],
+    ['Semestre evaluado', values['Semestre evaluado'] + ' ' + values['Año']]
+  ];
+  const summaryHtml = summaryRows.map(entry =>
+    '<tr><th>' + escapeHtml(entry[0]) + '</th><td>' + escapeHtml(String(entry[1])) + '</td></tr>'
+  ).join('');
+
+  const cpRows = CP_CRITERIA.map((criterion, idx) => {
+    const comment = cpComments[idx] ? '<br><em style="color:#52635d">Comentario: ' + escapeHtml(cpComments[idx]) + '</em>' : '';
+    return '<tr><td>' + (idx + 1) + '</td><td>' + escapeHtml(criterion) + comment + '</td><td style="text-align:center;font-weight:bold">' + cpRatings[idx] + ' / 5</td></tr>';
+  }).join('');
+
+  const stRows = ST_CRITERIA.map((criterion, idx) => {
+    const comment = stComments[idx] ? '<br><em style="color:#52635d">Comentario: ' + escapeHtml(stComments[idx]) + '</em>' : '';
+    return '<tr><td>' + (idx + 1) + '</td><td>' + escapeHtml(criterion) + comment + '</td><td style="text-align:center;font-weight:bold">' + stRatings[idx] + ' / 5</td></tr>';
+  }).join('');
+
+  const obsHtml = values['Observaciones y comentarios generales']
+    ? '<p style="white-space:pre-wrap;background:#fafcfb;padding:12px;border:1px solid #cbd7d1;border-radius:4px">' + escapeHtml(values['Observaciones y comentarios generales']) + '</p>'
+    : '<p><em>Sin observaciones adicionales.</em></p>';
+
+  return '<!doctype html><html lang="es"><meta charset="utf-8"><style>' +
+    'body{font:12px Arial,sans-serif;color:#1d2b29;margin:28px}h1{font-size:20px;color:#28664a;margin-bottom:4px}h2{font-size:14px;color:#315d4b;margin-top:22px;border-bottom:2px solid #28664a;padding-bottom:4px}' +
+    '.subtitle{color:#52635d;font-size:13px;margin:0 0 16px}' +
+    'table{width:100%;border-collapse:collapse;margin-top:8px}th,td{padding:6px 8px;border:1px solid #cbd7d1;text-align:left;vertical-align:top}' +
+    'th{background:#edf3ef}tr{page-break-inside:avoid}' +
+    '.result-box{margin-top:18px;padding:14px;background:#edf3ef;border:1px solid #cbd7d1;border-radius:4px}' +
+    '</style><body>' +
+    '<h1>Evaluación de Centro de Práctica y Supervisión en Terreno</h1>' +
+    '<p class="subtitle">Trabajo Social · Práctica Profesional II · Universidad de Aysén</p>' +
+    '<h2>Identificación</h2><table>' + summaryHtml + '</table>' +
+    '<h2>Dimensión 1: Centro de Práctica (CP) · Escala 0 a 5</h2>' +
+    '<table><thead><tr><th style="width:5%">N°</th><th>Descriptor y comentarios</th><th style="width:18%;text-align:center">Puntaje</th></tr></thead><tbody>' + cpRows +
+    '<tr><th colspan="2" style="text-align:right">Subtotal Centro de Práctica:</th><td style="text-align:center;font-weight:bold">' + scoreCP + ' / 25</td></tr></tbody></table>' +
+    '<h2>Dimensión 2: Supervisor(a) en Terreno (ST) · Escala 0 a 5</h2>' +
+    '<table><thead><tr><th style="width:5%">N°</th><th>Descriptor y comentarios</th><th style="width:18%;text-align:center">Puntaje</th></tr></thead><tbody>' + stRows +
+    '<tr><th colspan="2" style="text-align:right">Subtotal Supervisor(a) en Terreno:</th><td style="text-align:center;font-weight:bold">' + scoreST + ' / 45</td></tr></tbody></table>' +
+    '<h2>Observaciones y comentarios generales</h2>' + obsHtml +
+    '<h2>Resultados finales</h2><table class="result-box">' +
+    '<tr><th style="width:40%">Puntaje total obtenido</th><td><strong>' + totalScore + ' de ' + maxScore + ' puntos</strong></td></tr>' +
+    '<tr><th>Porcentaje de logro</th><td>' + achievement + '%</td></tr>' +
+    '<tr><th>Nota calculada (Escala 70% de exigencia)</th><td style="font-size:15px;font-weight:bold;color:#28664a">' + grade.toFixed(1) + '</td></tr>' +
+    '</table></body></html>';
+}
+
+function getOrCreateCentroPracticaSheet(spreadsheet) {
+  let sheet = spreadsheet.getSheetByName(CENTRO_PRACTICA_SHEET_NAME);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(CENTRO_PRACTICA_SHEET_NAME);
+  }
+  return sheet;
+}
+
+function ensureSheetHeaders(sheet, expectedHeaders) {
+  const lastColumn = sheet.getLastColumn();
+  if (lastColumn === 0) {
+    sheet.getRange(1, 1, 1, expectedHeaders.length).setValues([expectedHeaders]);
+    return expectedHeaders;
+  }
+  const currentHeaders = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0];
+  const normalizedCurrent = currentHeaders.map(normalizeHeader);
+  const missing = expectedHeaders.filter(h => !normalizedCurrent.includes(normalizeHeader(h)));
+  if (missing.length > 0) {
+    sheet.getRange(1, lastColumn + 1, 1, missing.length).setValues([missing]);
+    currentHeaders.push(...missing);
+  }
+  return currentHeaders;
 }
 
 function sendEvaluationCopy(values, ratings, componentGrade, integration) {
