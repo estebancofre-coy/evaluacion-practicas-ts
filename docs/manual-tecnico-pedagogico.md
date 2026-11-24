@@ -52,19 +52,28 @@ Contiene 20 criterios con escala de 1 a 4 y opción "No observado". El porcentaj
 
 ## 6. Panel Maestro (Dashboard Consolidado en Google Sheets)
 
-Para facilitar el seguimiento docente y de coordinación sin saturar con las calificaciones de cada ítem individual, el sistema genera y actualiza automáticamente la pestaña **`Panel Maestro`** en el Google Spreadsheet:
+Para facilitar el seguimiento docente y de coordinación con una presentación visual moderna y limpia, el sistema genera y actualiza automáticamente la pestaña **`Panel Maestro`** con diseño ejecutivo de dashboard:
 
-1. **Condensación sin puntajes por ítem**: Muestra directamente las notas consolidadas de cada actor y sus aportes ponderados:
-   - `Nota Terreno (40%)` y `Aporte Terreno`
-   - `Nota Docente (40%)` y `Aporte Docente`
-   - `Nota Autoeval. (20%)` y `Aporte Autoeval.`
-   - `Nota Tripartita Final` (escala 1,0 a 7,0 al 70% de exigencia)
-   - `Estado Tripartito` (`Completa` o `Pendiente: [Actores faltantes]`)
-2. **Check de Evaluación del Centro de Práctica**: Columna interactiva con **casilla de verificación nativa** (`insertCheckboxes`) que marca ✔ `TRUE` si el/la estudiante completó su evaluación del centro, junto con su `Nota Centro Práctica`.
-3. **Estado General del Proceso**: Indica sintéticamente el estado pedagógico (`Al día (100%)`, `En proceso (Falta supervisión)`, o `Sin iniciar`).
-4. **Sincronización automática y menú interactivo**:
-   - Se actualiza de forma automática en cada nuevo envío que ingresa al backend.
-   - En la barra de herramientas de Google Sheets se añade el menú **Evaluaciones de Práctica > 📊 Actualizar Panel Maestro** para regenerar o refrescar la vista en cualquier momento.
+1. **Tarjetas KPI Superiores (Fila 2)**:
+   - `👥 TOTAL NÓMINA`: 20 estudiantes.
+   - `🏢 EVAL. CENTRO`: Total y porcentaje de entregas recibidas (`X / 20 · X%`).
+   - `⚖️ TRIPARTITAS`: Total y porcentaje de evaluaciones completadas con sus 3 miradas.
+   - `📈 PROMEDIO FINAL`: Promedio acumulado de notas integradas sobre escala 7,0.
+2. **Tabla de Calificaciones Ponderadas (Fila 4 en adelante)**:
+   - `Nota Terreno (40%)` y `Aporte Terreno` (en gris secundario para no competir visualmente).
+   - `Nota Docente (40%)` y `Aporte Docente`.
+   - `Nota Autoeval. (20%)` y `Aporte Autoeval.`.
+   - **`Nota Tripartita Final`**: Destacada en un pilar color esmeralda suave (`#ecfdf5`), negrita 11pt.
+   - `Estado Tripartito`: Píldora de estado (`Completa` o `Pendiente: [Faltantes]`).
+3. **Check de Evaluación del Centro de Práctica**: Columna interactiva con **casilla de verificación nativa** (`insertCheckboxes`) que marca ✔ `TRUE` si el/la estudiante completó su evaluación del centro, junto con su `Nota Centro Práctica`.
+4. **Estética y ergonomía visual**:
+   - Altura de filas de 28px con alineación vertical centrada (`middle`) y tipografía limpia.
+   - Alternancia de filas (Zebra striping suave en `#ffffff` y `#f8faf8`) y bordes gris pizarra tenues (`#e2e8f0`).
+   - Reglas de formato condicional automáticas con colores pastel para estados (`Al día`, `En proceso`, `Sin iniciar`).
+   - Paneles congelados en Fila 4 y Columna 1.
+5. **Menú contextual en Google Sheets**:
+   - **`Evaluaciones de Práctica > 📊 Actualizar Panel Maestro`**: regenera o refresca la pestaña con la nueva estética.
+   - **`Evaluaciones de Práctica > 🌐 Abrir Dashboard Interactivo`**: despliega una ventana modal interactiva dentro de Google Sheets con buscador de estudiantes en tiempo real, filtros y tarjetas KPI.
 
 ## 7. Operación técnica y actualización en Google Apps Script
 

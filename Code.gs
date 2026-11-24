@@ -1084,6 +1084,7 @@ function onOpen() {
     SpreadsheetApp.getUi()
       .createMenu('Evaluaciones de Práctica')
       .addItem('📊 Actualizar Panel Maestro', 'menuActualizarDashboard')
+      .addItem('🌐 Abrir Dashboard Interactivo', 'menuAbrirDashboardWeb')
       .addItem('✉️ Consultar cuota de correos', 'menuVerificarCuota')
       .addToUi();
   } catch (e) {
@@ -1095,9 +1096,21 @@ function menuActualizarDashboard() {
   try {
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
     syncMasterDashboard(spreadsheet);
-    SpreadsheetApp.getUi().alert('Panel Maestro actualizado exitosamente.');
+    SpreadsheetApp.getUi().alert('Panel Maestro actualizado exitosamente con la nueva estética.');
   } catch (e) {
     Logger.log('Aviso en menuActualizarDashboard: ' + e.message);
+  }
+}
+
+function menuAbrirDashboardWeb() {
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
+    const htmlOutput = HtmlService.createHtmlOutput(buildDashboardWebDialogHtml(spreadsheet))
+      .setWidth(1100)
+      .setHeight(660);
+    SpreadsheetApp.getUi().showModalDialog(htmlOutput, 'Panel Maestro · Práctica Profesional II');
+  } catch (e) {
+    Logger.log('Aviso en menuAbrirDashboardWeb: ' + e.message);
   }
 }
 
@@ -1120,13 +1133,252 @@ function syncMasterDashboard(spreadsheet) {
     }
   }
 
+  const records = getDashboardRecords(spreadsheet);
+  if (!records) return;
+
+  let dashSheet = spreadsheet.getSheetByName(DASHBOARD_SHEET_NAME);
+  if (!dashSheet) {
+    dashSheet = spreadsheet.insertSheet(DASHBOARD_SHEET_NAME);
+  }
+
+  dashSheet.clear();
+  try {
+    dashSheet.clearConditionalFormatRules();
+  } catch (e) {}
+
+  const totalCount = records.length;
+  const cpCount = records.filter(r => r.hasCpEval).length;
+  const compCount = records.filter(r => r.tripartiteStatus === 'Completa').length;
+  const validGrades = records.filter(r => typeof r.integratedGrade === 'number').map(r => r.integratedGrade);
+  const avgGrade = validGrades.length ? Math.round((validGrades.reduce((a, b) => a + b, 0) / validGrades.length) * 10) / 10 : null;
+  const numCols = DASHBOARD_HEADERS.length;
+
+  // FILA 1: Banner Principal Institucional
+  dashSheet.getRange(1, 1, 1, numCols).merge()
+    .setValue('PANEL MAESTRO DE EVALUACIONES DE PRÁCTICA PROFESIONAL · TRABAJO SOCIAL')
+    .setBackground('#1c382b')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setFontSize(11)
+    .setFontFamily('Arial')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle');
+  dashSheet.setRowHeight(1, 38);
+
+  // FILA 2: Tarjetas KPI Superiores (Resumen Ejecutivo)
+  // Card 1: Nómina (Cols 1-3: A-C)
+  dashSheet.getRange(2, 1, 1, 3).merge()
+    .setValue('👥 TOTAL NÓMINA: ' + totalCount + ' Estudiantes')
+    .setBackground('#f1f5f9')
+    .setFontColor('#1e293b')
+    .setFontWeight('bold')
+    .setFontSize(10)
+    .setFontFamily('Arial')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBorder(true, true, true, true, false, false, '#cbd5e1', SpreadsheetApp.BorderStyle.SOLID);
+
+  // Card 2: Eval. Centro (Cols 4-7: D-G)
+  dashSheet.getRange(2, 4, 1, 4).merge()
+    .setValue('🏢 EVAL. CENTRO: ' + cpCount + ' / ' + totalCount + ' (' + Math.round((cpCount / (totalCount || 1)) * 100) + '%)')
+    .setBackground('#ecfdf5')
+    .setFontColor('#065f46')
+    .setFontWeight('bold')
+    .setFontSize(10)
+    .setFontFamily('Arial')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBorder(true, true, true, true, false, false, '#a7f3d0', SpreadsheetApp.BorderStyle.SOLID);
+
+  // Card 3: Tripartita Completa (Cols 8-12: H-L)
+  dashSheet.getRange(2, 8, 1, 5).merge()
+    .setValue('⚖️ TRIPARTITAS: ' + compCount + ' / ' + totalCount + ' (' + Math.round((compCount / (totalCount || 1)) * 100) + '%)')
+    .setBackground('#eff6ff')
+    .setFontColor('#1e40af')
+    .setFontWeight('bold')
+    .setFontSize(10)
+    .setFontFamily('Arial')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBorder(true, true, true, true, false, false, '#bfdbfe', SpreadsheetApp.BorderStyle.SOLID);
+
+  // Card 4: Promedio General (Cols 13-17: M-Q)
+  dashSheet.getRange(2, 13, 1, numCols - 12).merge()
+    .setValue('📈 PROMEDIO FINAL: ' + (avgGrade !== null ? avgGrade.toFixed(1) : '-') + ' / 7.0')
+    .setBackground('#fffbeb')
+    .setFontColor('#92400e')
+    .setFontWeight('bold')
+    .setFontSize(10)
+    .setFontFamily('Arial')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle')
+    .setBorder(true, true, true, true, false, false, '#fde68a', SpreadsheetApp.BorderStyle.SOLID);
+  dashSheet.setRowHeight(2, 34);
+
+  // FILA 3: Espaciador
+  dashSheet.setRowHeight(3, 8);
+  dashSheet.getRange(3, 1, 1, numCols).setBackground('#ffffff');
+
+  // FILA 4: Encabezados de Tabla con paleta bosque moderna
+  dashSheet.getRange(4, 1, 1, numCols)
+    .setValues([DASHBOARD_HEADERS])
+    .setBackground('#244b3c')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setFontSize(10)
+    .setFontFamily('Arial')
+    .setVerticalAlignment('middle');
+  dashSheet.setRowHeight(4, 36);
+
+  // Alinear encabezados
+  dashSheet.getRange(4, 1, 1, 6).setHorizontalAlignment('left');
+  dashSheet.getRange(4, 7, 1, numCols - 6).setHorizontalAlignment('center');
+
+  if (records.length === 0) return;
+
+  // FILAS 5+: Datos de Estudiantes con formato aireado y elegante
+  const rows = records.map(r => [
+    r.student,
+    r.period,
+    r.semester,
+    r.institution || '',
+    r.docente || '',
+    r.terrain || '',
+    typeof r.terrenoGrade === 'number' ? r.terrenoGrade : '',
+    typeof r.terrenoAporte === 'number' ? r.terrenoAporte : '',
+    typeof r.docenteGrade === 'number' ? r.docenteGrade : '',
+    typeof r.docenteAporte === 'number' ? r.docenteAporte : '',
+    typeof r.autoGrade === 'number' ? r.autoGrade : '',
+    typeof r.autoAporte === 'number' ? r.autoAporte : '',
+    typeof r.integratedGrade === 'number' ? r.integratedGrade : '',
+    r.tripartiteStatus,
+    r.hasCpEval === true,
+    typeof r.cpGrade === 'number' ? r.cpGrade : (r.cpGrade || ''),
+    r.generalStatus
+  ]);
+
+  const startRow = 5;
+  const numRows = rows.length;
+  const dataRange = dashSheet.getRange(startRow, 1, numRows, numCols);
+  dataRange.setValues(rows)
+    .setFontFamily('Arial')
+    .setFontSize(10)
+    .setVerticalAlignment('middle');
+
+  // Bordes sutiles y alturas de fila elegantes (28px por fila)
+  dataRange.setBorder(true, true, true, true, true, true, '#e2e8f0', SpreadsheetApp.BorderStyle.SOLID);
+  for (let r = 0; r < numRows; r++) {
+    const rowIdx = startRow + r;
+    dashSheet.setRowHeight(rowIdx, 28);
+    // Zebra striping suave
+    if (r % 2 === 1) {
+      dashSheet.getRange(rowIdx, 1, 1, numCols).setBackground('#f8faf8');
+    } else {
+      dashSheet.getRange(rowIdx, 1, 1, numCols).setBackground('#ffffff');
+    }
+  }
+
+  // Alineaciones y formatos numéricos
+  dashSheet.getRange(startRow, 1, numRows, 6).setHorizontalAlignment('left');
+
+  // Notas individuales (7, 9, 11)
+  dashSheet.getRange(startRow, 7, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center').setFontWeight('bold').setFontColor('#1e293b');
+  dashSheet.getRange(startRow, 9, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center').setFontWeight('bold').setFontColor('#1e293b');
+  dashSheet.getRange(startRow, 11, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center').setFontWeight('bold').setFontColor('#1e293b');
+
+  // Aportes ponderados en gris suave (8, 10, 12) para no competir visualmente
+  dashSheet.getRange(startRow, 8, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center').setFontColor('#64748b').setFontSize(9.5);
+  dashSheet.getRange(startRow, 10, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center').setFontColor('#64748b').setFontSize(9.5);
+  dashSheet.getRange(startRow, 12, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center').setFontColor('#64748b').setFontSize(9.5);
+
+  // Columna 13: Nota Tripartita Final (Pilar destacado verde esmeralda)
+  const finalGradeRange = dashSheet.getRange(startRow, 13, numRows, 1);
+  finalGradeRange.setNumberFormat('0.0')
+    .setHorizontalAlignment('center')
+    .setFontWeight('bold')
+    .setFontSize(11)
+    .setFontColor('#065f46')
+    .setBackground('#ecfdf5');
+
+  // Columna 14: Estado Tripartito
+  const triStatusRange = dashSheet.getRange(startRow, 14, numRows, 1);
+  triStatusRange.setHorizontalAlignment('center').setFontSize(9.5);
+
+  // Columna 15: Checkbox de Centro de Práctica
+  const cbRange = dashSheet.getRange(startRow, 15, numRows, 1);
+  cbRange.insertCheckboxes().setHorizontalAlignment('center').setVerticalAlignment('middle');
+
+  // Columna 16: Nota Centro Práctica
+  dashSheet.getRange(startRow, 16, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center').setFontColor('#1e293b');
+
+  // Columna 17: Estado General
+  const generalStatusRange = dashSheet.getRange(startRow, 17, numRows, 1);
+  generalStatusRange.setHorizontalAlignment('center').setFontWeight('bold').setFontSize(9.5);
+
+  // Reglas de formato condicional con pasteles armónicos
+  try {
+    const ruleAlDia = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('Al día (100%)')
+      .setBackground('#d1fae5')
+      .setFontColor('#065f46')
+      .setBold(true)
+      .setRanges([generalStatusRange])
+      .build();
+
+    const ruleCompleta = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextEqualTo('Completa')
+      .setBackground('#d1fae5')
+      .setFontColor('#065f46')
+      .setBold(true)
+      .setRanges([triStatusRange])
+      .build();
+
+    const ruleEnProceso = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextContains('En proceso')
+      .setBackground('#fef3c7')
+      .setFontColor('#92400e')
+      .setBold(true)
+      .setRanges([generalStatusRange])
+      .build();
+
+    const rulePendiente = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextContains('Pendiente')
+      .setBackground('#fee2e2')
+      .setFontColor('#991b1b')
+      .setBold(true)
+      .setRanges([generalStatusRange, triStatusRange])
+      .build();
+
+    const ruleSinIniciar = SpreadsheetApp.newConditionalFormatRule()
+      .whenTextContains('Sin iniciar')
+      .setBackground('#f3f4f6')
+      .setFontColor('#6b7280')
+      .setRanges([generalStatusRange, triStatusRange])
+      .build();
+
+    dashSheet.setConditionalFormatRules([ruleAlDia, ruleCompleta, ruleEnProceso, rulePendiente, ruleSinIniciar]);
+  } catch (e) {
+    Logger.log('Aviso al aplicar formato condicional: ' + e.message);
+  }
+
+  // Congelamiento de paneles
+  dashSheet.setFrozenRows(4);
+  dashSheet.setFrozenColumns(1);
+
+  // Anchos de columna proporcionales
+  const colWidths = [220, 150, 115, 175, 155, 155, 105, 90, 105, 90, 105, 90, 125, 160, 135, 115, 160];
+  colWidths.forEach((w, i) => dashSheet.setColumnWidth(i + 1, w));
+}
+
+// Extracción y consolidación de datos del dashboard
+function getDashboardRecords(spreadsheet) {
   const triSheet = findResponseSheet(spreadsheet);
   if (!triSheet) {
     Logger.log('No se encontró hoja tripartita para sincronizar el panel maestro.');
-    return;
+    return null;
   }
 
-  // 1. Mapeo de Evaluaciones de Centro de Práctica (confidencial de estudiantes)
+  // 1. Mapeo de Evaluaciones de Centro de Práctica
   const cpLookup = {};
   const cpSheet = spreadsheet.getSheetByName(CENTRO_PRACTICA_SHEET_NAME);
   if (cpSheet && cpSheet.getLastRow() >= 2) {
@@ -1219,7 +1471,7 @@ function syncMasterDashboard(spreadsheet) {
     });
   }
 
-  // 3. Garantizar que todos los estudiantes oficiales aparezcan en el panel aunque aún no tengan evaluaciones
+  // 3. Nómina oficial garantizada
   Object.keys(STUDENT_SUPERVISORS).forEach(studentName => {
     const defaultPeriod = 'Seguimiento intermedio';
     const defaultSem = 'Primer semestre';
@@ -1267,7 +1519,6 @@ function syncMasterDashboard(spreadsheet) {
       rec.integratedGrade = '';
     }
 
-    // Cruce con evaluación de Centro de Práctica
     const cpMatch = cpLookup[normalizeHeader(rec.student) + '|' + normalizeHeader(rec.semester)] || cpLookup[normalizeHeader(rec.student)];
     if (cpMatch && cpMatch.hasEval) {
       rec.hasCpEval = true;
@@ -1277,7 +1528,6 @@ function syncMasterDashboard(spreadsheet) {
       rec.cpGrade = '';
     }
 
-    // Estado General del proceso formativo
     if (rec.tripartiteStatus === 'Completa' && rec.hasCpEval) {
       rec.generalStatus = 'Al día (100%)';
     } else if (rec.tripartiteStatus === 'Completa' && !rec.hasCpEval) {
@@ -1291,77 +1541,96 @@ function syncMasterDashboard(spreadsheet) {
     }
   });
 
-  // Ordenar por Supervisor(a) Docente y luego por Estudiante
   records.sort((a, b) => {
     const compDoc = (a.docente || '').localeCompare(b.docente || '');
     if (compDoc !== 0) return compDoc;
     return (a.student || '').localeCompare(b.student || '');
   });
 
-  // 5. Crear o actualizar la pestaña 'Panel Maestro'
-  let dashSheet = spreadsheet.getSheetByName(DASHBOARD_SHEET_NAME);
-  if (!dashSheet) {
-    dashSheet = spreadsheet.insertSheet(DASHBOARD_SHEET_NAME);
-  }
-
-  dashSheet.clear();
-
-  // Encabezados con formato institucional
-  dashSheet.getRange(1, 1, 1, DASHBOARD_HEADERS.length)
-    .setValues([DASHBOARD_HEADERS])
-    .setBackground('#28664a')
-    .setFontColor('#ffffff')
-    .setFontWeight('bold')
-    .setHorizontalAlignment('center');
-  dashSheet.setRowHeight(1, 34);
-  dashSheet.setFrozenRows(1);
-  dashSheet.setFrozenColumns(1);
-
-  if (records.length === 0) return;
-
-  const rows = records.map(r => [
-    r.student,
-    r.period,
-    r.semester,
-    r.institution || '',
-    r.docente || '',
-    r.terrain || '',
-    typeof r.terrenoGrade === 'number' ? r.terrenoGrade : '',
-    typeof r.terrenoAporte === 'number' ? r.terrenoAporte : '',
-    typeof r.docenteGrade === 'number' ? r.docenteGrade : '',
-    typeof r.docenteAporte === 'number' ? r.docenteAporte : '',
-    typeof r.autoGrade === 'number' ? r.autoGrade : '',
-    typeof r.autoAporte === 'number' ? r.autoAporte : '',
-    typeof r.integratedGrade === 'number' ? r.integratedGrade : '',
-    r.tripartiteStatus,
-    r.hasCpEval === true,
-    typeof r.cpGrade === 'number' ? r.cpGrade : (r.cpGrade || ''),
-    r.generalStatus
-  ]);
-
-  const numRows = rows.length;
-  const numCols = DASHBOARD_HEADERS.length;
-  dashSheet.getRange(2, 1, numRows, numCols).setValues(rows);
-
-  // Formato numérico y estilos
-  dashSheet.getRange(2, 7, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Terreno
-  dashSheet.getRange(2, 8, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Terreno
-  dashSheet.getRange(2, 9, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Docente
-  dashSheet.getRange(2, 10, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Docente
-  dashSheet.getRange(2, 11, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Auto
-  dashSheet.getRange(2, 12, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Auto
-  dashSheet.getRange(2, 13, numRows, 1).setNumberFormat('0.0').setFontWeight('bold').setHorizontalAlignment('center'); // Final Tripartita
-  dashSheet.getRange(2, 14, numRows, 1).setHorizontalAlignment('center'); // Estado Tripartito
-
-  // Checkboxes nativos en Columna 15 (Eval. Centro Práctica)
-  const cbRange = dashSheet.getRange(2, 15, numRows, 1);
-  cbRange.insertCheckboxes().setHorizontalAlignment('center');
-
-  dashSheet.getRange(2, 16, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Nota Centro
-  dashSheet.getRange(2, 17, numRows, 1).setHorizontalAlignment('center').setFontWeight('bold'); // Estado General
-
-  // Anchos recomendados de columna para legibilidad óptima
-  const colWidths = [210, 160, 120, 180, 160, 160, 110, 95, 110, 95, 110, 95, 125, 160, 140, 120, 150];
-  colWidths.forEach((w, i) => dashSheet.setColumnWidth(i + 1, w));
+  return records;
 }
+
+// Genera la interfaz interactiva para la ventana modal en Google Sheets
+function buildDashboardWebDialogHtml(spreadsheet) {
+  const records = getDashboardRecords(spreadsheet) || [];
+  const recordsJson = JSON.stringify(records);
+
+  return '<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<style>' +
+    'body{font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:0;padding:16px;background:#f8faf8;color:#1e293b}' +
+    'h1{font-size:18px;color:#1c382b;margin:0 0 4px}' +
+    '.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0 16px}' +
+    '.card{background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:10px 14px}' +
+    '.card-title{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase}' +
+    '.card-val{font-size:20px;font-weight:bold;margin-top:2px}' +
+    '.search-bar{display:flex;gap:10px;margin-bottom:12px}' +
+    'input,select{padding:7px 10px;border:1px solid #cbd5e1;border-radius:5px;font-size:12px}' +
+    'input{flex:1}' +
+    '.table-wrap{background:#fff;border:1px solid #cbd5e1;border-radius:6px;overflow:auto;max-height:440px}' +
+    'table{width:100%;border-collapse:collapse;font-size:11.5px;text-align:left}' +
+    'th{background:#244b3c;color:#fff;padding:8px 10px;font-weight:600;position:sticky;top:0;white-space:nowrap}' +
+    'td{padding:7px 10px;border-bottom:1px solid #e2e8f0;vertical-align:middle}' +
+    'tr:nth-child(even){background:#fbfdfc}' +
+    'tr:hover{background:#f1f5f3}' +
+    '.pill{display:inline-block;padding:2px 8px;border-radius:12px;font-weight:600;font-size:10px;text-align:center}' +
+    '.pill-green{background:#d1fae5;color:#065f46}' +
+    '.pill-amber{background:#fef3c7;color:#92400e}' +
+    '.pill-gray{background:#f1f5f9;color:#64748b}' +
+    '.final-grade{font-weight:bold;color:#065f46;background:#ecfdf5;text-align:center;border-radius:4px;padding:2px 6px}' +
+    '</style></head><body>' +
+    '<h1>Panel Maestro · Evaluaciones de Práctica Profesional II</h1>' +
+    '<div class="kpi-grid">' +
+    '<div class="card"><div class="card-title">Nómina Total</div><div class="card-val" id="k-total">0</div></div>' +
+    '<div class="card"><div class="card-title">Eval. Centro Entregada</div><div class="card-val" style="color:#065f46" id="k-cp">0</div></div>' +
+    '<div class="card"><div class="card-title">Tripartita Completa</div><div class="card-val" style="color:#1e40af" id="k-tri">0</div></div>' +
+    '<div class="card"><div class="card-title">Promedio Final</div><div class="card-val" style="color:#92400e" id="k-avg">-</div></div>' +
+    '</div>' +
+    '<div class="search-bar">' +
+    '<input type="text" id="q" placeholder="Buscar por nombre de estudiante o centro de práctica...">' +
+    '<select id="f-doc"><option value="all">Todos los docentes</option><option value="Esteban Cofré Morales">Esteban Cofré</option><option value="María Fernanda Leiva">María F. Leiva</option></select>' +
+    '<select id="f-st"><option value="all">Todos los estados</option><option value="Al día (100%)">Al día</option><option value="En proceso">En proceso</option><option value="Sin iniciar">Sin iniciar</option></select>' +
+    '</div>' +
+    '<div class="table-wrap"><table>' +
+    '<thead><tr><th>Estudiante</th><th>Docente</th><th style="text-align:center">Terreno (40%)</th><th style="text-align:center">Docente (40%)</th><th style="text-align:center">Auto (20%)</th><th style="text-align:center">Final Tripartita</th><th style="text-align:center">Eval. Centro</th><th style="text-align:center">Estado</th></tr></thead>' +
+    '<tbody id="tb"></tbody>' +
+    '</table></div>' +
+    '<script>' +
+    'var DATA = ' + recordsJson + ';' +
+    'function render(){' +
+    '  var q = document.getElementById("q").value.toLowerCase();' +
+    '  var doc = document.getElementById("f-doc").value;' +
+    '  var st = document.getElementById("f-st").value;' +
+    '  var filtered = DATA.filter(function(r){' +
+    '    var mQ = !q || r.student.toLowerCase().indexOf(q)>=0 || (r.institution||"").toLowerCase().indexOf(q)>=0;' +
+    '    var mD = doc==="all" || r.docente===doc;' +
+    '    var mS = st==="all" || (st==="Al día (100%)" && r.generalStatus==="Al día (100%)") || (st==="En proceso" && r.generalStatus.indexOf("En proceso")>=0) || (st==="Sin iniciar" && r.generalStatus==="Sin iniciar");' +
+    '    return mQ && mD && mS;' +
+    '  });' +
+    '  var cp = DATA.filter(function(r){return r.hasCpEval;}).length;' +
+    '  var comp = DATA.filter(function(r){return r.tripartiteStatus==="Completa";}).length;' +
+    '  var g = DATA.filter(function(r){return typeof r.integratedGrade==="number";}).map(function(r){return r.integratedGrade;});' +
+    '  var avg = g.length ? (g.reduce(function(a,b){return a+b;},0)/g.length).toFixed(1) : "-";' +
+    '  document.getElementById("k-total").textContent = DATA.length;' +
+    '  document.getElementById("k-cp").textContent = cp + " (" + Math.round((cp/DATA.length)*100) + "%)";' +
+    '  document.getElementById("k-tri").textContent = comp + " (" + Math.round((comp/DATA.length)*100) + "%)";' +
+    '  document.getElementById("k-avg").textContent = avg + " / 7.0";' +
+    '  var tb = document.getElementById("tb");' +
+    '  tb.innerHTML = filtered.map(function(r){' +
+    '    var t = typeof r.terrenoGrade==="number" ? r.terrenoGrade.toFixed(1) + " <span style=\"color:#64748b;font-size:10px\">(" + r.terrenoAporte.toFixed(2) + ")</span>" : "-";' +
+    '    var d = typeof r.docenteGrade==="number" ? r.docenteGrade.toFixed(1) + " <span style=\"color:#64748b;font-size:10px\">(" + r.docenteAporte.toFixed(2) + ")</span>" : "-";' +
+    '    var a = typeof r.autoGrade==="number" ? r.autoGrade.toFixed(1) + " <span style=\"color:#64748b;font-size:10px\">(" + r.autoAporte.toFixed(2) + ")</span>" : "-";' +
+    '    var fin = typeof r.integratedGrade==="number" ? "<span class=\"final-grade\">" + r.integratedGrade.toFixed(1) + "</span>" : "-";' +
+    '    var cpBadge = r.hasCpEval ? "<span class=\"pill pill-green\">✔ Sí (" + (typeof r.cpGrade==="number"?r.cpGrade.toFixed(1):r.cpGrade) + ")</span>" : "<span class=\"pill pill-gray\">❌ No</span>";' +
+    '    var stPill = r.generalStatus==="Al día (100%)" ? "<span class=\"pill pill-green\">Al día</span>" : (r.generalStatus.indexOf("En proceso")>=0 ? "<span class=\"pill pill-amber\">En proceso</span>" : "<span class=\"pill pill-gray\">Sin iniciar</span>");' +
+    '    return "<tr><td><strong>" + r.student + "</strong><br><small style=\"color:#64748b\">" + (r.institution||"Sin asignar") + "</small></td><td>" + r.docente.split(" ")[0] + " " + (r.docente.split(" ")[1]||"") + "</td><td style=\"text-align:center\">" + t + "</td><td style=\"text-align:center\">" + d + "</td><td style=\"text-align:center\">" + a + "</td><td style=\"text-align:center\">" + fin + "</td><td style=\"text-align:center\">" + cpBadge + "</td><td style=\"text-align:center\">" + stPill + "</td></tr>";' +
+    '  }).join("");' +
+    '}' +
+    'document.getElementById("q").addEventListener("input",render);' +
+    'document.getElementById("f-doc").addEventListener("change",render);' +
+    'document.getElementById("f-st").addEventListener("change",render);' +
+    'render();' +
+    '</script></body></html>';
+}
+
 
