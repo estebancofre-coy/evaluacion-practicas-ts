@@ -5,7 +5,7 @@ Portal de evaluación tripartita semestral, alineado con los cuatro Resultados d
 ## Componentes
 
 - `index.html`: portada metodológica e interfaz de evaluación con identificación unificada (se solicitan los datos una sola vez). En el perfil de estudiantes, integra de forma conjunta y obligatoria la autoevaluación de competencias formativas y la evaluación confidencial del centro de práctica (sin acceso para supervisores).
-- `Code.gs`: validación atómica (exige que el estudiante responda ambos instrumentos para completar el registro), almacenamiento en Google Sheets en pestañas diferenciadas (`Respuestas de formulario 1` y `Evaluación Centro de Práctica`), cálculo de notas y envío automático de copias con dos archivos PDF independientes adjuntos por separado.
+- `Code.gs`: validación atómica (exige que el estudiante responda ambos instrumentos para completar el registro), almacenamiento en Google Sheets en pestañas diferenciadas (`Respuestas de formulario 1` y `Evaluación Centro de Práctica`), generación y sincronización automática del **`Panel Maestro`** (dashboard consolidado de notas tripartitas con checks interactivos de entrega), cálculo de notas y envío automático de copias con dos archivos PDF independientes adjuntos por separado.
 - `trabajo_social_color.png`: logo institucional (Universidad de Aysén).
 - `integrantes (2).xls`: fuente de estudiantes y asignaciones docentes. En la interfaz solo se muestran nombres, no alias/RUT.
 

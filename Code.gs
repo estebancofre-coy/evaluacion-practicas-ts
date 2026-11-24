@@ -103,6 +103,28 @@ const ST_CRITERIA = [
 
 const CENTRO_PRACTICA_SHEET_NAME = 'Evaluación Centro de Práctica';
 
+const DASHBOARD_SHEET_NAME = 'Panel Maestro';
+
+const DASHBOARD_HEADERS = [
+  'Estudiante',
+  'Periodo de evaluación',
+  'Semestre',
+  'Institución / Centro',
+  'Supervisor(a) docente',
+  'Supervisor(a) en terreno',
+  'Nota Terreno (40%)',
+  'Aporte Terreno',
+  'Nota Docente (40%)',
+  'Aporte Docente',
+  'Nota Autoeval. (20%)',
+  'Aporte Autoeval.',
+  'Nota Tripartita Final',
+  'Estado Tripartito',
+  'Eval. Centro Práctica',
+  'Nota Centro Práctica',
+  'Estado General'
+];
+
 const CENTRO_PRACTICA_HEADERS = [
   'Marca temporal',
   'Dirección de correo electrónico',
@@ -376,6 +398,13 @@ function doPost(event) {
           return matchKey ? cpData.values[matchKey] : '';
         });
         cpSheet.appendRow(cpRow);
+      }
+
+      // Sincronizar automáticamente el Panel Maestro consolidado
+      try {
+        syncMasterDashboard(spreadsheet);
+      } catch (dashError) {
+        Logger.log('Aviso al actualizar panel maestro: ' + (dashError.message || dashError));
       }
     } finally {
       lock.releaseLock();
@@ -666,6 +695,11 @@ function handleCentroPractica(parameters) {
       return matchKey ? values[matchKey] : '';
     });
     sheet.appendRow(row);
+    try {
+      syncMasterDashboard(spreadsheet);
+    } catch (dashError) {
+      Logger.log('Aviso al actualizar panel maestro: ' + (dashError.message || dashError));
+    }
   } finally {
     lock.releaseLock();
   }
@@ -1022,3 +1056,271 @@ function renderResult(message, success) {
     '<p>' + escapedMessage + '</p></main></body></html>'
   );
 }
+
+// Menú contextual para administradores y docentes en Google Sheets
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('Evaluaciones de Práctica')
+    .addItem('📊 Actualizar Panel Maestro', 'menuActualizarDashboard')
+    .addItem('✉️ Consultar cuota de correos', 'menuVerificarCuota')
+    .addToUi();
+}
+
+function menuActualizarDashboard() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  syncMasterDashboard(spreadsheet);
+  SpreadsheetApp.getUi().alert('Panel Maestro actualizado exitosamente.');
+}
+
+function menuVerificarCuota() {
+  const cuota = MailApp.getRemainingDailyQuota();
+  SpreadsheetApp.getUi().alert('Cuota diaria restante de correos: ' + cuota + ' envíos.');
+}
+
+// Sincronización automática de la Pestaña Maestra (Dashboard Consolidado)
+function syncMasterDashboard(spreadsheet) {
+  const triSheet = findResponseSheet(spreadsheet);
+  if (!triSheet) {
+    Logger.log('No se encontró hoja tripartita para sincronizar el panel maestro.');
+    return;
+  }
+
+  // 1. Mapeo de Evaluaciones de Centro de Práctica (confidencial de estudiantes)
+  const cpLookup = {};
+  const cpSheet = spreadsheet.getSheetByName(CENTRO_PRACTICA_SHEET_NAME);
+  if (cpSheet && cpSheet.getLastRow() >= 2) {
+    const cpHeaders = cpSheet.getRange(1, 1, 1, cpSheet.getLastColumn()).getDisplayValues()[0];
+    const cpData = cpSheet.getRange(2, 1, cpSheet.getLastRow() - 1, cpHeaders.length).getValues();
+    const cpCol = {};
+    cpHeaders.forEach((h, i) => { cpCol[normalizeHeader(h)] = i; });
+
+    cpData.forEach(row => {
+      const stName = normalizeHeader(row[cpCol[normalizeHeader('Nombre estudiante')]]);
+      const sem = normalizeHeader(row[cpCol[normalizeHeader('Semestre evaluado')]]);
+      const grade = row[cpCol[normalizeHeader('Nota calculada (Escala 70%)')]];
+      const key = stName + '|' + sem;
+      cpLookup[key] = { hasEval: true, grade: grade };
+      if (!cpLookup[stName]) {
+        cpLookup[stName] = { hasEval: true, grade: grade };
+      }
+    });
+  }
+
+  // 2. Mapeo y agrupamiento de Respuestas Tripartitas
+  const lastRow = triSheet.getLastRow();
+  const triHeaders = triSheet.getRange(1, 1, 1, triSheet.getLastColumn()).getDisplayValues()[0];
+  const col = {};
+  triHeaders.forEach((h, i) => { col[normalizeHeader(h)] = i; });
+
+  const studentCol = col[normalizeHeader('Nombre estudiante supervisado(a)')];
+  const periodCol = col[normalizeHeader('Periodo de evaluación')];
+  const semesterCol = col[normalizeHeader('Semestre evaluado')];
+  const instCol = col[normalizeHeader('Institución')];
+  const docCol = col[normalizeHeader('Supervisor(a) docente')];
+  const terCol = col[normalizeHeader('Nombre supervisor(a) Institución')];
+  const roleCol = col[normalizeHeader('Rol evaluador')];
+  const gradeCol = col[normalizeHeader('Nota')];
+
+  const evaluationsMap = {};
+
+  if (lastRow >= 2) {
+    const triRows = triSheet.getRange(2, 1, lastRow - 1, triHeaders.length).getValues();
+    triRows.forEach(row => {
+      const student = String(row[studentCol] || '').trim();
+      const period = String(row[periodCol] || 'Evaluación general').trim();
+      const semester = String(row[semesterCol] || 'Primer semestre').trim();
+      if (!student) return;
+
+      const groupKey = normalizeHeader(student) + '|' + normalizeHeader(period) + '|' + normalizeHeader(semester);
+      if (!evaluationsMap[groupKey]) {
+        evaluationsMap[groupKey] = {
+          student: student,
+          period: period,
+          semester: semester,
+          institution: String(row[instCol] || '').trim(),
+          docente: String(row[docCol] || STUDENT_SUPERVISORS[student] || '').trim(),
+          terrain: String(row[terCol] || '').trim(),
+          terrenoGrade: '',
+          terrenoAporte: '',
+          docenteGrade: '',
+          docenteAporte: '',
+          autoGrade: '',
+          autoAporte: '',
+          integratedGrade: '',
+          tripartiteStatus: '',
+          hasCpEval: false,
+          cpGrade: '',
+          generalStatus: ''
+        };
+      }
+
+      const rec = evaluationsMap[groupKey];
+      if (!rec.institution && row[instCol]) rec.institution = String(row[instCol]).trim();
+      if (!rec.terrain && row[terCol]) rec.terrain = String(row[terCol]).trim();
+      if (!rec.docente && row[docCol]) rec.docente = String(row[docCol]).trim();
+
+      const roleLabel = normalizeHeader(row[roleCol]);
+      const rawGrade = row[gradeCol];
+      const numGrade = (typeof rawGrade === 'number' && Number.isFinite(rawGrade)) ? rawGrade : null;
+
+      if (roleLabel === normalizeHeader('Supervisión en terreno')) {
+        rec.terrenoGrade = numGrade !== null ? numGrade : '';
+        rec.terrenoAporte = numGrade !== null ? Math.round(numGrade * 40) / 100 : '';
+        if (row[terCol]) rec.terrain = String(row[terCol]).trim();
+      } else if (roleLabel === normalizeHeader('Supervisión docente')) {
+        rec.docenteGrade = numGrade !== null ? numGrade : '';
+        rec.docenteAporte = numGrade !== null ? Math.round(numGrade * 40) / 100 : '';
+        if (row[docCol]) rec.docente = String(row[docCol]).trim();
+      } else if (roleLabel === normalizeHeader('Autoevaluación')) {
+        rec.autoGrade = numGrade !== null ? numGrade : '';
+        rec.autoAporte = numGrade !== null ? Math.round(numGrade * 20) / 100 : '';
+      }
+    });
+  }
+
+  // 3. Garantizar que todos los estudiantes oficiales aparezcan en el panel aunque aún no tengan evaluaciones
+  Object.keys(STUDENT_SUPERVISORS).forEach(studentName => {
+    const defaultPeriod = 'Seguimiento intermedio';
+    const defaultSem = 'Primer semestre';
+    const existingKey = Object.keys(evaluationsMap).find(k => k.startsWith(normalizeHeader(studentName) + '|'));
+    if (!existingKey) {
+      const newKey = normalizeHeader(studentName) + '|' + normalizeHeader(defaultPeriod) + '|' + normalizeHeader(defaultSem);
+      evaluationsMap[newKey] = {
+        student: studentName,
+        period: defaultPeriod,
+        semester: defaultSem,
+        institution: '',
+        docente: STUDENT_SUPERVISORS[studentName] || '',
+        terrain: '',
+        terrenoGrade: '',
+        terrenoAporte: '',
+        docenteGrade: '',
+        docenteAporte: '',
+        autoGrade: '',
+        autoAporte: '',
+        integratedGrade: '',
+        tripartiteStatus: 'Sin evaluaciones',
+        hasCpEval: false,
+        cpGrade: '',
+        generalStatus: 'Sin iniciar'
+      };
+    }
+  });
+
+  // 4. Calcular notas integradas, cruce con Centro de Práctica y estados
+  const records = Object.values(evaluationsMap);
+  records.forEach(rec => {
+    const hasT = typeof rec.terrenoGrade === 'number';
+    const hasD = typeof rec.docenteGrade === 'number';
+    const hasA = typeof rec.autoGrade === 'number';
+
+    if (hasT && hasD && hasA) {
+      rec.integratedGrade = Math.round((rec.terrenoGrade * 0.4 + rec.docenteGrade * 0.4 + rec.autoGrade * 0.2) * 10) / 10;
+      rec.tripartiteStatus = 'Completa';
+    } else if (rec.tripartiteStatus !== 'Sin evaluaciones') {
+      const missing = [];
+      if (!hasT) missing.push('Terreno');
+      if (!hasD) missing.push('Docente');
+      if (!hasA) missing.push('Autoevaluación');
+      rec.tripartiteStatus = 'Pendiente: ' + missing.join(', ');
+      rec.integratedGrade = '';
+    }
+
+    // Cruce con evaluación de Centro de Práctica
+    const cpMatch = cpLookup[normalizeHeader(rec.student) + '|' + normalizeHeader(rec.semester)] || cpLookup[normalizeHeader(rec.student)];
+    if (cpMatch && cpMatch.hasEval) {
+      rec.hasCpEval = true;
+      rec.cpGrade = cpMatch.grade;
+    } else {
+      rec.hasCpEval = false;
+      rec.cpGrade = '';
+    }
+
+    // Estado General del proceso formativo
+    if (rec.tripartiteStatus === 'Completa' && rec.hasCpEval) {
+      rec.generalStatus = 'Al día (100%)';
+    } else if (rec.tripartiteStatus === 'Completa' && !rec.hasCpEval) {
+      rec.generalStatus = 'Pendiente Eval. Centro';
+    } else if (rec.hasCpEval && rec.tripartiteStatus !== 'Completa') {
+      rec.generalStatus = 'En proceso (Falta supervisión)';
+    } else if (rec.tripartiteStatus !== 'Sin evaluaciones') {
+      rec.generalStatus = 'En proceso';
+    } else {
+      rec.generalStatus = 'Sin iniciar';
+    }
+  });
+
+  // Ordenar por Supervisor(a) Docente y luego por Estudiante
+  records.sort((a, b) => {
+    const compDoc = (a.docente || '').localeCompare(b.docente || '');
+    if (compDoc !== 0) return compDoc;
+    return (a.student || '').localeCompare(b.student || '');
+  });
+
+  // 5. Crear o actualizar la pestaña 'Panel Maestro'
+  let dashSheet = spreadsheet.getSheetByName(DASHBOARD_SHEET_NAME);
+  if (!dashSheet) {
+    dashSheet = spreadsheet.insertSheet(DASHBOARD_SHEET_NAME);
+  }
+
+  dashSheet.clear();
+
+  // Encabezados con formato institucional
+  dashSheet.getRange(1, 1, 1, DASHBOARD_HEADERS.length)
+    .setValues([DASHBOARD_HEADERS])
+    .setBackground('#28664a')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setHorizontalAlignment('center');
+  dashSheet.setRowHeight(1, 34);
+  dashSheet.setFrozenRows(1);
+  dashSheet.setFrozenColumns(1);
+
+  if (records.length === 0) return;
+
+  const rows = records.map(r => [
+    r.student,
+    r.period,
+    r.semester,
+    r.institution || '',
+    r.docente || '',
+    r.terrain || '',
+    typeof r.terrenoGrade === 'number' ? r.terrenoGrade : '',
+    typeof r.terrenoAporte === 'number' ? r.terrenoAporte : '',
+    typeof r.docenteGrade === 'number' ? r.docenteGrade : '',
+    typeof r.docenteAporte === 'number' ? r.docenteAporte : '',
+    typeof r.autoGrade === 'number' ? r.autoGrade : '',
+    typeof r.autoAporte === 'number' ? r.autoAporte : '',
+    typeof r.integratedGrade === 'number' ? r.integratedGrade : '',
+    r.tripartiteStatus,
+    r.hasCpEval === true,
+    typeof r.cpGrade === 'number' ? r.cpGrade : (r.cpGrade || ''),
+    r.generalStatus
+  ]);
+
+  const numRows = rows.length;
+  const numCols = DASHBOARD_HEADERS.length;
+  dashSheet.getRange(2, 1, numRows, numCols).setValues(rows);
+
+  // Formato numérico y estilos
+  dashSheet.getRange(2, 7, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Terreno
+  dashSheet.getRange(2, 8, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Terreno
+  dashSheet.getRange(2, 9, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Docente
+  dashSheet.getRange(2, 10, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Docente
+  dashSheet.getRange(2, 11, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Auto
+  dashSheet.getRange(2, 12, numRows, 1).setNumberFormat('0.00').setHorizontalAlignment('center'); // Aporte Auto
+  dashSheet.getRange(2, 13, numRows, 1).setNumberFormat('0.0').setFontWeight('bold').setHorizontalAlignment('center'); // Final Tripartita
+  dashSheet.getRange(2, 14, numRows, 1).setHorizontalAlignment('center'); // Estado Tripartito
+
+  // Checkboxes nativos en Columna 15 (Eval. Centro Práctica)
+  const cbRange = dashSheet.getRange(2, 15, numRows, 1);
+  cbRange.insertCheckboxes().setHorizontalAlignment('center');
+
+  dashSheet.getRange(2, 16, numRows, 1).setNumberFormat('0.0').setHorizontalAlignment('center'); // Nota Centro
+  dashSheet.getRange(2, 17, numRows, 1).setHorizontalAlignment('center').setFontWeight('bold'); // Estado General
+
+  // Anchos recomendados de columna para legibilidad óptima
+  const colWidths = [210, 160, 120, 180, 160, 160, 110, 95, 110, 95, 110, 95, 125, 160, 140, 120, 150];
+  colWidths.forEach((w, i) => dashSheet.setColumnWidth(i + 1, w));
+}
+

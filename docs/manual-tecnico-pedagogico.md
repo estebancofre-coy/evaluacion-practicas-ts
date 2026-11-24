@@ -50,7 +50,23 @@ Contiene 20 criterios con escala de 1 a 4 y opción "No observado". El porcentaj
   1. `1-Autoevaluacion-[Estudiante].pdf`: Informe completo de competencias formativas y acuerdos.
   2. `2-Evaluacion-Centro-Practica-[Estudiante].pdf`: Informe confidencial del centro de práctica y supervisión en terreno con sus comentarios respectivos.
 
-## 6. Operación técnica y actualización en Google Apps Script
+## 6. Panel Maestro (Dashboard Consolidado en Google Sheets)
+
+Para facilitar el seguimiento docente y de coordinación sin saturar con las calificaciones de cada ítem individual, el sistema genera y actualiza automáticamente la pestaña **`Panel Maestro`** en el Google Spreadsheet:
+
+1. **Condensación sin puntajes por ítem**: Muestra directamente las notas consolidadas de cada actor y sus aportes ponderados:
+   - `Nota Terreno (40%)` y `Aporte Terreno`
+   - `Nota Docente (40%)` y `Aporte Docente`
+   - `Nota Autoeval. (20%)` y `Aporte Autoeval.`
+   - `Nota Tripartita Final` (escala 1,0 a 7,0 al 70% de exigencia)
+   - `Estado Tripartito` (`Completa` o `Pendiente: [Actores faltantes]`)
+2. **Check de Evaluación del Centro de Práctica**: Columna interactiva con **casilla de verificación nativa** (`insertCheckboxes`) que marca ✔ `TRUE` si el/la estudiante completó su evaluación del centro, junto con su `Nota Centro Práctica`.
+3. **Estado General del Proceso**: Indica sintéticamente el estado pedagógico (`Al día (100%)`, `En proceso (Falta supervisión)`, o `Sin iniciar`).
+4. **Sincronización automática y menú interactivo**:
+   - Se actualiza de forma automática en cada nuevo envío que ingresa al backend.
+   - En la barra de herramientas de Google Sheets se añade el menú **Evaluaciones de Práctica > 📊 Actualizar Panel Maestro** para regenerar o refrescar la vista en cualquier momento.
+
+## 7. Operación técnica y actualización en Google Apps Script
 
 1. Abra la hoja de respuestas vinculada: https://docs.google.com/spreadsheets/d/1qVxGpBVacPG1R7hPEbKCjVKZKKMg2UlVYBusJ2twHlk/edit.
 2. Vaya a **Extensiones > Apps Script**.
