@@ -962,13 +962,26 @@ function autorizarMailApp() {
 }
 
 function findResponseSheet(spreadsheet) {
-  return spreadsheet.getSheets().find(sheet => {
+  const sheets = spreadsheet.getSheets();
+  // 1. Buscar hoja que coincida con los encabezados base
+  const matching = sheets.find(sheet => {
+    if (sheet.getName() === CENTRO_PRACTICA_SHEET_NAME || sheet.getName() === DASHBOARD_SHEET_NAME) return false;
     const lastColumn = sheet.getLastColumn();
     if (lastColumn === 0) return false;
     const headers = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0].map(normalizeHeader);
     return BASE_RESPONSE_HEADERS.every(expected => headers.includes(normalizeHeader(expected))) &&
       headers.includes(normalizeHeader('Puntaje')) && headers.includes(normalizeHeader('Nota'));
-  }) || null;
+  });
+  if (matching) return matching;
+
+  // 2. Buscar por nombres convencionales de hojas de respuesta
+  const standard = spreadsheet.getSheetByName('Respuestas de formulario 1') ||
+                   spreadsheet.getSheetByName('Respuestas de formulario') ||
+                   spreadsheet.getSheetByName('Form Responses 1');
+  if (standard) return standard;
+
+  // 3. Fallback a la primera hoja que no sea el panel ni centro de práctica
+  return sheets.find(sheet => sheet.getName() !== CENTRO_PRACTICA_SHEET_NAME && sheet.getName() !== DASHBOARD_SHEET_NAME) || sheets[0];
 }
 
 function ensureHeaders(sheet) {
@@ -1057,28 +1070,56 @@ function renderResult(message, success) {
   );
 }
 
+// Función directa para poner a punto y actualizar el Panel Maestro desde el editor de Apps Script
+function inicializarPanelMaestro() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  syncMasterDashboard(spreadsheet);
+  Logger.log('✅ ¡Panel Maestro puesto a punto y actualizado exitosamente!');
+  return 'Panel Maestro actualizado exitosamente.';
+}
+
 // Menú contextual para administradores y docentes en Google Sheets
 function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('Evaluaciones de Práctica')
-    .addItem('📊 Actualizar Panel Maestro', 'menuActualizarDashboard')
-    .addItem('✉️ Consultar cuota de correos', 'menuVerificarCuota')
-    .addToUi();
+  try {
+    SpreadsheetApp.getUi()
+      .createMenu('Evaluaciones de Práctica')
+      .addItem('📊 Actualizar Panel Maestro', 'menuActualizarDashboard')
+      .addItem('✉️ Consultar cuota de correos', 'menuVerificarCuota')
+      .addToUi();
+  } catch (e) {
+    Logger.log('onOpen omitido en contexto sin UI: ' + e.message);
+  }
 }
 
 function menuActualizarDashboard() {
-  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  syncMasterDashboard(spreadsheet);
-  SpreadsheetApp.getUi().alert('Panel Maestro actualizado exitosamente.');
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
+    syncMasterDashboard(spreadsheet);
+    SpreadsheetApp.getUi().alert('Panel Maestro actualizado exitosamente.');
+  } catch (e) {
+    Logger.log('Aviso en menuActualizarDashboard: ' + e.message);
+  }
 }
 
 function menuVerificarCuota() {
-  const cuota = MailApp.getRemainingDailyQuota();
-  SpreadsheetApp.getUi().alert('Cuota diaria restante de correos: ' + cuota + ' envíos.');
+  try {
+    const cuota = MailApp.getRemainingDailyQuota();
+    SpreadsheetApp.getUi().alert('Cuota diaria restante de correos: ' + cuota + ' envíos.');
+  } catch (e) {
+    Logger.log('Cuota restante de correos: ' + MailApp.getRemainingDailyQuota());
+  }
 }
 
 // Sincronización automática de la Pestaña Maestra (Dashboard Consolidado)
 function syncMasterDashboard(spreadsheet) {
+  if (!spreadsheet) {
+    try {
+      spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.openById(SPREADSHEET_ID);
+    } catch (e) {
+      spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    }
+  }
+
   const triSheet = findResponseSheet(spreadsheet);
   if (!triSheet) {
     Logger.log('No se encontró hoja tripartita para sincronizar el panel maestro.');
