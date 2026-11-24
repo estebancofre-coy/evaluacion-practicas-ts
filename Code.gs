@@ -165,7 +165,7 @@ function doPost(event) {
     const parameters = event && event.parameter ? event.parameter : {};
     const roleKey = parameters.rol;
 
-    // Manejar formulario paralelo de evaluación del centro de práctica (exclusivo para estudiantes)
+    // Compatibilidad en caso de llamada aislada a centro_practica
     if (roleKey === 'centro_practica') {
       return handleCentroPractica(parameters);
     }
@@ -180,17 +180,32 @@ function doPost(event) {
     if (!['Primer semestre', 'Segundo semestre'].includes(semester)) {
       throw new Error('La evaluación debe corresponder al primer o segundo semestre.');
     }
+    const year = String(parameters.anio || new Date().getFullYear()).trim();
     const recipientEmail = requiredText(parameters.correo, 'correo electrónico');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
       throw new Error('Ingrese un correo electrónico válido para recibir la copia.');
     }
 
+    const student = requiredText(parameters.estudiante, 'estudiante');
+    const teacher = requiredText(parameters.supervisor_docente, 'supervisor(a) docente');
+    if (STUDENT_SUPERVISORS[student] !== teacher) {
+      throw new Error('El/la estudiante seleccionado(a) no corresponde al/a la supervisor(a) docente indicado(a).');
+    }
+    const terrainSupervisor = (roleKey === 'supervision_terreno' || roleKey === 'autoevaluacion')
+      ? requiredText(parameters.supervisor, 'supervisor(a) en terreno')
+      : '';
+    const evaluatorName = roleKey === 'supervision_terreno'
+      ? terrainSupervisor
+      : roleKey === 'supervision_docente' ? teacher : student;
+    const isGeneral = evaluationPeriod === 'Evaluación general';
+
+    // 1. Validar calificaciones de Instrumento 1: Autoevaluación de competencias (20 criterios RAE)
     const ratings = QUESTION_HEADERS.map((header, index) => {
       const rawValue = parameters['q' + (index + 1)];
       if (rawValue === 'NO_OBSERVADO') return null;
       const value = Number(rawValue);
       if (!Number.isInteger(value) || value < 1 || value > 4) {
-        throw new Error('Cada criterio debe tener una calificación entre 1 y 4 o marcarse como No observado.');
+        throw new Error('Cada criterio de la rúbrica debe tener una calificación entre 1 y 4 o marcarse como No observado.');
       }
       return value;
     });
@@ -201,19 +216,6 @@ function doPost(event) {
     const componentGrade = evaluatedCount >= 16
       ? Math.max(1, Math.min(7, Math.round((4 + (achievement - 0.7) * 10) * 10) / 10))
       : '';
-
-    const student = requiredText(parameters.estudiante, 'estudiante');
-    const teacher = requiredText(parameters.supervisor_docente, 'supervisor(a) docente');
-    if (STUDENT_SUPERVISORS[student] !== teacher) {
-      throw new Error('El/la estudiante seleccionado(a) no corresponde al/a la supervisor(a) docente indicado(a).');
-    }
-    const terrainSupervisor = roleKey === 'supervision_terreno'
-      ? requiredText(parameters.supervisor, 'supervisor(a) en terreno')
-      : '';
-    const evaluatorName = roleKey === 'supervision_terreno'
-      ? terrainSupervisor
-      : roleKey === 'supervision_docente' ? teacher : student;
-    const isGeneral = evaluationPeriod === 'Evaluación general';
 
     const values = {
       'Marca temporal': new Date(),
@@ -245,9 +247,108 @@ function doPost(event) {
       values[header] = ratings[index] === null ? 'No observado' : ratings[index];
     });
 
+    // 2. Si es estudiante (autoevaluación), EXIGIR Y VALIDAR Instrumento 2: Evaluación del Centro de Práctica
+    let cpData = null;
+    if (roleKey === 'autoevaluacion') {
+      const cpRatings = [];
+      const cpComments = [];
+      for (let i = 1; i <= 5; i++) {
+        const rawVal = parameters['cp' + i];
+        if (rawVal === undefined || rawVal === null || rawVal === '') {
+          throw new Error('Para registrar la autoevaluación es obligatorio calificar ambos instrumentos. Falta responder el ítem ' + i + ' de Centro de Práctica.');
+        }
+        const val = Number(rawVal);
+        if (!Number.isInteger(val) || val < 0 || val > 5) {
+          throw new Error('Cada ítem del Centro de Práctica debe tener un puntaje válido entre 0 y 5.');
+        }
+        cpRatings.push(val);
+        cpComments.push(String(parameters['cp_comentario_' + i] || '').trim());
+      }
+
+      const stRatings = [];
+      const stComments = [];
+      for (let i = 1; i <= 9; i++) {
+        const rawVal = parameters['st' + i];
+        if (rawVal === undefined || rawVal === null || rawVal === '') {
+          throw new Error('Para registrar la autoevaluación es obligatorio calificar ambos instrumentos. Falta responder el ítem ' + i + ' de Supervisor en Terreno.');
+        }
+        const val = Number(rawVal);
+        if (!Number.isInteger(val) || val < 0 || val > 5) {
+          throw new Error('Cada ítem de Supervisor en Terreno debe tener un puntaje válido entre 0 y 5.');
+        }
+        stRatings.push(val);
+        stComments.push(String(parameters['st_comentario_' + i] || '').trim());
+      }
+
+      const observacionesCP = String(parameters.observaciones_cp || parameters.observaciones || '').trim();
+      const scoreCP = cpRatings.reduce((sum, v) => sum + v, 0);
+      const scoreST = stRatings.reduce((sum, v) => sum + v, 0);
+      const totalScoreCP = scoreCP + scoreST;
+      const maxScoreCP = 70;
+      const achievementCP = Math.round((totalScoreCP / maxScoreCP) * 1000) / 10;
+      let gradeCP = totalScoreCP >= 49
+        ? (4.0 + 3.0 * (totalScoreCP - 49) / 21)
+        : (1.0 + 3.0 * totalScoreCP / 49);
+      gradeCP = Math.max(1.0, Math.min(7.0, Math.round(gradeCP * 10) / 10));
+
+      const cpValues = {
+        'Marca temporal': values['Marca temporal'],
+        'Dirección de correo electrónico': recipientEmail,
+        'Nombre estudiante': student,
+        'Supervisor(a) docente': teacher,
+        'Nombre Institución': values['Institución'],
+        'Programa': String(parameters.programa || '').trim(),
+        'Supervisor(a) en terreno': terrainSupervisor,
+        'Semestre evaluado': semester,
+        'Año': year,
+        'Observaciones y comentarios generales': observacionesCP,
+        'Puntaje Centro de Práctica (máx 25)': scoreCP,
+        'Puntaje Supervisor(a) en Terreno (máx 45)': scoreST,
+        'Puntaje Total (máx 70)': totalScoreCP,
+        'Porcentaje de logro (%)': achievementCP,
+        'Nota calculada (Escala 70%)': gradeCP
+      };
+
+      const cpLabels = ['Espacio de trabajo', 'Instalaciones', 'Clima laboral', 'Trabajo autónomo', 'Participación y opinión'];
+      for (let i = 0; i < 5; i++) {
+        cpValues['CP ' + (i + 1) + '. ' + cpLabels[i] + ' (0-5)'] = cpRatings[i];
+        cpValues['CP ' + (i + 1) + '. Comentarios'] = cpComments[i];
+      }
+      const stLabels = [
+        'Comunicación',
+        'Acompañamiento constante',
+        'Tiempo y disposición',
+        'Trato profesional y roles',
+        'Actitud ética y código',
+        'Respeto por autodeterminación',
+        'Comunicación asertiva',
+        'Opción de intervención',
+        'Considera la opinión'
+      ];
+      for (let i = 0; i < 9; i++) {
+        cpValues['ST ' + (i + 1) + '. ' + stLabels[i] + ' (0-5)'] = stRatings[i];
+        cpValues['ST ' + (i + 1) + '. Comentarios'] = stComments[i];
+      }
+
+      cpData = {
+        values: cpValues,
+        cpRatings,
+        cpComments,
+        stRatings,
+        stComments,
+        scoreCP,
+        scoreST,
+        totalScore: totalScoreCP,
+        maxScore: maxScoreCP,
+        achievement: achievementCP,
+        grade: gradeCP
+      };
+    }
+
+    // 3. Almacenamiento seguro en Google Sheets (ambos dentro del bloqueo para consistencia atómica)
     const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = findResponseSheet(spreadsheet);
-    if (!sheet) throw new Error('No se encontró una pestaña con los encabezados de la hoja original.');
+    if (!sheet) throw new Error('No se encontró una pestaña con los encabezados de la evaluación tripartita.');
 
     const lock = LockService.getScriptLock();
     lock.waitLock(30000);
@@ -265,6 +366,17 @@ function doPost(event) {
         period: values['Periodo de evaluación'],
         semester: values['Semestre evaluado']
       });
+
+      // Si es estudiante, guardar también en la pestaña de Evaluación Centro de Práctica
+      if (cpData) {
+        const cpSheet = getOrCreateCentroPracticaSheet(spreadsheet);
+        const cpHeaders = ensureSheetHeaders(cpSheet, CENTRO_PRACTICA_HEADERS);
+        const cpRow = cpHeaders.map(header => {
+          const matchKey = Object.keys(cpData.values).find(expected => normalizeHeader(expected) === normalizeHeader(header));
+          return matchKey ? cpData.values[matchKey] : '';
+        });
+        cpSheet.appendRow(cpRow);
+      }
     } finally {
       lock.releaseLock();
     }
@@ -274,37 +386,188 @@ function doPost(event) {
       ? 'Completa'
       : 'Pendiente: ' + integration.missing.join(', ');
 
+    // 4. Envío de correos de devolución
     let copyMessage;
     try {
-      sendEvaluationCopy(values, ratings, componentGrade, integration);
-      copyMessage = 'Se envió una copia PDF a ' + recipientEmail + '.';
+      if (roleKey === 'autoevaluacion' && cpData) {
+        // Enviar al estudiante AMBOS instrumentos por separado en el mismo correo
+        sendCombinedStudentCopy(values, ratings, componentGrade, integration, cpData);
+        copyMessage = 'Se enviaron ambas evaluaciones por separado en archivos PDF adjuntos a ' + recipientEmail + '.';
+      } else {
+        // Para supervisores, enviar solo su instrumento
+        sendEvaluationCopy(values, ratings, componentGrade, integration);
+        copyMessage = 'Se envió una copia PDF a ' + recipientEmail + '.';
+      }
     } catch (mailError) {
       Logger.log('No se pudo enviar copia a ' + recipientEmail + ': ' + mailError.message);
-      copyMessage = 'La evaluación quedó guardada, pero no se pudo enviar el correo. ' + (mailError.message || '');
+      copyMessage = 'Las evaluaciones quedaron guardadas en el sistema, pero ocurrió un problema al despachar el correo: ' + (mailError.message || '');
     }
 
-    const gradeMessage = componentGrade === ''
-      ? 'Nota del instrumento pendiente: se requieren al menos 16 criterios observados.'
-      : 'Nota del instrumento: ' + componentGrade.toFixed(1) + '.';
-    const integrationMessage = integration.complete
-      ? 'Nota tripartita integrada: ' + integration.grade.toFixed(1) + '.'
-      : 'Integración tripartita pendiente: ' + integration.missing.join(', ') + '.';
-    return renderResult('Evaluación registrada: ' + role.label + ' (' + role.weight + '%). Puntaje ' + score + ' de ' + maximumScore + ' (' + Math.round(achievement * 100) + '%). ' + gradeMessage + ' ' + integrationMessage + ' ' + copyMessage, true);
+    if (roleKey === 'autoevaluacion') {
+      const gradeMessage = componentGrade === ''
+        ? 'Nota autoevaluación: Pendiente.'
+        : 'Nota autoevaluación: ' + componentGrade.toFixed(1) + '.';
+      const cpGradeMessage = 'Nota centro de práctica: ' + cpData.grade.toFixed(1) + '.';
+      return renderResult('Evaluaciones registradas con éxito: se guardaron ambos instrumentos (Autoevaluación de competencias y Evaluación del Centro de Práctica). ' + gradeMessage + ' ' + cpGradeMessage + ' ' + copyMessage, true);
+    } else {
+      const gradeMessage = componentGrade === ''
+        ? 'Nota del instrumento pendiente: se requieren al menos 16 criterios observados.'
+        : 'Nota del instrumento: ' + componentGrade.toFixed(1) + '.';
+      const integrationMessage = integration.complete
+        ? 'Nota tripartita integrada: ' + integration.grade.toFixed(1) + '.'
+        : 'Integración tripartita pendiente: ' + integration.missing.join(', ') + '.';
+      return renderResult('Evaluación registrada: ' + role.label + ' (' + role.weight + '%). Puntaje ' + score + ' de ' + maximumScore + ' (' + Math.round(achievement * 100) + '%). ' + gradeMessage + ' ' + integrationMessage + ' ' + copyMessage, true);
+    }
   } catch (error) {
     return renderResult(error.message || 'No fue posible guardar la evaluación.', false);
   }
 }
 
-// Procesamiento de la evaluación del centro de práctica
+// Envío conjunto para estudiantes: entrega ambos instrumentos por separado en el mismo correo
+function sendCombinedStudentCopy(values, ratings, componentGrade, integration, cpData) {
+  if (MailApp.getRemainingDailyQuota() < 1) {
+    throw new Error('Se agotó la cuota diaria de correo del formulario.');
+  }
+
+  const evaluationKey = [
+    values['Dirección de correo electrónico'].toLowerCase(),
+    values['Nombre estudiante supervisado(a)'],
+    values['Periodo de evaluación'],
+    values['Semestre evaluado'],
+    'estudiante_combinado'
+  ].join('|');
+  const cache = CacheService.getScriptCache();
+  const cacheKey = 'student-combined-copy:' + Utilities.base64EncodeWebSafe(
+    Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, evaluationKey)
+  );
+  if (cache.get(cacheKey)) {
+    throw new Error('Ya se envió una copia de esta evaluación recientemente.');
+  }
+  cache.put(cacheKey, 'sending', 300);
+
+  try {
+    // 1. Generar PDF independiente de Autoevaluación
+    const autoHtml = buildEvaluationReportHtml(values, ratings, componentGrade, integration);
+    const pdfAutoevaluacion = HtmlService.createHtmlOutput(autoHtml)
+      .getBlob()
+      .getAs(MimeType.PDF)
+      .setName('1-Autoevaluacion-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf');
+
+    // 2. Generar PDF independiente de Evaluación de Centro de Práctica
+    const cpReportHtml = buildCentroPracticaReportHtml(
+      cpData.values,
+      cpData.cpRatings,
+      cpData.cpComments,
+      cpData.stRatings,
+      cpData.stComments,
+      cpData.scoreCP,
+      cpData.scoreST,
+      cpData.totalScore,
+      cpData.maxScore,
+      cpData.achievement,
+      cpData.grade
+    );
+    const pdfCentroPractica = HtmlService.createHtmlOutput(cpReportHtml)
+      .getBlob()
+      .getAs(MimeType.PDF)
+      .setName('2-Evaluacion-Centro-Practica-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf');
+
+    const plainText = [
+      'Estimada/o estudiante ' + values['Nombre estudiante supervisado(a)'] + ':',
+      '',
+      'Se ha registrado exitosamente la entrega de tus dos instrumentos obligatorios de evaluación de práctica.',
+      'Adjunto a este correo encontrarás ambos informes en PDF entregados por separado:',
+      '',
+      '==============================================================',
+      '1. AUTOEVALUACIÓN DE COMPETENCIAS (20% NOTA TRIPARTITA)',
+      '==============================================================',
+      'Instancia: ' + values['Periodo de evaluación'],
+      'Semestre: ' + values['Semestre evaluado'],
+      'Puntaje: ' + values['Puntaje'] + ' de ' + values['Puntaje máximo ajustado'] + ' (' + values['Porcentaje de logro (%)'] + '%)',
+      'Nota autoevaluación: ' + (componentGrade === '' ? 'Pendiente' : componentGrade.toFixed(1)),
+      'Archivo adjunto: 1-Autoevaluacion-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf',
+      '',
+      '==============================================================',
+      '2. EVALUACIÓN DE CENTRO DE PRÁCTICA Y SUPERVISIÓN EN TERRENO',
+      '==============================================================',
+      'Centro de práctica: ' + cpData.values['Nombre Institución'],
+      'Supervisor(a) en terreno: ' + cpData.values['Supervisor(a) en terreno'],
+      'Puntaje total: ' + cpData.totalScore + ' de 70 (' + cpData.achievement + '%)',
+      'Nota calculada (Exigencia 70%): ' + cpData.grade.toFixed(1),
+      'Archivo adjunto: 2-Evaluacion-Centro-Practica-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf',
+      '',
+      'Conserva ambos archivos como comprobante académico.'
+    ].join('\n');
+
+    const combinedHtml = buildCombinedEmailHtml(values, ratings, componentGrade, integration, cpData);
+
+    MailApp.sendEmail({
+      to: values['Dirección de correo electrónico'],
+      subject: 'Devolución de evaluaciones de práctica · ' + values['Nombre estudiante supervisado(a)'],
+      body: plainText,
+      htmlBody: combinedHtml,
+      attachments: [pdfAutoevaluacion, pdfCentroPractica],
+      name: 'Evaluación de Prácticas Profesionales'
+    });
+  } catch (error) {
+    cache.remove(cacheKey);
+    throw error;
+  }
+}
+
+function buildCombinedEmailHtml(values, ratings, componentGrade, integration, cpData) {
+  const student = escapeHtml(values['Nombre estudiante supervisado(a)']);
+  const integrationText = integration.complete
+    ? integration.grade.toFixed(1)
+    : 'Pendiente: ' + escapeHtml(integration.missing.join(', '));
+
+  return '<!doctype html><html lang="es"><meta charset="utf-8"><style>' +
+    'body{font:13px Arial,sans-serif;color:#1d2b29;background:#f4f6f2;margin:0;padding:24px}' +
+    '.card{max-width:680px;margin:0 auto;background:#fff;border-radius:6px;border:1px solid #cbd7d1;padding:24px}' +
+    'h1{font-size:19px;color:#28664a;margin-top:0}' +
+    'h2{font-size:15px;color:#315d4b;margin-top:24px;border-bottom:2px solid #28664a;padding-bottom:5px}' +
+    'table{width:100%;border-collapse:collapse;margin:10px 0}th,td{padding:6px 9px;border:1px solid #cbd7d1;text-align:left;vertical-align:top}' +
+    'th{width:36%;background:#edf3ef}' +
+    '.notice-box{margin:14px 0;padding:12px 16px;background:#e8f4f8;border-left:4px solid #287c88;border-radius:4px;color:#174c54;font-size:12.5px;line-height:1.5}' +
+    '.attach-box{margin:14px 0;padding:12px 16px;background:#edf3ef;border-radius:4px;font-size:12.5px}' +
+    '.score-badge{font-size:15px;font-weight:bold;color:#28664a}' +
+    '</style><body><div class="card">' +
+    '<h1>Devolución de Evaluaciones de Práctica Profesional</h1>' +
+    '<p>Estimada/o <strong>' + student + '</strong>,</p>' +
+    '<p>Se ha recibido satisfactoriamente la entrega obligatoria de tus dos instrumentos de evaluación de práctica.</p>' +
+    '<div class="attach-box"><strong>Archivos PDF adjuntos por separado:</strong><br>' +
+    '📄 <strong>1-Autoevaluacion-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf</strong> (Autoevaluación de competencias formativas)<br>' +
+    '📄 <strong>2-Evaluacion-Centro-Practica-' + safeFileName(values['Nombre estudiante supervisado(a)']) + '.pdf</strong> (Evaluación confidencial del centro y supervisión en terreno)</div>' +
+    '<h2>1. Instrumento de Autoevaluación (Pondera 20%)</h2>' +
+    '<table>' +
+    '<tr><th>Instancia y periodo</th><td>' + escapeHtml(values['Periodo de evaluación']) + ' · ' + escapeHtml(values['Semestre evaluado']) + ' ' + escapeHtml(values['Año'] || '') + '</td></tr>' +
+    '<tr><th>Supervisor(a) docente</th><td>' + escapeHtml(values['Supervisor(a) docente']) + '</td></tr>' +
+    '<tr><th>Centro de práctica</th><td>' + escapeHtml(values['Institución']) + '</td></tr>' +
+    '<tr><th>Puntaje autoevaluación</th><td>' + values['Puntaje'] + ' de ' + values['Puntaje máximo ajustado'] + ' (' + values['Porcentaje de logro (%)'] + '%)</td></tr>' +
+    '<tr><th>Nota del instrumento</th><td class="score-badge">' + (componentGrade === '' ? 'Pendiente' : componentGrade.toFixed(1)) + '</td></tr>' +
+    '<tr><th>Nota tripartita integrada</th><td>' + integrationText + '</td></tr>' +
+    '</table>' +
+    '<h2>2. Instrumento de Evaluación del Centro de Práctica (Confidencial)</h2>' +
+    '<div class="notice-box">Este instrumento es confidencial. La supervisión en terreno y docente no tienen acceso a tus calificaciones ni comentarios.</div>' +
+    '<table>' +
+    '<tr><th>Centro de práctica</th><td>' + escapeHtml(cpData.values['Nombre Institución']) + '</td></tr>' +
+    '<tr><th>Programa institucional</th><td>' + escapeHtml(cpData.values['Programa'] || 'No especificado') + '</td></tr>' +
+    '<tr><th>Supervisor(a) en terreno</th><td>' + escapeHtml(cpData.values['Supervisor(a) en terreno']) + '</td></tr>' +
+    '<tr><th>Subtotal Centro de Práctica</th><td>' + cpData.scoreCP + ' de 25 puntos</td></tr>' +
+    '<tr><th>Subtotal Supervisor(a) en Terreno</th><td>' + cpData.scoreST + ' de 45 puntos</td></tr>' +
+    '<tr><th>Puntaje Total</th><td>' + cpData.totalScore + ' de 70 puntos (' + cpData.achievement + '%)</td></tr>' +
+    '<tr><th>Nota calculada (Exigencia 70%)</th><td class="score-badge">' + cpData.grade.toFixed(1) + '</td></tr>' +
+    '</table>' +
+    '<p style="color:#52635d;font-size:11.5px;margin-top:20px;border-top:1px solid #e4eae6;padding-top:12px">Universidad de Aysén · Departamento de Ciencias Sociales y Humanidades · Trabajo Social</p>' +
+    '</div></body></html>';
+}
+
 function handleCentroPractica(parameters) {
   const student = requiredText(parameters.estudiante, 'estudiante');
   const teacher = requiredText(parameters.supervisor_docente || STUDENT_SUPERVISORS[student], 'supervisor(a) docente');
-  if (STUDENT_SUPERVISORS[student] && STUDENT_SUPERVISORS[student] !== teacher) {
-    throw new Error('El/la estudiante seleccionado(a) no corresponde al/a la supervisor(a) docente indicado(a).');
-  }
   const institution = requiredText(parameters.institucion, 'nombre de la institución / centro de práctica');
   const program = String(parameters.programa || '').trim();
-  const terrainSupervisor = requiredText(parameters.supervisor_terreno, 'supervisor(a) en terreno');
+  const terrainSupervisor = requiredText(parameters.supervisor_terreno || parameters.supervisor, 'supervisor(a) en terreno');
   const semester = requiredText(parameters.semestre, 'semestre evaluado');
   if (!['Primer semestre', 'Segundo semestre'].includes(semester)) {
     throw new Error('El semestre evaluado debe ser Primer semestre o Segundo semestre.');
@@ -315,7 +578,6 @@ function handleCentroPractica(parameters) {
     throw new Error('Ingrese un correo electrónico válido para recibir la copia.');
   }
 
-  // Parsear los 5 criterios de Centro de Práctica (0 a 5)
   const cpRatings = [];
   const cpComments = [];
   for (let i = 1; i <= 5; i++) {
@@ -328,7 +590,6 @@ function handleCentroPractica(parameters) {
     cpComments.push(String(parameters['cp_comentario_' + i] || '').trim());
   }
 
-  // Parsear los 9 criterios de Supervisor en Terreno (0 a 5)
   const stRatings = [];
   const stComments = [];
   for (let i = 1; i <= 9; i++) {
@@ -341,21 +602,16 @@ function handleCentroPractica(parameters) {
     stComments.push(String(parameters['st_comentario_' + i] || '').trim());
   }
 
-  const observaciones = String(parameters.observaciones || '').trim();
-
+  const observaciones = String(parameters.observaciones_cp || parameters.observaciones || '').trim();
   const scoreCP = cpRatings.reduce((sum, v) => sum + v, 0);
   const scoreST = stRatings.reduce((sum, v) => sum + v, 0);
   const totalScore = scoreCP + scoreST;
-  const maxScore = 70; // 14 criterios * 5
+  const maxScore = 70;
   const achievement = Math.round((totalScore / maxScore) * 1000) / 10;
 
-  // Escala de notas chilena 1.0 a 7.0 al 70% de exigencia (49 pts = nota 4.0)
-  let grade;
-  if (totalScore >= 49) {
-    grade = 4.0 + 3.0 * (totalScore - 49) / (70 - 49);
-  } else {
-    grade = 1.0 + 3.0 * totalScore / 49;
-  }
+  let grade = totalScore >= 49
+    ? (4.0 + 3.0 * (totalScore - 49) / 21)
+    : (1.0 + 3.0 * totalScore / 49);
   grade = Math.max(1.0, Math.min(7.0, Math.round(grade * 10) / 10));
 
   const values = {
@@ -760,7 +1016,7 @@ function renderResult(message, success) {
   })[character]);
   return HtmlService.createHtmlOutput(
     '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
-    '<title>Resultado de evaluación</title><body style="margin:0;padding:32px;background:#f5f7f4;font:16px Segoe UI,sans-serif;color:#1d2b29">' +
+    '<title>Resultado de evaluación</title><body style="margin:0;padding:32px;background:#f4f6f2;font:16px Segoe UI,sans-serif;color:#1d2b29">' +
     '<main style="max-width:640px;margin:10vh auto;padding:28px;background:#fff;border-top:5px solid ' + color + '">' +
     '<h1 style="font-size:24px">' + (success ? 'Evaluación recibida' : 'No se pudo enviar') + '</h1>' +
     '<p>' + escapedMessage + '</p></main></body></html>'
